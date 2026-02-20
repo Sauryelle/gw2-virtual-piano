@@ -1025,8 +1025,14 @@
         });
 
         window.addEventListener('keydown', (e) => {
+            // Prevent browser default actions for F-keys (like F5 refresh or F1 help)
+            if (/^F\d+$/.test(e.code)) {
+                e.preventDefault();
+            }
+
             if (e.target.tagName === 'INPUT') return;
             if (e.repeat) return;
+
             if (currentViewMode === 'gw2') {
                 if (activeRebind) {
                     bindings.notes[activeRebind.index] = e.code;
@@ -1060,6 +1066,11 @@
         });
 
         window.addEventListener('keyup', (e) => {
+            // Prevent browser default actions for F-keys on release as well
+            if (/^F\d+$/.test(e.code)) {
+                e.preventDefault();
+            }
+
             if (e.target.tagName === 'INPUT') return;
             if (currentViewMode === 'gw2') {
                 let idx = bindings.notes.indexOf(e.code);
@@ -1721,14 +1732,47 @@
                     currentSheetKey = sheetName;
                     sheets[currentSheetKey] = [[baseName]];
                 }
-                // Detect bars and strictly split them by the '|' pipe character into cells
+                // Convert each line into spreadsheet cells
                 else if (currentSheetKey && line !== "") {
+                    // Powerina Format: Pipes delineate measures
                     if (line.includes('|')) {
-                        const row = line.split('|').map(cell => cell.trim()).filter(cell => cell !== '');
-                        if (row.length > 0) {
+                        const measures = line.split('|').map(m => m.trim()).filter(m => m !== '');
+                        for (let measureStr of measures) {
+                            let tokens = measureStr.split(/\s+/).filter(t => t !== '');
+                            if (tokens.length === 0) continue;
+
+                            let cells = [];
+                            let numCells = 4;
+                            let baseSize = Math.floor(tokens.length / numCells);
+                            let remainder = tokens.length % numCells;
+
+                            let startIndex = 0;
+                            // Mathematically distribute the tokens into exactly 4 cells
+                            for (let i = 0; i < numCells; i++) {
+                                let size = baseSize + (i < remainder ? 1 : 0);
+                                if (size === 0) {
+                                    cells.push(''); // Pad empty cells if fewer than 4 items
+                                } else {
+                                    let cellTokens = tokens.slice(startIndex, startIndex + size);
+                                    cells.push(cellTokens.join(' ')); // Group items like [6] 3/6/8 into one cell
+                                    startIndex += size;
+                                }
+                            }
+                            sheets[currentSheetKey].push(cells);
+                        }
+                    }
+                    // Legacy Jenpai Format: Separated by multiple spaces or tabs
+                    else if (rawLine.includes('  ') || rawLine.includes('\t')) {
+                        let items = rawLine.split(/ {2,}|\t/g).map(cell => cell.trim()).filter(c => c !== '');
+                        // Force 4 cells per row, moving downwards
+                        for (let i = 0; i < items.length; i += 4) {
+                            let row = items.slice(i, i + 4);
+                            while (row.length < 4) row.push(''); // Pad to 4 columns
                             sheets[currentSheetKey].push(row);
                         }
-                    } else {
+                    }
+                    // Standard text fallback
+                    else {
                         sheets[currentSheetKey].push([line]);
                     }
                 }
