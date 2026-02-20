@@ -73,9 +73,14 @@
             transform: translateY(-1px);
         }
 
-        .gw2-button:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.8), inset 0 2px 4px rgba(0,0,0,0.6);
+        .gw2-button:active, .gw2-button.active {
+            transform: translateY(2px) scale(0.98);
+            background: linear-gradient(to bottom, #fff3e0, #ffb347);
+            color: #5a1e00;
+            border-color: var(--gw2-gold);
+            box-shadow: inset -1px -1px 3px rgba(255,255,255,0.5), 
+                        inset 2px 4px 8px rgba(0,0,0,0.3), 
+                        0 0 15px #ff8c00;
         }
 
         .gw2-select {
@@ -660,12 +665,20 @@
 
         const handleOctaveDown = (e) => {
             if (isRemappingMode) startRebind(e, 'octaveDown', null, btnOctDown);
-            else updateOctave(-1);
+            else {
+                updateOctave(-1);
+                btnOctDown.classList.add('active'); 
+                setTimeout(() => btnOctDown.classList.remove('active'), 100);
+            }
         };
 
         const handleOctaveUp = (e) => {
             if (isRemappingMode) startRebind(e, 'octaveUp', null, btnOctUp);
-            else updateOctave(1);
+            else {
+                updateOctave(1);
+                btnOctUp.classList.add('active'); 
+                setTimeout(() => btnOctUp.classList.remove('active'), 100);
+            }
         };
 
         btnOctDown.addEventListener('mousedown', handleOctaveDown);
