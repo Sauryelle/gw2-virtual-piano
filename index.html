@@ -287,35 +287,31 @@
         <!-- Main App Panel -->
         <div class="gw2-panel p-6 sm:p-10 rounded-xl flex flex-col items-center flex-1 w-full max-w-[1000px]">
 
-            <!-- Header -->
+            <!-- Header Section -->
             <div class="text-center mb-6">
-                <!-- Logo Integration -->
+                <!-- Logo -->
                 <img src="saryamusic2.png" alt="Sarya's Music Thingy" class="mx-auto h-48 sm:h-64 mb-4 object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]" onerror="this.style.display='none'">
 
                 <h1 class="gw2-title text-4xl sm:text-5xl mb-2">Sarya's Music Thingy</h1>
-                <p class="status-text text-lg mb-5">For exclusive use of everyone.</p>
+                <p class="status-text text-lg mb-6">For exclusive use of everyone.</p>
 
-                <button id="btn-toggle-songbook" class="gw2-button px-6 py-2 rounded font-bold text-sm tracking-widest text-center shadow-lg border border-[#8c7355] text-[#e6d8c3]">
-                    Open Songbook
-                </button>
-            </div>
-
-            <!-- Global Advanced Controls -->
-            <div class="flex flex-col w-full max-w-4xl mb-6 gap-4 px-2 mt-2">
-                <!-- SF2 Loading -->
-                <div class="flex justify-center w-full gap-4 items-center">
-                    <label for="sf2-upload" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest cursor-pointer text-center whitespace-nowrap">
-                        Load SF2
-                    </label>
-                    <input type="file" id="sf2-upload" accept=".sf2" class="hidden">
-                    <button id="btn-unload-sf2" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest text-center hidden whitespace-nowrap">
-                        Unload SF2
+                <!-- Primary View Toggles -->
+                <div class="flex flex-wrap justify-center gap-4 w-full">
+                    <button id="btn-toggle-songbook" class="gw2-button px-6 py-2 rounded font-bold text-sm tracking-widest text-center shadow-lg border border-[#8c7355] text-[#e6d8c3]">
+                        Open Songbook
+                    </button>
+                    <button id="btn-toggle-view" class="gw2-button px-6 py-2 rounded font-bold text-sm tracking-widest text-center shadow-lg border border-[#d4af37] text-[#d4af37]">
+                        Switch to Heartopia View
                     </button>
                 </div>
+            </div>
 
-                <!-- Instrument Row -->
-                <div class="flex justify-center w-full gap-2 items-center">
-                    <select id="synth-select" class="gw2-select w-full max-w-xs px-4 py-2 rounded font-bold text-sm tracking-widest cursor-pointer text-center outline-none focus:border-[#d4af37]">
+            <!-- Unified Audio Dashboard -->
+            <div class="bg-black/30 border border-[#3a2e2a] rounded-xl p-5 w-full max-w-4xl mb-6 flex flex-col gap-5 shadow-inner">
+
+                <!-- Top Row: Instrument & SF2 -->
+                <div class="flex flex-wrap justify-center items-center gap-4 w-full">
+                    <select id="synth-select" class="gw2-select flex-1 min-w-[200px] max-w-[280px] px-4 py-2 rounded font-bold text-sm tracking-widest cursor-pointer text-center outline-none focus:border-[#d4af37] shadow-md">
                         <optgroup label="Default Magic Instruments">
                             <option value="lute">Instrument: Lute</option>
                             <option value="brass">Instrument: Brass</option>
@@ -324,6 +320,45 @@
                         </optgroup>
                         <!-- Dynamic SF2 group appended here via JS -->
                     </select>
+
+                    <label for="sf2-upload" class="gw2-button px-4 py-2 rounded font-bold text-sm tracking-widest cursor-pointer text-center whitespace-nowrap shadow-md">
+                        Load Custom SF2
+                    </label>
+                    <input type="file" id="sf2-upload" accept=".sf2" class="hidden">
+
+                    <button id="btn-unload-sf2" class="gw2-button px-4 py-2 rounded font-bold text-sm tracking-widest text-center hidden whitespace-nowrap shadow-md">
+                        Unload SF2
+                    </button>
+                </div>
+
+                <!-- Bottom Row: Volume, Metronome, Sustain -->
+                <div class="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 w-full">
+
+                    <!-- Volume -->
+                    <div class="flex items-center gap-3 bg-black/40 border border-[#5a4b3c] px-3 py-1.5 rounded-lg shadow-inner" title="Master Volume">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#8c7355]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                        </svg>
+                        <input type="range" id="master-volume" min="0" max="1" step="0.01" value="0.8" class="w-24 accent-[#d4af37] cursor-pointer">
+                    </div>
+
+                    <!-- Metronome -->
+                    <div class="flex items-center gap-3 bg-black/40 border border-[#5a4b3c] px-3 py-1.5 rounded-lg shadow-inner">
+                        <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors" title="Toggle Metronome">
+                            <input type="checkbox" id="metronome-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer">
+                            <span class="text-sm font-bold tracking-wider">Metronome</span>
+                        </label>
+                        <div class="h-4 w-px bg-[#5a4b3c]"></div>
+                        <input type="number" id="metronome-bpm" value="120" min="20" max="300" class="bg-transparent text-[#d4af37] w-12 text-center outline-none font-bold" title="Beats Per Minute">
+                        <span class="status-text text-xs">BPM</span>
+                    </div>
+
+                    <!-- Sustain -->
+                    <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors bg-black/40 border border-[#5a4b3c] px-3 py-1.5 rounded-lg shadow-inner" title="Simulates a sustain pedal for a reverberating effect">
+                        <input type="checkbox" id="sustain-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer">
+                        <span class="text-sm font-bold tracking-wider">Extend Notes (Sustain)</span>
+                    </label>
+
                 </div>
             </div>
 
@@ -336,52 +371,39 @@
             <!-- ============================== -->
             <div id="gw2-view" class="flex flex-col items-center w-full">
 
-                <!-- Octave Row (GW2 Only) -->
-                <div class="flex flex-col sm:flex-row justify-center w-full gap-2 items-center mb-4">
-                    <button id="btn-oct-down" class="gw2-button w-full sm:w-auto px-4 py-2 rounded font-bold text-sm tracking-widest text-center">
+                <!-- Octave Header Controls -->
+                <div class="flex flex-col sm:flex-row justify-center w-full gap-3 items-center mb-6">
+                    <button id="btn-oct-down" class="gw2-button w-full sm:w-auto px-5 py-2 rounded font-bold text-sm tracking-widest text-center shadow-md">
                         [ Q ] Octave -
                     </button>
 
-                    <div class="bg-black/50 border border-[#5a4b3c] px-4 py-2 rounded text-center w-full sm:w-auto min-w-[140px]">
-                        <span class="text-[#d4af37] font-['Cinzel'] font-bold text-lg" id="octave-display">Octave: Mid</span>
+                    <div class="bg-black/50 border-2 border-[#5a4b3c] px-6 py-2 rounded-lg text-center w-full sm:w-auto min-w-[160px] shadow-inner">
+                        <span class="text-[#d4af37] font-['Cinzel'] font-bold text-xl drop-shadow-md" id="octave-display">Octave: Mid</span>
                     </div>
 
-                    <button id="btn-oct-up" class="gw2-button w-full sm:w-auto px-4 py-2 rounded font-bold text-sm tracking-widest text-center">
+                    <button id="btn-oct-up" class="gw2-button w-full sm:w-auto px-5 py-2 rounded font-bold text-sm tracking-widest text-center shadow-md">
                         [ E ] Octave +
                     </button>
                 </div>
 
-                <div class="flex flex-col sm:flex-row justify-center items-center w-full mb-6 gap-4 sm:gap-8">
+                <!-- Piano Keys Container -->
+                <div class="piano-container mb-6" id="piano">
+                    <!-- Keys generated via JS -->
+                </div>
+
+                <!-- GW2 Specific Footer Controls -->
+                <div class="flex flex-wrap justify-center items-center w-full gap-6">
+                    <button id="btn-edit-binds" class="gw2-button px-6 py-2 rounded font-bold text-sm tracking-widest text-center border border-[#5a4b3c] shadow-md transition-all">
+                        Edit Binds: OFF
+                    </button>
+
                     <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors">
                         <input type="checkbox" id="octave-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer" checked>
                         <span>Restrict Octaves (Low / Mid / High)</span>
                     </label>
-                    <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors" title="Simulates a sustain pedal for a reverberating effect">
-                        <input type="checkbox" id="sustain-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer">
-                        <span>Extend Notes (Sustain)</span>
-                    </label>
                 </div>
 
-                <!-- Piano Keys -->
-                <div class="piano-container" id="piano">
-                    <!-- Keys generated via JS -->
-                </div>
-
-                <div class="flex flex-col items-center justify-center w-full mt-6 gap-4">
-                    <!-- Master Volume -->
-                    <div class="flex items-center gap-3 bg-black/40 border border-[#3a2e2a] px-3 py-1.5 rounded-lg shadow-inner">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#8c7355]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                        </svg>
-                        <input type="range" id="master-volume" min="0" max="1" step="0.01" value="0.8" class="w-20 sm:w-24 accent-[#d4af37] cursor-pointer" title="Master Volume">
-                    </div>
-
-                    <button id="btn-edit-binds" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest text-center border border-[#5a4b3c] transition-all">
-                        Edit Binds: OFF
-                    </button>
-                </div>
-
-                <div class="mt-4 text-center status-text text-sm max-w-md" id="helper-text">
+                <div class="mt-6 text-center status-text text-sm max-w-md" id="helper-text">
                     Use keys to play notes. Toggle <b class="text-[#d4af37]">Edit Binds</b> to change mapping. Click or touch keys to interact.
                 </div>
             </div>
@@ -393,16 +415,9 @@
                 <div id="heartopia-container" class="flex flex-col gap-8 min-w-[700px] py-4 px-8">
                     <!-- 3 Tiers Generated via JS -->
                 </div>
-                <div class="mt-4 text-center status-text text-sm max-w-md">
+                <div class="mt-6 text-center status-text text-sm max-w-md">
                     Binds perfectly map to standard QWERTY rows to replicate the Heartopia layout exactly.
                 </div>
-            </div>
-
-            <!-- Global View Controls -->
-            <div class="flex flex-col justify-center items-center w-full mt-8 gap-4 px-4">
-                <button id="btn-toggle-view" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest text-center shadow-lg border border-[#d4af37] text-[#d4af37]">
-                    Switch to Heartopia View
-                </button>
             </div>
 
         </div> <!-- End Main App Panel -->
@@ -447,6 +462,13 @@
         let activeNodes = {}; // Tracks active oscillators globally by element ID
         let isSustainEnabled = false;
 
+        // --- Metronome State ---
+        let metronomeInterval;
+        let nextNoteTime = 0;
+        let bpm = 120;
+        let isMetronomeOn = false;
+        let metronomeBeat = 0;
+
         // --- View Toggling ---
         const btnToggleView = document.getElementById('btn-toggle-view');
         const gw2View = document.getElementById('gw2-view');
@@ -460,6 +482,9 @@
 
         const btnLoadTomeLight = document.getElementById('btn-load-tome-light');
         const btnLoadTomeDark = document.getElementById('btn-load-tome-dark');
+
+        const metronomeToggle = document.getElementById('metronome-toggle');
+        const bpmInput = document.getElementById('metronome-bpm');
 
         let isSongbookOpen = false;
 
@@ -790,7 +815,6 @@
                         keyEl.addEventListener('touchstart', (e) => { e.preventDefault(); handleInteract(e); });
                         keyEl.addEventListener('mouseup', () => { stopNote(elementId); });
                         keyEl.addEventListener('mouseleave', () => { stopNote(elementId); });
-                        keyEl.addEventListener('touchend', (e) => { e.preventDefault(); stopNote(elementId); });
                         keyEl.addEventListener('touchcancel', (e) => { e.preventDefault(); stopNote(elementId); });
                     }
                 }
@@ -1201,6 +1225,57 @@
 
         synthSelect.addEventListener('change', (e) => {
             showMessage(`Instrument attuned to: ${e.target.options[e.target.selectedIndex].text}`);
+        });
+
+        // --- METRONOME LOGIC ---
+        function playClick(time) {
+            const osc = audioCtx.createOscillator();
+            const envelope = audioCtx.createGain();
+
+            osc.type = 'triangle';
+            // Higher pitched accent on the first beat of 4
+            osc.frequency.value = (metronomeBeat % 4 === 0) ? 1000 : 800;
+
+            envelope.gain.value = 1;
+            envelope.gain.exponentialRampToValueAtTime(0.001, time + 0.1);
+
+            osc.connect(envelope);
+            envelope.connect(masterGainNode);
+
+            osc.start(time);
+            osc.stop(time + 0.1);
+
+            metronomeBeat++;
+        }
+
+        function scheduleMetronome() {
+            while (nextNoteTime < audioCtx.currentTime + 0.1) {
+                playClick(nextNoteTime);
+                nextNoteTime += 60.0 / bpm;
+            }
+        }
+
+        metronomeToggle.addEventListener('change', (e) => {
+            isMetronomeOn = e.target.checked;
+            if (isMetronomeOn) {
+                initAudio();
+                metronomeBeat = 0;
+                nextNoteTime = audioCtx.currentTime + 0.05;
+                metronomeInterval = setInterval(scheduleMetronome, 25);
+                showMessage(`Metronome started at ${bpm} BPM.`);
+            } else {
+                clearInterval(metronomeInterval);
+                showMessage("Metronome stopped.");
+            }
+        });
+
+        bpmInput.addEventListener('change', (e) => {
+            let val = parseInt(e.target.value);
+            if (isNaN(val) || val < 20) val = 20;
+            if (val > 300) val = 300;
+            bpmInput.value = val;
+            bpm = val;
+            if (isMetronomeOn) showMessage(`BPM attuned to ${bpm}.`);
         });
 
         // --- NATIVE SF2 PARSER ---
