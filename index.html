@@ -98,6 +98,7 @@
             font-family: 'Cormorant Garamond', serif;
         }
 
+        /* --- GW2 PIANO STYLES --- */
         .piano-container {
             display: flex;
             gap: 4px;
@@ -210,6 +211,66 @@
             color: #a39581;
         }
 
+        /* --- HEARTOPIA PIANO STYLES --- */
+        #htp-view {
+            background: linear-gradient(to bottom, #221c18, #110e0c);
+        }
+
+        .htp-white {
+            width: 46px;
+            height: 60px;
+            background: #fdfdfd;
+            border-radius: 12px;
+            box-shadow: 0 4px 0 #b0b0b0, 0 5px 8px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            padding-top: 6px;
+            position: relative;
+            cursor: pointer;
+            font-family: sans-serif;
+            transition: all 0.05s;
+        }
+
+        .htp-white:active, .htp-white.active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 #b0b0b0, 0 2px 3px rgba(0,0,0,0.3);
+            background: #e8f0fe;
+        }
+
+        .htp-white-num {
+            font-weight: bold; font-size: 1.15rem; color: #222; line-height: 1;
+        }
+
+        .htp-white-sol {
+            font-size: 0.55rem; color: #666; font-weight: bold; letter-spacing: 0.5px; margin-top: 2px;
+        }
+
+        .htp-bind-tag {
+            position: absolute; bottom: -12px;
+            background: #8e8e8e; color: white; padding: 2px 6px; border-radius: 6px;
+            font-size: 0.65rem; box-shadow: 0 2px 0 #555; font-weight: bold;
+            transition: all 0.05s;
+        }
+
+        .htp-white:active .htp-bind-tag, .htp-white.active .htp-bind-tag {
+            box-shadow: 0 0px 0 #555; transform: translateY(2px);
+        }
+
+        .htp-black {
+            width: 32px; height: 32px;
+            background: #333; border-radius: 50%;
+            box-shadow: 0 3px 0 #111, 0 4px 6px rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+            color: #eee; font-size: 0.75rem; font-weight: bold; font-family: sans-serif;
+            position: absolute; top: -14px; right: -20px; z-index: 10; cursor: pointer;
+            transition: all 0.05s;
+        }
+
+        .htp-black:active, .htp-black.active {
+            transform: translateY(3px);
+            box-shadow: 0 0 0 #111, 0 2px 3px rgba(0,0,0,0.5);
+            background: #555;
+        }
+
         .status-text {
             color: #a39581;
             font-style: italic;
@@ -243,7 +304,7 @@
             </div>
         </div>
 
-        <!-- Controls -->
+        <!-- Global Advanced Controls -->
         <div class="flex flex-col w-full max-w-4xl mb-6 gap-4 px-2 mt-2">
 
             <!-- Instrument Row -->
@@ -259,8 +320,25 @@
                 </select>
             </div>
 
-            <!-- Octave Row -->
-            <div class="flex flex-col sm:flex-row justify-center w-full gap-2 items-center">
+            <div class="flex justify-center items-center w-full mt-2 gap-4 sm:gap-8">
+                <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors" title="Simulates a sustain pedal for a reverberating effect">
+                    <input type="checkbox" id="sustain-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer">
+                    <span>Extend Notes (Sustain)</span>
+                </label>
+            </div>
+        </div>
+
+        <div id="sys-message" class="text-[#d4af37] font-['Cinzel'] h-6 mb-4 opacity-0 transition-opacity duration-500 text-sm tracking-wider">
+            Instrument Attuned.
+        </div>
+
+        <!-- ============================== -->
+        <!-- VIEW 1: GW2 PIANO (1 Octave)   -->
+        <!-- ============================== -->
+        <div id="gw2-view" class="flex flex-col items-center w-full">
+
+            <!-- Octave Row (GW2 Only) -->
+            <div class="flex flex-col sm:flex-row justify-center w-full gap-2 items-center mb-4">
                 <button id="btn-oct-down" class="gw2-button w-full sm:w-auto px-4 py-2 rounded font-bold text-sm tracking-widest text-center">
                     [ Q ] Octave -
                 </button>
@@ -274,29 +352,47 @@
                 </button>
             </div>
 
-            <div class="flex flex-col sm:flex-row justify-center items-center w-full mt-2 gap-4 sm:gap-8">
+            <div class="flex justify-center items-center w-full mb-6">
                 <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors">
                     <input type="checkbox" id="octave-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer" checked>
                     <span>Restrict Octaves (Low / Mid / High)</span>
                 </label>
-                <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors" title="Simulates a sustain pedal for a reverberating effect">
-                    <input type="checkbox" id="sustain-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer">
-                    <span>Extend Notes (Sustain)</span>
-                </label>
+            </div>
+
+            <!-- Piano Keys -->
+            <div class="piano-container" id="piano">
+                <!-- Keys generated via JS -->
+            </div>
+
+            <div class="flex justify-center w-full mt-6">
+                <button id="btn-edit-binds" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest text-center border border-[#5a4b3c] transition-all">
+                    Edit Binds: OFF
+                </button>
+            </div>
+
+            <div class="mt-4 text-center status-text text-sm max-w-md" id="helper-text">
+                Use keys to play notes. Toggle <b class="text-[#d4af37]">Edit Binds</b> to change mapping. Click or touch keys to interact.
             </div>
         </div>
 
-        <div id="sys-message" class="text-[#d4af37] font-['Cinzel'] h-6 mb-4 opacity-0 transition-opacity duration-500 text-sm tracking-wider">
-            Instrument Attuned.
+        <!-- ============================== -->
+        <!-- VIEW 2: HEARTOPIA (3 Octaves)  -->
+        <!-- ============================== -->
+        <div id="htp-view" class="hidden flex-col items-center w-full max-w-5xl px-4 py-8 rounded-2xl border-2 border-[#5a4b3c] shadow-inner overflow-x-auto">
+            <div id="heartopia-container" class="flex flex-col gap-8 min-w-[700px] py-4 px-8">
+                <!-- 3 Tiers Generated via JS -->
+            </div>
+            <div class="mt-4 text-center status-text text-sm max-w-md">
+                Binds perfectly map to standard QWERTY rows to replicate the Heartopia layout exactly.
+            </div>
         </div>
 
-        <!-- Piano Keys -->
-        <div class="piano-container" id="piano">
-            <!-- Keys generated via JS -->
-        </div>
+        <!-- Global Storage Controls -->
+        <div class="flex flex-wrap justify-center items-center w-full mt-8 gap-4 sm:gap-6 px-4">
 
-        <!-- Advanced Controls -->
-        <div class="flex flex-wrap justify-center items-center w-full mt-6 gap-4 sm:gap-6 px-4">
+            <button id="btn-toggle-view" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest text-center shadow-lg border border-[#d4af37] text-[#d4af37]">
+                Switch to Heartopia View
+            </button>
 
             <!-- Master Volume -->
             <div class="flex items-center gap-3 bg-black/40 border border-[#3a2e2a] px-3 py-1.5 rounded-lg shadow-inner">
@@ -305,10 +401,6 @@
                 </svg>
                 <input type="range" id="master-volume" min="0" max="1" step="0.01" value="0.8" class="w-20 sm:w-24 accent-[#d4af37] cursor-pointer" title="Master Volume">
             </div>
-
-            <button id="btn-edit-binds" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest text-center border border-[#5a4b3c] transition-all">
-                Edit Binds: OFF
-            </button>
 
             <label for="sf2-upload" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest cursor-pointer text-center whitespace-nowrap">
                 Load SF2
@@ -320,13 +412,42 @@
             </button>
         </div>
 
-        <div class="mt-6 text-center status-text text-sm max-w-md" id="helper-text">
-            Use keys to play notes. Toggle <b class="text-[#d4af37]">Edit Binds</b> to change mapping. Click or touch keys to interact.
-        </div>
     </div>
 
     <script>
         // --- Configuration & State ---
+        let currentViewMode = 'gw2'; // 'gw2' or 'heartopia'
+        let currentOctave = 4; // Mid
+        let octaveMode = 'restricted'; // 'restricted' or 'full'
+        let audioCtx;
+        let masterGainNode;
+        let activeNodes = {}; // Tracks active oscillators globally by element ID
+        let isSustainEnabled = false;
+
+        // --- View Toggling ---
+        const btnToggleView = document.getElementById('btn-toggle-view');
+        const gw2View = document.getElementById('gw2-view');
+        const htpView = document.getElementById('htp-view');
+
+        btnToggleView.addEventListener('click', () => {
+            if (currentViewMode === 'gw2') {
+                currentViewMode = 'heartopia';
+                gw2View.classList.add('hidden');
+                htpView.classList.remove('hidden');
+                htpView.classList.add('flex');
+                btnToggleView.textContent = "Switch to Guild Wars 2 View";
+                showMessage("Heartopia Resonance engaged.");
+            } else {
+                currentViewMode = 'gw2';
+                htpView.classList.add('hidden');
+                htpView.classList.remove('flex');
+                gw2View.classList.remove('hidden');
+                btnToggleView.textContent = "Switch to Heartopia View";
+                showMessage("Tyrian Resonance engaged.");
+            }
+        });
+
+        // --- GW2 Mode Data ---
         const notes = [
             { name: 'C', offset: 0, isBlack: false },
             { name: 'C#', offset: 1, isBlack: true },
@@ -343,21 +464,33 @@
             { name: 'C', offset: 12, isBlack: false }
         ];
 
-        let currentOctave = 4; // Mid
-        let octaveMode = 'restricted'; // 'restricted' or 'full'
-        let audioCtx;
-        let masterGainNode; // Master volume control
-        let activeNodes = {}; // Tracks active oscillators per key
-
-        // --- Keybindings ---
         let bindings = {
             notes: ['Digit1', 'F1', 'Digit2', 'F2', 'Digit3', 'Digit4', 'F4', 'Digit5', 'F5', 'Digit6', 'F6', 'Digit7', 'Digit8'],
             octaveDown: 'KeyQ',
             octaveUp: 'KeyE'
         };
+
+        // Load custom binds from local storage
+        try {
+            const savedBinds = localStorage.getItem('tyrianPianoBinds');
+            if (savedBinds) {
+                bindings = JSON.parse(savedBinds);
+            }
+        } catch (e) {
+            console.warn("Could not load bindings", e);
+        }
+
+        // Helper to save binds
+        function saveBinds() {
+            try {
+                localStorage.setItem('tyrianPianoBinds', JSON.stringify(bindings));
+            } catch (e) {
+                console.warn("Could not save bindings", e);
+            }
+        }
+
         let activeRebind = null;
         let isRemappingMode = false;
-        let isSustainEnabled = false;
 
         function formatKey(code) {
             if (code.startsWith('Key')) return code.slice(3);
@@ -366,6 +499,12 @@
             if (code === 'Space') return 'Spc';
             if (code === 'Minus') return '-';
             if (code === 'Equal') return '=';
+            if (code === 'Comma') return ',';
+            if (code === 'Period') return '.';
+            if (code === 'Slash') return '/';
+            if (code === 'Semicolon') return ';';
+            if (code === 'BracketLeft') return '[';
+            if (code === 'BracketRight') return ']';
             return code;
         }
 
@@ -396,17 +535,68 @@
             activeRebind = null;
         }
 
+        // --- Heartopia Mode Data ---
+        const htpLayout = [
+            // TOP TIER (High, Octave 5)
+            { octave: 5, dot: 'top', keys: [
+                { offset: 0, solfege: 'DO', bindLabel: 'Q', code: 'KeyQ', num: 1, type: 'white' },
+                { offset: 1, bindLabel: '2', code: 'Digit2', type: 'black' },
+                { offset: 2, solfege: 'RE', bindLabel: 'W', code: 'KeyW', num: 2, type: 'white' },
+                { offset: 3, bindLabel: '3', code: 'Digit3', type: 'black' },
+                { offset: 4, solfege: 'MI', bindLabel: 'E', code: 'KeyE', num: 3, type: 'white' },
+                { offset: 5, solfege: 'FA', bindLabel: 'R', code: 'KeyR', num: 4, type: 'white', gap: true },
+                { offset: 6, bindLabel: '5', code: 'Digit5', type: 'black' },
+                { offset: 7, solfege: 'SOL', bindLabel: 'T', code: 'KeyT', num: 5, type: 'white' },
+                { offset: 8, bindLabel: '6', code: 'Digit6', type: 'black' },
+                { offset: 9, solfege: 'LA', bindLabel: 'Y', code: 'KeyY', num: 6, type: 'white' },
+                { offset: 10, bindLabel: '7', code: 'Digit7', type: 'black' },
+                { offset: 11, solfege: 'SI', bindLabel: 'U', code: 'KeyU', num: 7, type: 'white' },
+                { offset: 12, solfege: 'DO', bindLabel: 'I', code: 'KeyI', num: 1, type: 'white' }
+            ]},
+            // MIDDLE TIER (Mid, Octave 4)
+            { octave: 4, dot: 'none', keys: [
+                { offset: 0, solfege: 'DO', bindLabel: 'Z', code: 'KeyZ', num: 1, type: 'white' },
+                { offset: 1, bindLabel: 'S', code: 'KeyS', type: 'black' },
+                { offset: 2, solfege: 'RE', bindLabel: 'X', code: 'KeyX', num: 2, type: 'white' },
+                { offset: 3, bindLabel: 'D', code: 'KeyD', type: 'black' },
+                { offset: 4, solfege: 'MI', bindLabel: 'C', code: 'KeyC', num: 3, type: 'white' },
+                { offset: 5, solfege: 'FA', bindLabel: 'V', code: 'KeyV', num: 4, type: 'white', gap: true },
+                { offset: 6, bindLabel: 'G', code: 'KeyG', type: 'black' },
+                { offset: 7, solfege: 'SOL', bindLabel: 'B', code: 'KeyB', num: 5, type: 'white' },
+                { offset: 8, bindLabel: 'H', code: 'KeyH', type: 'black' },
+                { offset: 9, solfege: 'LA', bindLabel: 'N', code: 'KeyN', num: 6, type: 'white' },
+                { offset: 10, bindLabel: 'J', code: 'KeyJ', type: 'black' },
+                { offset: 11, solfege: 'SI', bindLabel: 'M', code: 'KeyM', num: 7, type: 'white' }
+            ]},
+            // BOTTOM TIER (Low, Octave 3)
+            { octave: 3, dot: 'bottom', keys: [
+                { offset: 0, solfege: 'DO', bindLabel: 'Q', code: 'Comma', num: 1, type: 'white', overrideLabel: ',' },
+                { offset: 1, bindLabel: 'L', code: 'KeyL', type: 'black' },
+                { offset: 2, solfege: 'RE', bindLabel: '.', code: 'Period', num: 2, type: 'white' },
+                { offset: 3, bindLabel: ';', code: 'Semicolon', type: 'black' },
+                { offset: 4, solfege: 'MI', bindLabel: '/', code: 'Slash', num: 3, type: 'white' },
+                { offset: 5, solfege: 'FA', bindLabel: 'O', code: 'KeyO', num: 4, type: 'white', gap: true },
+                { offset: 6, bindLabel: '0', code: 'Digit0', type: 'black' },
+                { offset: 7, solfege: 'SOL', bindLabel: 'P', code: 'KeyP', num: 5, type: 'white' },
+                { offset: 8, bindLabel: '-', code: 'Minus', type: 'black' },
+                { offset: 9, solfege: 'LA', bindLabel: '[', code: 'BracketLeft', num: 6, type: 'white' },
+                { offset: 10, bindLabel: '=', code: 'Equal', type: 'black' },
+                { offset: 11, solfege: 'SI', bindLabel: ']', code: 'BracketRight', num: 7, type: 'white' }
+            ]}
+        ];
+        const heartopiaBindsMap = {};
+
         // Native Custom Soundfont Storage
         let sf2Data = { buffer: null, smplOffset: 0, smplSize: 0, presets: [], bufferCache: {} };
 
-        // Helper to convert SF2 timecents to real seconds
         function timecentsToSecs(tc) {
-            if (tc <= -11950) return 0.001; // nearly instantaneous
+            if (tc <= -11950) return 0.001;
             return Math.pow(2, tc / 1200);
         }
 
         // --- DOM Elements ---
         const pianoContainer = document.getElementById('piano');
+        const htpContainer = document.getElementById('heartopia-container');
         const octaveDisplay = document.getElementById('octave-display');
         const btnOctDown = document.getElementById('btn-oct-down');
         const btnOctUp = document.getElementById('btn-oct-up');
@@ -419,11 +609,12 @@
         const btnEditBinds = document.getElementById('btn-edit-binds');
         const helperText = document.getElementById('helper-text');
 
-        // --- Key Generation ---
+        // --- Build GW2 UI ---
         let currentWrapper = null;
-
         notes.forEach((note, index) => {
             const keyEl = document.createElement('div');
+            const elementId = `gw2-key-${index}`;
+            keyEl.id = elementId;
             keyEl.className = `piano-key ${note.isBlack ? 'black-key absolute top-0 z-10' : 'relative'}`;
             keyEl.dataset.index = index;
 
@@ -436,17 +627,17 @@
                 if (isRemappingMode) {
                     startRebind(e, 'note', index, keyEl.querySelector('.key-bind'));
                 } else {
-                    triggerNoteOn(index);
+                    playNote(note.offset, currentOctave, elementId);
                 }
             };
 
             keyEl.addEventListener('mousedown', handleInteract);
             keyEl.addEventListener('touchstart', (e) => { e.preventDefault(); handleInteract(e); });
 
-            keyEl.addEventListener('mouseup', () => { if (!isRemappingMode) triggerNoteOff(index); });
-            keyEl.addEventListener('mouseleave', () => { if (!isRemappingMode) triggerNoteOff(index); });
-            keyEl.addEventListener('touchend', (e) => { e.preventDefault(); if (!isRemappingMode) triggerNoteOff(index); });
-            keyEl.addEventListener('touchcancel', (e) => { e.preventDefault(); if (!isRemappingMode) triggerNoteOff(index); });
+            keyEl.addEventListener('mouseup', () => { if (!isRemappingMode) stopNote(elementId); });
+            keyEl.addEventListener('mouseleave', () => { if (!isRemappingMode) stopNote(elementId); });
+            keyEl.addEventListener('touchend', (e) => { e.preventDefault(); if (!isRemappingMode) stopNote(elementId); });
+            keyEl.addEventListener('touchcancel', (e) => { e.preventDefault(); if (!isRemappingMode) stopNote(elementId); });
 
             if (!note.isBlack) {
                 currentWrapper = document.createElement('div');
@@ -458,18 +649,80 @@
             }
         });
 
-        // --- Audio Engine ---
+        // --- Build Heartopia UI ---
+        htpLayout.forEach(row => {
+            const rowEl = document.createElement('div');
+            rowEl.className = 'flex justify-center gap-2 relative';
+
+            let lastWhiteWrapper = null;
+
+            row.keys.forEach(key => {
+                const elementId = `htp-key-${row.octave}-${key.offset}`;
+                heartopiaBindsMap[key.code] = { octave: row.octave, offset: key.offset, elementId: elementId };
+
+                if (key.type === 'white') {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = `relative flex-none ${key.gap ? 'ml-8' : ''}`;
+
+                    const dotHtml = row.dot === 'top' ? '<div class="absolute w-1.5 h-1.5 bg-[#444] rounded-full top-[5px]"></div>' :
+                                    row.dot === 'bottom' ? '<div class="absolute w-1.5 h-1.5 bg-[#444] rounded-full bottom-[22px]"></div>' : '';
+
+                    let tagLabel = key.overrideLabel || key.bindLabel;
+
+                    wrapper.innerHTML = `
+                        <div id="${elementId}" class="htp-white">
+                            ${dotHtml}
+                            <div class="htp-white-num ${row.dot === 'top' ? 'mt-1' : ''}">${key.num}</div>
+                            <div class="htp-white-sol">${key.solfege}</div>
+                            <div class="htp-bind-tag">${tagLabel}</div>
+                        </div>
+                    `;
+
+                    const keyEl = wrapper.querySelector('.htp-white');
+                    const handleInteract = (e) => { playNote(key.offset, row.octave, elementId); };
+
+                    keyEl.addEventListener('mousedown', handleInteract);
+                    keyEl.addEventListener('touchstart', (e) => { e.preventDefault(); handleInteract(e); });
+                    keyEl.addEventListener('mouseup', () => { stopNote(elementId); });
+                    keyEl.addEventListener('mouseleave', () => { stopNote(elementId); });
+                    keyEl.addEventListener('touchend', (e) => { e.preventDefault(); stopNote(elementId); });
+                    keyEl.addEventListener('touchcancel', (e) => { e.preventDefault(); stopNote(elementId); });
+
+                    rowEl.appendChild(wrapper);
+                    lastWhiteWrapper = wrapper;
+                } else if (key.type === 'black') {
+                    const blackHtml = `
+                        <div id="${elementId}" class="htp-black">
+                            ${key.bindLabel}
+                        </div>
+                    `;
+                    if (lastWhiteWrapper) {
+                        lastWhiteWrapper.insertAdjacentHTML('beforeend', blackHtml);
+                        const keyEl = lastWhiteWrapper.querySelector('.htp-black');
+                        const handleInteract = (e) => { playNote(key.offset, row.octave, elementId); };
+
+                        keyEl.addEventListener('mousedown', handleInteract);
+                        keyEl.addEventListener('touchstart', (e) => { e.preventDefault(); handleInteract(e); });
+                        keyEl.addEventListener('mouseup', () => { stopNote(elementId); });
+                        keyEl.addEventListener('mouseleave', () => { stopNote(elementId); });
+                        keyEl.addEventListener('touchend', (e) => { e.preventDefault(); stopNote(elementId); });
+                        keyEl.addEventListener('touchcancel', (e) => { e.preventDefault(); stopNote(elementId); });
+                    }
+                }
+            });
+            htpContainer.appendChild(rowEl);
+        });
+
+        // --- Core Audio Engine ---
         function initAudio() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-                // Set up Master Volume Node
                 masterGainNode = audioCtx.createGain();
                 const volSlider = document.getElementById('master-volume');
                 masterGainNode.gain.value = volSlider.value;
                 masterGainNode.connect(audioCtx.destination);
 
-                // Listen to slider changes
                 volSlider.addEventListener('input', (e) => {
                     if (masterGainNode) {
                         masterGainNode.gain.setValueAtTime(e.target.value, audioCtx.currentTime);
@@ -479,12 +732,11 @@
             if (audioCtx.state === 'suspended') audioCtx.resume();
         }
 
-        // Repitches and buffers the raw PCM data of a specific Soundfont chunk
         function loadSf2Buffer(sampleInfo) {
             initAudio();
             try {
                 const numSamples = sampleInfo.end - sampleInfo.start;
-                if (numSamples <= 0 || numSamples > 50000000) return null; // Safe parsing check
+                if (numSamples <= 0 || numSamples > 50000000) return null;
 
                 let sr = sampleInfo.sampleRate || 44100;
                 if (sr < 8000) sr = 8000;
@@ -494,46 +746,38 @@
                 const channelData = buffer.getChannelData(0);
                 const dv = new DataView(sf2Data.buffer);
 
-                // Words to Bytes offset
                 let byteOffset = sf2Data.smplOffset + (sampleInfo.start * 2);
 
                 for (let i = 0; i < numSamples; i++) {
-                    channelData[i] = dv.getInt16(byteOffset, true) / 32768.0; // 16bit signed to float
+                    channelData[i] = dv.getInt16(byteOffset, true) / 32768.0;
                     byteOffset += 2;
                 }
                 return buffer;
             } catch(e) {
-                console.error("Buffer creation failed", e);
                 return null;
             }
         }
 
-        function triggerNoteOn(index) {
+        function playNote(offset, octave, elementId) {
             initAudio();
-            if (activeNodes[index]) return;
+            if (activeNodes[elementId]) return;
 
-            const noteData = notes[index];
-            const midiNote = 12 * (currentOctave + 1) + noteData.offset; // C4 is MIDI 60
+            const midiNote = 12 * (octave + 1) + offset;
             const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
-
             const instrumentMode = synthSelect.value;
 
             if (instrumentMode.startsWith('sf2_')) {
-                // --- Real SF2 Sample Playback with Envelopes & Velocity Mapping ---
+                // SF2 Synth
                 const sfIndex = parseInt(instrumentMode.split('_')[1]);
                 const preset = sf2Data.presets[sfIndex];
 
-                // Match key range AND a fixed standard velocity (100) to avoid playing soft/hard dynamics simultaneously
                 const velocity = 100;
                 let matchedZones = preset.zones.filter(z =>
                     midiNote >= z.keyRange.low && midiNote <= z.keyRange.high &&
                     velocity >= z.velRange.low && velocity <= z.velRange.high
                 );
 
-                // Fallbacks if strictly filtered ranges are missing
-                if (matchedZones.length === 0) {
-                    matchedZones = preset.zones.filter(z => midiNote >= z.keyRange.low && midiNote <= z.keyRange.high);
-                }
+                if (matchedZones.length === 0) matchedZones = preset.zones.filter(z => midiNote >= z.keyRange.low && midiNote <= z.keyRange.high);
                 if (matchedZones.length === 0 && preset.zones.length > 0) matchedZones = [preset.zones[0]];
 
                 const sources = [];
@@ -559,14 +803,12 @@
                         source.buffer = buffer;
                         source.playbackRate.value = playbackRate;
 
-                        // Apply Looping if specified in SF2
                         if ((zone.sampleModes & 1) === 1 || (zone.sampleModes & 3) === 3) {
                             source.loop = true;
                             source.loopStart = Math.max(0, (zone.sample.startLoop - zone.sample.start) / zone.sample.sampleRate);
                             source.loopEnd = Math.max(0, (zone.sample.endLoop - zone.sample.start) / zone.sample.sampleRate);
                         }
 
-                        // Soundfont ADSR Envelope Calculation
                         let dly = timecentsToSecs(zone.volEnv.delay);
                         let atk = timecentsToSecs(zone.volEnv.attack);
                         let hld = timecentsToSecs(zone.volEnv.hold);
@@ -575,20 +817,16 @@
                         let susGain = 1.0;
                         if (zone.volEnv.sustain > 0) {
                             let attenuationDB = zone.volEnv.sustain / 10;
-                            susGain = Math.max(0.001, Math.pow(10, -attenuationDB / 20)); // Centibels to Gain
+                            susGain = Math.max(0.001, Math.pow(10, -attenuationDB / 20));
                         }
 
-                        // Attenuate slightly to prevent clipping if stereo/layers stack
                         let baseGain = 1.0 / Math.max(1, matchedZones.length);
                         let now = audioCtx.currentTime;
 
-                        // Apply the exact Volume Envelope
                         gainNode.gain.setValueAtTime(0, now);
                         if (dly > 0.002) gainNode.gain.setValueAtTime(0, now + dly);
                         gainNode.gain.linearRampToValueAtTime(baseGain, now + dly + atk);
                         if (hld > 0.002) gainNode.gain.setValueAtTime(baseGain, now + dly + atk + hld);
-
-                        // Decay towards sustain level naturally
                         gainNode.gain.exponentialRampToValueAtTime(Math.max(0.001, baseGain * susGain), now + dly + atk + hld + dec);
 
                         source.connect(gainNode);
@@ -601,11 +839,11 @@
                 });
 
                 if (sources.length > 0) {
-                    activeNodes[index] = { sources, gainNodes, zones: matchedZones, mode: 'sf2' };
+                    activeNodes[elementId] = { sources, gainNodes, zones: matchedZones, mode: 'sf2' };
                 }
 
             } else {
-                // --- Default Magical Synthesizer Playback ---
+                // Procedural Synth
                 const gainNode = audioCtx.createGain();
                 const osc1 = audioCtx.createOscillator();
                 const osc2 = audioCtx.createOscillator();
@@ -650,18 +888,18 @@
                 filterNode.connect(gainNode); gainNode.connect(masterGainNode);
                 osc1.start(); osc2.start();
 
-                activeNodes[index] = { osc1, osc2, gainNode, mode: instrumentMode };
+                activeNodes[elementId] = { osc1, osc2, gainNode, mode: instrumentMode };
             }
 
             // Visuals
-            const keyEl = pianoContainer.querySelector(`.piano-key[data-index="${index}"]`);
+            const keyEl = document.getElementById(elementId);
             if (keyEl) keyEl.classList.add('active');
         }
 
-        function triggerNoteOff(index) {
-            if (!activeNodes[index]) return;
+        function stopNote(elementId) {
+            if (!activeNodes[elementId]) return;
 
-            const node = activeNodes[index];
+            const node = activeNodes[elementId];
             const mode = node.mode;
 
             if (mode === 'sf2') {
@@ -673,7 +911,6 @@
                     let source = sources[i];
                     let zone = zones[i];
 
-                    // Enforce a minimum release of 1.5s (or much longer if extended) so notes ring out and blend smoothly
                     let rel = timecentsToSecs(zone.volEnv.release);
                     rel = Math.max(rel, isSustainEnabled ? 5.0 : 1.5);
 
@@ -684,7 +921,6 @@
                 }
             } else {
                 const { osc1, osc2, gainNode } = node;
-                // Extended release for default instruments to prevent choppiness
                 let baseRelease = (mode === 'crystal') ? 2.5 : (mode === 'brass' ? 1.5 : 1.5);
                 let releaseTime = isSustainEnabled ? baseRelease * 3 : baseRelease;
 
@@ -695,16 +931,16 @@
                 osc2.stop(audioCtx.currentTime + releaseTime);
             }
 
-            delete activeNodes[index];
+            delete activeNodes[elementId];
 
             // Visuals
-            const keyEl = pianoContainer.querySelector(`.piano-key[data-index="${index}"]`);
+            const keyEl = document.getElementById(elementId);
             if (keyEl) keyEl.classList.remove('active');
         }
 
         // --- Controls ---
         function updateAllKeyLabels() {
-            document.querySelectorAll('.key-bind').forEach(el => {
+            document.querySelectorAll('#gw2-view .key-bind').forEach(el => {
                 let index = parseInt(el.dataset.index);
                 if (!isNaN(index)) {
                     el.textContent = getFormattedBindString(bindings.notes[index], currentOctave);
@@ -786,52 +1022,72 @@
             showMessage(isSustainEnabled ? "Sustain engaged: Notes will resonate." : "Sustain disengaged.");
         });
 
-        // --- Keyboard Mapping ---
+        // --- Keyboard Listener Routing ---
         window.addEventListener('keydown', (e) => {
             if (e.repeat) return;
-
-            // Prevent default browser actions for Function keys (Help, Refresh, etc.)
             if (/^F\d+$/.test(e.code)) e.preventDefault();
 
-            if (activeRebind) {
-                e.preventDefault();
-                e.stopPropagation();
+            // Route to GW2 Logic
+            if (currentViewMode === 'gw2') {
+                if (activeRebind) {
+                    e.preventDefault(); e.stopPropagation();
+                    const code = e.code;
+                    if (code === 'Escape') { cancelRebind(); showMessage("Binding cancelled."); return; }
 
-                const code = e.code;
-                if (code === 'Escape') {
-                    cancelRebind();
-                    showMessage("Binding cancelled.");
-                    return;
+                    if (activeRebind.type === 'note') {
+                        bindings.notes[activeRebind.index] = code;
+                        activeRebind.el.innerHTML = getFormattedBindString(code, currentOctave);
+                    }
+                    else if (activeRebind.type === 'octaveDown') {
+                        bindings.octaveDown = code;
+                        activeRebind.el.innerHTML = `[ ${formatKey(code)} ] Octave -`;
+                    }
+                    else if (activeRebind.type === 'octaveUp') {
+                        bindings.octaveUp = code;
+                        activeRebind.el.innerHTML = `[ ${formatKey(code)} ] Octave +`;
+                    }
+
+                    saveBinds(); // Cache to local storage
+
+                    showMessage(`Key bound to ${formatKey(code)}.`);
+                    activeRebind = null; return;
                 }
 
-                if (activeRebind.type === 'note') {
-                    bindings.notes[activeRebind.index] = code;
-                    activeRebind.el.innerHTML = getFormattedBindString(code, currentOctave);
-                }
-                else if (activeRebind.type === 'octaveDown') {
-                    bindings.octaveDown = code;
-                    activeRebind.el.innerHTML = `[ ${formatKey(code)} ] Octave -`;
-                }
-                else if (activeRebind.type === 'octaveUp') {
-                    bindings.octaveUp = code;
-                    activeRebind.el.innerHTML = `[ ${formatKey(code)} ] Octave +`;
-                }
+                if (e.code === bindings.octaveDown) {
+                    updateOctave(-1);
+                    btnOctDown.classList.add('active'); setTimeout(() => btnOctDown.classList.remove('active'), 100);
+                } else if (e.code === bindings.octaveUp) {
+                    updateOctave(1);
+                    btnOctUp.classList.add('active'); setTimeout(() => btnOctUp.classList.remove('active'), 100);
+                } else {
+                    let noteIndex = bindings.notes.indexOf(e.code);
+                    let fallbackIndex = -1;
+                    const defaultDigitMap = {
+                        'Numpad1': 0, 'Numpad2': 2, 'Numpad3': 4, 'Numpad4': 5,
+                        'Numpad5': 7, 'Numpad6': 9, 'Numpad7': 11, 'Numpad8': 12
+                    };
+                    if (defaultDigitMap[e.code] !== undefined) {
+                        let mappedIndex = defaultDigitMap[e.code];
+                        let digitCode = 'Digit' + e.code.slice(6);
+                        if (bindings.notes[mappedIndex] === digitCode) fallbackIndex = mappedIndex;
+                    }
 
-                showMessage(`Key bound to ${formatKey(code)}.`);
-                activeRebind = null;
-                return;
+                    if (noteIndex !== -1) playNote(notes[noteIndex].offset, currentOctave, `gw2-key-${noteIndex}`);
+                    else if (fallbackIndex !== -1) playNote(notes[fallbackIndex].offset, currentOctave, `gw2-key-${fallbackIndex}`);
+                }
             }
+            // Route to Heartopia Logic
+            else if (currentViewMode === 'heartopia') {
+                const htpBind = heartopiaBindsMap[e.code];
+                if (htpBind) playNote(htpBind.offset, htpBind.octave, htpBind.elementId);
+            }
+        });
 
-            if (e.code === bindings.octaveDown) {
-                updateOctave(-1);
-                btnOctDown.classList.add('active'); setTimeout(() => btnOctDown.classList.remove('active'), 100);
-            } else if (e.code === bindings.octaveUp) {
-                updateOctave(1);
-                btnOctUp.classList.add('active'); setTimeout(() => btnOctUp.classList.remove('active'), 100);
-            } else {
+        window.addEventListener('keyup', (e) => {
+            if (activeRebind) return;
+
+            if (currentViewMode === 'gw2') {
                 let noteIndex = bindings.notes.indexOf(e.code);
-
-                // Fallback for Numpad if standard digits are bound
                 let fallbackIndex = -1;
                 const defaultDigitMap = {
                     'Numpad1': 0, 'Numpad2': 2, 'Numpad3': 4, 'Numpad4': 5,
@@ -840,35 +1096,16 @@
                 if (defaultDigitMap[e.code] !== undefined) {
                     let mappedIndex = defaultDigitMap[e.code];
                     let digitCode = 'Digit' + e.code.slice(6);
-                    if (bindings.notes[mappedIndex] === digitCode) {
-                        fallbackIndex = mappedIndex;
-                    }
+                    if (bindings.notes[mappedIndex] === digitCode) fallbackIndex = mappedIndex;
                 }
 
-                if (noteIndex !== -1) triggerNoteOn(noteIndex);
-                else if (fallbackIndex !== -1) triggerNoteOn(fallbackIndex);
+                if (noteIndex !== -1) stopNote(`gw2-key-${noteIndex}`);
+                else if (fallbackIndex !== -1) stopNote(`gw2-key-${fallbackIndex}`);
             }
-        });
-
-        window.addEventListener('keyup', (e) => {
-            if (activeRebind) return;
-
-            let noteIndex = bindings.notes.indexOf(e.code);
-            let fallbackIndex = -1;
-            const defaultDigitMap = {
-                'Numpad1': 0, 'Numpad2': 2, 'Numpad3': 4, 'Numpad4': 5,
-                'Numpad5': 7, 'Numpad6': 9, 'Numpad7': 11, 'Numpad8': 12
-            };
-            if (defaultDigitMap[e.code] !== undefined) {
-                let mappedIndex = defaultDigitMap[e.code];
-                let digitCode = 'Digit' + e.code.slice(6);
-                if (bindings.notes[mappedIndex] === digitCode) {
-                    fallbackIndex = mappedIndex;
-                }
+            else if (currentViewMode === 'heartopia') {
+                const htpBind = heartopiaBindsMap[e.code];
+                if (htpBind) stopNote(htpBind.elementId);
             }
-
-            if (noteIndex !== -1) triggerNoteOff(noteIndex);
-            else if (fallbackIndex !== -1) triggerNoteOff(fallbackIndex);
         });
 
         function showMessage(msg) {
@@ -913,7 +1150,7 @@
                         let s = '';
                         for(let i=0; i<len; i++) {
                             let c = dv.getUint8(off + i);
-                            if (c === 0) break; // Null terminated
+                            if (c === 0) break;
                             if (c >= 32 && c <= 126) s += String.fromCharCode(c);
                         }
                         return s.trim();
@@ -927,18 +1164,17 @@
 
                     let pdtaChunks = {};
 
-                    // Pass 1: Find major chunks
                     while (offset < arrayBuffer.byteLength - 8) {
                         let chunkId = readStr(4);
                         let chunkSize = dv.getUint32(offset, true); offset += 4;
 
                         if (chunkId === 'RIFF' || chunkId === 'LIST') {
-                            readStr(4); // Skip sub-type id
+                            readStr(4);
                             continue;
                         }
 
                         let nextOffset = offset + chunkSize;
-                        if (chunkSize % 2 !== 0) nextOffset++; // 2-byte alignment padding
+                        if (chunkSize % 2 !== 0) nextOffset++;
 
                         if (chunkId === 'smpl') {
                             sf2Data.smplOffset = offset;
@@ -946,15 +1182,12 @@
                         } else if (['phdr', 'pbag', 'pgen', 'inst', 'ibag', 'igen', 'shdr'].includes(chunkId)) {
                             pdtaChunks[chunkId] = { offset, size: chunkSize };
                         }
-
                         offset = nextOffset;
                     }
 
-                    // Pass 2: Reconstruct Instrument Presets
                     if (pdtaChunks.phdr && pdtaChunks.shdr && sf2Data.smplSize > 0) {
                         let shdr = [], igen = [], ibag = [], inst = [], pgen = [], pbag = [], phdr = [];
 
-                        // Parse Samples
                         let o = pdtaChunks.shdr.offset, end = o + pdtaChunks.shdr.size;
                         while(o < end) {
                             shdr.push({
@@ -965,7 +1198,6 @@
                             }); o += 46;
                         }
 
-                        // Parse Generators and Bags
                         o = pdtaChunks.igen.offset; end = o + pdtaChunks.igen.size;
                         while(o < end) { igen.push({ oper: dv.getUint16(o, true), amount: dv.getUint16(o+2, true), amountInt: dv.getInt16(o+2, true) }); o += 4; }
 
@@ -987,7 +1219,6 @@
                             o += 38;
                         }
 
-                        // Build Preset -> Instrument -> Zone Mapping
                         for (let i = 0; i < phdr.length - 1; i++) {
                             let preset = phdr[i];
                             if (preset.name === 'EOP') continue;
@@ -999,24 +1230,17 @@
                                 for (let k = pbag[j].genNdx; k < pGenEnd; k++) if (pgen[k].oper === 41) instId = pgen[k].amount;
 
                                 if (instId >= 0 && instId < inst.length - 1) {
-
-                                    // Instrument Global Zone defaults
                                     let globalInstZone = {
-                                        tuneCents: 0,
-                                        velRange: { low: 0, high: 127 },
-                                        sampleModes: 0,
+                                        tuneCents: 0, velRange: { low: 0, high: 127 }, sampleModes: 0,
                                         volEnv: { delay: -12000, attack: -12000, hold: -12000, decay: -12000, sustain: 0, release: -12000 }
                                     };
 
                                     for (let z = inst[instId].ibagNdx; z < inst[instId+1].ibagNdx; z++) {
                                         let iGenEnd = ibag[z+1] ? ibag[z+1].genNdx : igen.length;
 
-                                        // Inherit parameters from the Global Zone
                                         let zoneData = {
-                                            keyRange: { low: 0, high: 127 },
-                                            velRange: { ...globalInstZone.velRange },
-                                            tuneCents: globalInstZone.tuneCents,
-                                            sampleModes: globalInstZone.sampleModes,
+                                            keyRange: { low: 0, high: 127 }, velRange: { ...globalInstZone.velRange },
+                                            tuneCents: globalInstZone.tuneCents, sampleModes: globalInstZone.sampleModes,
                                             volEnv: { ...globalInstZone.volEnv }
                                         };
                                         let sampleId = -1;
@@ -1030,8 +1254,6 @@
                                             else if (gen.oper === 51) zoneData.tuneCents += gen.amountInt * 100;
                                             else if (gen.oper === 52) zoneData.tuneCents += gen.amountInt;
                                             else if (gen.oper === 54) zoneData.sampleModes = gen.amount;
-
-                                            // Volume Envelope Modulators
                                             else if (gen.oper === 33) zoneData.volEnv.delay = gen.amountInt;
                                             else if (gen.oper === 34) zoneData.volEnv.attack = gen.amountInt;
                                             else if (gen.oper === 35) zoneData.volEnv.hold = gen.amountInt;
@@ -1041,7 +1263,7 @@
                                         }
 
                                         if (sampleId === -1 && z === inst[instId].ibagNdx) {
-                                            globalInstZone = zoneData; // Save global zone to apply to subsequent local zones
+                                            globalInstZone = zoneData;
                                         } else if (sampleId >= 0 && sampleId < shdr.length) {
                                             zoneData.sample = shdr[sampleId];
                                             presetZones.push(zoneData);
@@ -1049,14 +1271,10 @@
                                     }
                                 }
                             }
-
-                            if (presetZones.length > 0) {
-                                sf2Data.presets.push({ name: preset.name, bank: preset.bank, presetId: preset.preset, zones: presetZones });
-                            }
+                            if (presetZones.length > 0) sf2Data.presets.push({ name: preset.name, bank: preset.bank, presetId: preset.preset, zones: presetZones });
                         }
                     }
 
-                    // Inject newly built Presets into UI
                     if (sf2Data.presets.length > 0) {
                         let optgroup = document.getElementById('sf2-optgroup');
                         if (!optgroup) {
@@ -1077,17 +1295,15 @@
 
                         synthSelect.value = 'sf2_0';
                         btnUnloadSf2.classList.remove('hidden');
-                        showMessage(`Success! Reconstructed ${sf2Data.presets.length} Presets from ${file.name}.`);
+                        showMessage(`Success! Reconstructed ${sf2Data.presets.length} Presets.`);
                     } else {
-                        showMessage(`Could not read valid instrument presets from ${file.name}.`);
+                        showMessage(`Could not read valid instrument presets.`);
                     }
 
                 } catch (e) {
-                    console.error(e);
                     showMessage(`Error parsing Soundfont file.`);
                 }
             };
-
             reader.readAsArrayBuffer(file);
         });
 
