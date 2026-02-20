@@ -131,6 +131,9 @@
             .piano-key { width: 40px; height: 180px; }
             .key-note { font-size: 1rem !important; }
             .key-bind { font-size: 0.7rem !important; }
+            .black-key { width: 26px; height: 110px; }
+            .black-key .key-note { font-size: 0.8rem !important; }
+            .black-key .key-bind { font-size: 0.55rem !important; padding: 0 2px; }
         }
 
         .piano-key::before {
@@ -151,6 +154,28 @@
             border-color: var(--gw2-gold);
         }
 
+        .black-key {
+            width: 44px;
+            height: 140px;
+            background: linear-gradient(to bottom, #2a2420, #0a0808);
+            border-color: #1a1512;
+            right: -2px;
+            transform: translateX(50%);
+        }
+
+        .black-key::before {
+            background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent);
+        }
+
+        .black-key.active {
+            transform: translateX(50%) translateY(4px) scale(0.98);
+            background: linear-gradient(to bottom, #5a1515, #8a2a2a);
+            box-shadow: inset -1px -1px 3px rgba(255,255,255,0.2), 
+                        inset 2px 4px 8px rgba(0,0,0,0.6), 
+                        0 0 15px #ff0000;
+            border-color: var(--gw2-red);
+        }
+
         .key-note {
             font-family: 'Cinzel', serif;
             font-weight: 700;
@@ -169,6 +194,20 @@
 
         .piano-key.active .key-note, .piano-key.active .key-bind {
             color: #5a1e00;
+        }
+
+        .piano-key.black-key.active .key-note, .piano-key.black-key.active .key-bind {
+            color: #ffe0b2;
+        }
+        
+        .black-key .key-note {
+            color: #d4af37;
+            text-shadow: 1px 1px 2px black;
+            font-size: 1.2rem;
+        }
+
+        .black-key .key-bind {
+            color: #a39581;
         }
 
         .status-text {
@@ -289,14 +328,19 @@
     <script>
         // --- Configuration & State ---
         const notes = [
-            { name: 'C', offset: 0 },
-            { name: 'D', offset: 2 },
-            { name: 'E', offset: 4 },
-            { name: 'F', offset: 5 },
-            { name: 'G', offset: 7 },
-            { name: 'A', offset: 9 },
-            { name: 'B', offset: 11 },
-            { name: 'C', offset: 12 } // Next octave's C
+            { name: 'C', offset: 0, isBlack: false },
+            { name: 'C#', offset: 1, isBlack: true },
+            { name: 'D', offset: 2, isBlack: false },
+            { name: 'D#', offset: 3, isBlack: true },
+            { name: 'E', offset: 4, isBlack: false },
+            { name: 'F', offset: 5, isBlack: false },
+            { name: 'F#', offset: 6, isBlack: true },
+            { name: 'G', offset: 7, isBlack: false },
+            { name: 'G#', offset: 8, isBlack: true },
+            { name: 'A', offset: 9, isBlack: false },
+            { name: 'A#', offset: 10, isBlack: true },
+            { name: 'B', offset: 11, isBlack: false },
+            { name: 'C', offset: 12, isBlack: false }
         ];
 
         let currentOctave = 4; // Mid
@@ -307,7 +351,7 @@
         
         // --- Keybindings ---
         let bindings = {
-            notes: ['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8'],
+            notes: ['Digit1', 'F1', 'Digit2', 'F2', 'Digit3', 'Digit4', 'F4', 'Digit5', 'F5', 'Digit6', 'F6', 'Digit7', 'Digit8'],
             octaveDown: 'KeyQ',
             octaveUp: 'KeyE'
         };
@@ -368,13 +412,16 @@
         const helperText = document.getElementById('helper-text');
 
         // --- Key Generation ---
+        let currentWrapper = null;
+        
         notes.forEach((note, index) => {
             const keyEl = document.createElement('div');
-            keyEl.className = 'piano-key';
+            keyEl.className = `piano-key ${note.isBlack ? 'black-key absolute top-0 z-10' : 'relative'}`;
             keyEl.dataset.index = index;
+            
             keyEl.innerHTML = `
                 <div class="key-note pointer-events-none">${note.name}</div>
-                <div class="key-bind pointer-events-none text-[#5a4b3c] transition-colors mt-1" data-index="${index}">[ ${formatKey(bindings.notes[index])} ]</div>
+                <div class="key-bind pointer-events-none transition-colors mt-1" data-index="${index}">[ ${formatKey(bindings.notes[index])} ]</div>
             `;
             
             const handleInteract = (e) => {
@@ -393,7 +440,14 @@
             keyEl.addEventListener('touchend', (e) => { e.preventDefault(); if (!isRemappingMode) triggerNoteOff(index); });
             keyEl.addEventListener('touchcancel', (e) => { e.preventDefault(); if (!isRemappingMode) triggerNoteOff(index); });
 
-            pianoContainer.appendChild(keyEl);
+            if (!note.isBlack) {
+                currentWrapper = document.createElement('div');
+                currentWrapper.className = 'relative flex-none';
+                currentWrapper.appendChild(keyEl);
+                pianoContainer.appendChild(currentWrapper);
+            } else if (currentWrapper) {
+                currentWrapper.appendChild(keyEl);
+            }
         });
 
         // --- Audio Engine ---
@@ -592,7 +646,7 @@
             }
 
             // Visuals
-            const keyEl = pianoContainer.children[index];
+            const keyEl = pianoContainer.querySelector(`.piano-key[data-index="${index}"]`);
             if (keyEl) keyEl.classList.add('active');
         }
 
@@ -636,7 +690,7 @@
             delete activeNodes[index];
 
             // Visuals
-            const keyEl = pianoContainer.children[index];
+            const keyEl = pianoContainer.querySelector(`.piano-key[data-index="${index}"]`);
             if (keyEl) keyEl.classList.remove('active');
         }
 
@@ -718,6 +772,9 @@
         window.addEventListener('keydown', (e) => {
             if (e.repeat) return; 
             
+            // Prevent default browser actions for Function keys (Help, Refresh, etc.)
+            if (/^F\d+$/.test(e.code)) e.preventDefault();
+            
             if (activeRebind) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -758,10 +815,15 @@
                 
                 // Fallback for Numpad if standard digits are bound
                 let fallbackIndex = -1;
-                if (e.code.startsWith('Numpad') && e.code.length === 7) {
-                    let num = parseInt(e.code.slice(6));
-                    if (num >= 1 && num <= 8 && bindings.notes[num-1] === `Digit${num}`) {
-                        fallbackIndex = num - 1;
+                const defaultDigitMap = {
+                    'Numpad1': 0, 'Numpad2': 2, 'Numpad3': 4, 'Numpad4': 5, 
+                    'Numpad5': 7, 'Numpad6': 9, 'Numpad7': 11, 'Numpad8': 12
+                };
+                if (defaultDigitMap[e.code] !== undefined) {
+                    let mappedIndex = defaultDigitMap[e.code];
+                    let digitCode = 'Digit' + e.code.slice(6);
+                    if (bindings.notes[mappedIndex] === digitCode) {
+                        fallbackIndex = mappedIndex;
                     }
                 }
 
@@ -775,10 +837,15 @@
             
             let noteIndex = bindings.notes.indexOf(e.code);
             let fallbackIndex = -1;
-            if (e.code.startsWith('Numpad') && e.code.length === 7) {
-                let num = parseInt(e.code.slice(6));
-                if (num >= 1 && num <= 8 && bindings.notes[num-1] === `Digit${num}`) {
-                    fallbackIndex = num - 1;
+            const defaultDigitMap = {
+                'Numpad1': 0, 'Numpad2': 2, 'Numpad3': 4, 'Numpad4': 5, 
+                'Numpad5': 7, 'Numpad6': 9, 'Numpad7': 11, 'Numpad8': 12
+            };
+            if (defaultDigitMap[e.code] !== undefined) {
+                let mappedIndex = defaultDigitMap[e.code];
+                let digitCode = 'Digit' + e.code.slice(6);
+                if (bindings.notes[mappedIndex] === digitCode) {
+                    fallbackIndex = mappedIndex;
                 }
             }
 
