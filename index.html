@@ -6,7 +6,7 @@
     <title>Sarya's Play Thingy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
-    
+
     <style>
         :root {
             --gw2-red-dark: #3a0e0e;
@@ -19,7 +19,7 @@
 
         body {
             background-color: var(--gw2-bg);
-            background-image: 
+            background-image:
                 radial-gradient(circle at 50% 50%, #3a2e2a 0%, #1a1818 100%),
                 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" opacity="0.03"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4"/></filter><rect width="200" height="200" filter="url(%23n)"/></svg>');
             font-family: 'Cormorant Garamond', serif;
@@ -78,8 +78,8 @@
             background: linear-gradient(to bottom, #fff3e0, #ffb347);
             color: #5a1e00;
             border-color: var(--gw2-gold);
-            box-shadow: inset -1px -1px 3px rgba(255,255,255,0.5), 
-                        inset 2px 4px 8px rgba(0,0,0,0.3), 
+            box-shadow: inset -1px -1px 3px rgba(255,255,255,0.5),
+                        inset 2px 4px 8px rgba(0,0,0,0.3),
                         0 0 15px #ff8c00;
         }
 
@@ -91,7 +91,7 @@
             max-width: 280px;
             text-overflow: ellipsis;
         }
-        
+
         .gw2-select option, .gw2-select optgroup {
             background: #181514;
             color: var(--gw2-parchment);
@@ -114,8 +114,8 @@
             background: linear-gradient(to bottom, #d9d0c1, #a39581);
             border: 1px solid #4a3e31;
             border-radius: 2px 2px 8px 8px;
-            box-shadow: inset -2px -2px 5px rgba(255,255,255,0.3), 
-                        inset 2px 2px 5px rgba(0,0,0,0.1), 
+            box-shadow: inset -2px -2px 5px rgba(255,255,255,0.3),
+                        inset 2px 2px 5px rgba(0,0,0,0.1),
                         3px 5px 10px rgba(0,0,0,0.7);
             position: relative;
             cursor: pointer;
@@ -148,8 +148,8 @@
         .piano-key.active {
             transform: translateY(4px) scale(0.98);
             background: linear-gradient(to bottom, #fff3e0, #ffb347);
-            box-shadow: inset -1px -1px 3px rgba(255,255,255,0.5), 
-                        inset 2px 4px 8px rgba(0,0,0,0.3), 
+            box-shadow: inset -1px -1px 3px rgba(255,255,255,0.5),
+                        inset 2px 4px 8px rgba(0,0,0,0.3),
                         0 0 20px #ff8c00;
             border-color: var(--gw2-gold);
         }
@@ -170,8 +170,8 @@
         .black-key.active {
             transform: translateX(50%) translateY(4px) scale(0.98);
             background: linear-gradient(to bottom, #5a1515, #8a2a2a);
-            box-shadow: inset -1px -1px 3px rgba(255,255,255,0.2), 
-                        inset 2px 4px 8px rgba(0,0,0,0.6), 
+            box-shadow: inset -1px -1px 3px rgba(255,255,255,0.2),
+                        inset 2px 4px 8px rgba(0,0,0,0.6),
                         0 0 15px #ff0000;
             border-color: var(--gw2-red);
         }
@@ -199,7 +199,7 @@
         .piano-key.black-key.active .key-note, .piano-key.black-key.active .key-bind {
             color: #ffe0b2;
         }
-        
+
         .black-key .key-note {
             color: #d4af37;
             text-shadow: 1px 1px 2px black;
@@ -220,22 +220,22 @@
 <body>
 
     <div class="gw2-panel p-6 sm:p-10 rounded-xl flex flex-col items-center max-w-full">
-        
+
         <!-- Header -->
         <div class="text-center mb-6">
             <!-- Logo Integration -->
             <img src="saryamusic2.png" alt="Sarya's Music Thingy" class="mx-auto h-48 sm:h-64 mb-4 object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] rounded-2xl border-2 border-[#3a2e2a]" onerror="this.style.display='none'">
-            
+
             <h1 class="gw2-title text-4xl sm:text-5xl mb-2">Sarya's Music Thingy</h1>
             <p class="status-text text-lg">For exclusive use of everyone.</p>
-            
+
             <!-- Song Tabs / Tomes -->
             <div class="flex justify-center flex-wrap gap-4 mt-5">
                 <a href="https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/edit?tab=t.0" target="_blank" class="text-[#d4af37] hover:text-[#fff3e0] transition-colors font-['Cinzel'] text-sm tracking-widest border border-[#5a4b3c] bg-black/40 px-4 py-1.5 rounded hover:bg-[#3a0e0e]/60 no-underline flex items-center gap-2 shadow-lg hover:border-[#d4af37]">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     Tome of Melodies I
                 </a>
-                
+
                 <a href="https://docs.google.com/document/d/1Z3IU5J_hb1xtaNVnv6UK5Xnz2MwDj_RtrCC46QR1zJU/edit?tab=t.0" target="_blank" class="text-[#d4af37] hover:text-[#fff3e0] transition-colors font-['Cinzel'] text-sm tracking-widest border border-[#5a4b3c] bg-black/40 px-4 py-1.5 rounded hover:bg-[#3a0e0e]/60 no-underline flex items-center gap-2 shadow-lg hover:border-[#d4af37]">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     Tome of Melodies II
@@ -245,7 +245,7 @@
 
         <!-- Controls -->
         <div class="flex flex-col w-full max-w-4xl mb-6 gap-4 px-2 mt-2">
-            
+
             <!-- Instrument Row -->
             <div class="flex justify-center w-full gap-2 items-center">
                 <select id="synth-select" class="gw2-select w-full max-w-xs px-4 py-2 rounded font-bold text-sm tracking-widest cursor-pointer text-center outline-none focus:border-[#d4af37]">
@@ -264,16 +264,16 @@
                 <button id="btn-oct-down" class="gw2-button w-full sm:w-auto px-4 py-2 rounded font-bold text-sm tracking-widest text-center">
                     [ Q ] Octave -
                 </button>
-                
+
                 <div class="bg-black/50 border border-[#5a4b3c] px-4 py-2 rounded text-center w-full sm:w-auto min-w-[140px]">
                     <span class="text-[#d4af37] font-['Cinzel'] font-bold text-lg" id="octave-display">Octave: Mid</span>
                 </div>
-                
+
                 <button id="btn-oct-up" class="gw2-button w-full sm:w-auto px-4 py-2 rounded font-bold text-sm tracking-widest text-center">
                     [ E ] Octave +
                 </button>
             </div>
-            
+
             <div class="flex flex-col sm:flex-row justify-center items-center w-full mt-2 gap-4 sm:gap-8">
                 <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors">
                     <input type="checkbox" id="octave-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer" checked>
@@ -297,7 +297,7 @@
 
         <!-- Advanced Controls -->
         <div class="flex flex-wrap justify-center items-center w-full mt-6 gap-4 sm:gap-6 px-4">
-            
+
             <!-- Master Volume -->
             <div class="flex items-center gap-3 bg-black/40 border border-[#3a2e2a] px-3 py-1.5 rounded-lg shadow-inner">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#8c7355]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -309,12 +309,12 @@
             <button id="btn-edit-binds" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest text-center border border-[#5a4b3c] transition-all">
                 Edit Binds: OFF
             </button>
-            
+
             <label for="sf2-upload" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest cursor-pointer text-center whitespace-nowrap">
                 Load SF2
             </label>
             <input type="file" id="sf2-upload" accept=".sf2" class="hidden">
-            
+
             <button id="btn-unload-sf2" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest text-center hidden whitespace-nowrap">
                 Unload SF2
             </button>
@@ -348,7 +348,7 @@
         let audioCtx;
         let masterGainNode; // Master volume control
         let activeNodes = {}; // Tracks active oscillators per key
-        
+
         // --- Keybindings ---
         let bindings = {
             notes: ['Digit1', 'F1', 'Digit2', 'F2', 'Digit3', 'Digit4', 'F4', 'Digit5', 'F5', 'Digit6', 'F6', 'Digit7', 'Digit8'],
@@ -358,7 +358,7 @@
         let activeRebind = null;
         let isRemappingMode = false;
         let isSustainEnabled = false;
-        
+
         function formatKey(code) {
             if (code.startsWith('Key')) return code.slice(3);
             if (code.startsWith('Digit')) return code.slice(5);
@@ -369,15 +369,23 @@
             return code;
         }
 
+        function getFormattedBindString(code, octave) {
+            let keyStr = code === '?' ? '?' : formatKey(code);
+            if (octave < 4) return `[ ${keyStr} ]`;
+            if (octave > 4) return `( ${keyStr} )`;
+            return keyStr;
+        }
+
         function startRebind(e, type, index, targetEl) {
             e.stopPropagation();
             e.preventDefault();
-            
+
             if (activeRebind) cancelRebind();
 
             let originalText = targetEl.innerHTML;
-            targetEl.innerHTML = '<span class="text-[#ff8c00] animate-pulse">[ ? ]</span>';
-            
+            let placeholder = type === 'note' ? getFormattedBindString('?', currentOctave) : '[ ? ]';
+            targetEl.innerHTML = `<span class="text-[#ff8c00] animate-pulse">${placeholder}</span>`;
+
             activeRebind = { type, index, el: targetEl, originalText };
             showMessage("Press any key to bind...");
         }
@@ -413,17 +421,17 @@
 
         // --- Key Generation ---
         let currentWrapper = null;
-        
+
         notes.forEach((note, index) => {
             const keyEl = document.createElement('div');
             keyEl.className = `piano-key ${note.isBlack ? 'black-key absolute top-0 z-10' : 'relative'}`;
             keyEl.dataset.index = index;
-            
+
             keyEl.innerHTML = `
                 <div class="key-note pointer-events-none">${note.name}</div>
-                <div class="key-bind pointer-events-none transition-colors mt-1" data-index="${index}">[ ${formatKey(bindings.notes[index])} ]</div>
+                <div class="key-bind pointer-events-none transition-colors mt-1" data-index="${index}">${getFormattedBindString(bindings.notes[index], currentOctave)}</div>
             `;
-            
+
             const handleInteract = (e) => {
                 if (isRemappingMode) {
                     startRebind(e, 'note', index, keyEl.querySelector('.key-bind'));
@@ -434,7 +442,7 @@
 
             keyEl.addEventListener('mousedown', handleInteract);
             keyEl.addEventListener('touchstart', (e) => { e.preventDefault(); handleInteract(e); });
-            
+
             keyEl.addEventListener('mouseup', () => { if (!isRemappingMode) triggerNoteOff(index); });
             keyEl.addEventListener('mouseleave', () => { if (!isRemappingMode) triggerNoteOff(index); });
             keyEl.addEventListener('touchend', (e) => { e.preventDefault(); if (!isRemappingMode) triggerNoteOff(index); });
@@ -454,13 +462,13 @@
         function initAudio() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                
+
                 // Set up Master Volume Node
                 masterGainNode = audioCtx.createGain();
                 const volSlider = document.getElementById('master-volume');
                 masterGainNode.gain.value = volSlider.value;
                 masterGainNode.connect(audioCtx.destination);
-                
+
                 // Listen to slider changes
                 volSlider.addEventListener('input', (e) => {
                     if (masterGainNode) {
@@ -477,18 +485,18 @@
             try {
                 const numSamples = sampleInfo.end - sampleInfo.start;
                 if (numSamples <= 0 || numSamples > 50000000) return null; // Safe parsing check
-                
+
                 let sr = sampleInfo.sampleRate || 44100;
                 if (sr < 8000) sr = 8000;
                 if (sr > 96000) sr = 96000;
-                
+
                 const buffer = audioCtx.createBuffer(1, numSamples, sr);
                 const channelData = buffer.getChannelData(0);
                 const dv = new DataView(sf2Data.buffer);
-                
+
                 // Words to Bytes offset
                 let byteOffset = sf2Data.smplOffset + (sampleInfo.start * 2);
-                
+
                 for (let i = 0; i < numSamples; i++) {
                     channelData[i] = dv.getInt16(byteOffset, true) / 32768.0; // 16bit signed to float
                     byteOffset += 2;
@@ -502,32 +510,32 @@
 
         function triggerNoteOn(index) {
             initAudio();
-            if (activeNodes[index]) return; 
+            if (activeNodes[index]) return;
 
             const noteData = notes[index];
             const midiNote = 12 * (currentOctave + 1) + noteData.offset; // C4 is MIDI 60
             const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
-            
+
             const instrumentMode = synthSelect.value;
 
             if (instrumentMode.startsWith('sf2_')) {
                 // --- Real SF2 Sample Playback with Envelopes & Velocity Mapping ---
                 const sfIndex = parseInt(instrumentMode.split('_')[1]);
                 const preset = sf2Data.presets[sfIndex];
-                
+
                 // Match key range AND a fixed standard velocity (100) to avoid playing soft/hard dynamics simultaneously
-                const velocity = 100; 
-                let matchedZones = preset.zones.filter(z => 
+                const velocity = 100;
+                let matchedZones = preset.zones.filter(z =>
                     midiNote >= z.keyRange.low && midiNote <= z.keyRange.high &&
                     velocity >= z.velRange.low && velocity <= z.velRange.high
                 );
-                
+
                 // Fallbacks if strictly filtered ranges are missing
                 if (matchedZones.length === 0) {
                     matchedZones = preset.zones.filter(z => midiNote >= z.keyRange.low && midiNote <= z.keyRange.high);
                 }
                 if (matchedZones.length === 0 && preset.zones.length > 0) matchedZones = [preset.zones[0]];
-                
+
                 const sources = [];
                 const gainNodes = [];
 
@@ -536,42 +544,42 @@
                     if (!sf2Data.bufferCache[cacheKey]) {
                         sf2Data.bufferCache[cacheKey] = loadSf2Buffer(zone.sample);
                     }
-                    
+
                     const buffer = sf2Data.bufferCache[cacheKey];
                     if (buffer) {
                         const gainNode = audioCtx.createGain();
-                        
+
                         let rootPitch = zone.rootKey !== undefined ? zone.rootKey : zone.sample.originalPitch;
-                        if (rootPitch === 255 || rootPitch === 0) rootPitch = 60; 
-                        
+                        if (rootPitch === 255 || rootPitch === 0) rootPitch = 60;
+
                         let centsOffset = zone.tuneCents + (zone.sample.pitchCorrection || 0);
                         const playbackRate = Math.pow(2, (midiNote - rootPitch + (centsOffset / 100)) / 12);
-                        
+
                         const source = audioCtx.createBufferSource();
                         source.buffer = buffer;
                         source.playbackRate.value = playbackRate;
-                        
+
                         // Apply Looping if specified in SF2
                         if ((zone.sampleModes & 1) === 1 || (zone.sampleModes & 3) === 3) {
                             source.loop = true;
                             source.loopStart = Math.max(0, (zone.sample.startLoop - zone.sample.start) / zone.sample.sampleRate);
                             source.loopEnd = Math.max(0, (zone.sample.endLoop - zone.sample.start) / zone.sample.sampleRate);
                         }
-                        
+
                         // Soundfont ADSR Envelope Calculation
                         let dly = timecentsToSecs(zone.volEnv.delay);
                         let atk = timecentsToSecs(zone.volEnv.attack);
                         let hld = timecentsToSecs(zone.volEnv.hold);
                         let dec = timecentsToSecs(zone.volEnv.decay);
-                        
+
                         let susGain = 1.0;
                         if (zone.volEnv.sustain > 0) {
                             let attenuationDB = zone.volEnv.sustain / 10;
                             susGain = Math.max(0.001, Math.pow(10, -attenuationDB / 20)); // Centibels to Gain
                         }
-                        
+
                         // Attenuate slightly to prevent clipping if stereo/layers stack
-                        let baseGain = 1.0 / Math.max(1, matchedZones.length); 
+                        let baseGain = 1.0 / Math.max(1, matchedZones.length);
                         let now = audioCtx.currentTime;
 
                         // Apply the exact Volume Envelope
@@ -579,14 +587,14 @@
                         if (dly > 0.002) gainNode.gain.setValueAtTime(0, now + dly);
                         gainNode.gain.linearRampToValueAtTime(baseGain, now + dly + atk);
                         if (hld > 0.002) gainNode.gain.setValueAtTime(baseGain, now + dly + atk + hld);
-                        
+
                         // Decay towards sustain level naturally
                         gainNode.gain.exponentialRampToValueAtTime(Math.max(0.001, baseGain * susGain), now + dly + atk + hld + dec);
-                        
+
                         source.connect(gainNode);
                         gainNode.connect(masterGainNode);
                         source.start(now + dly);
-                        
+
                         sources.push(source);
                         gainNodes.push(gainNode);
                     }
@@ -630,7 +638,7 @@
                     gainNode.gain.setTargetAtTime(0.4, audioCtx.currentTime + 0.15, 0.2);
                 } else if (instrumentMode === 'crystal') {
                     osc1.type = 'triangle'; osc2.type = 'sine';
-                    osc1.frequency.value = freq; osc2.frequency.value = freq * 2; 
+                    osc1.frequency.value = freq; osc2.frequency.value = freq * 2;
                     filterNode.type = 'bandpass'; filterNode.frequency.setValueAtTime(freq * 2, audioCtx.currentTime);
                     filterNode.Q.value = 5;
                     gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
@@ -659,16 +667,16 @@
             if (mode === 'sf2') {
                 const { sources, gainNodes, zones } = node;
                 let now = audioCtx.currentTime;
-                
+
                 for (let i = 0; i < sources.length; i++) {
                     let gainNode = gainNodes[i];
                     let source = sources[i];
                     let zone = zones[i];
-                    
+
                     // Enforce a minimum release of 1.5s (or much longer if extended) so notes ring out and blend smoothly
                     let rel = timecentsToSecs(zone.volEnv.release);
                     rel = Math.max(rel, isSustainEnabled ? 5.0 : 1.5);
-                    
+
                     gainNode.gain.cancelScheduledValues(now);
                     gainNode.gain.setValueAtTime(gainNode.gain.value, now);
                     gainNode.gain.exponentialRampToValueAtTime(0.001, now + rel);
@@ -695,6 +703,15 @@
         }
 
         // --- Controls ---
+        function updateAllKeyLabels() {
+            document.querySelectorAll('.key-bind').forEach(el => {
+                let index = parseInt(el.dataset.index);
+                if (!isNaN(index)) {
+                    el.textContent = getFormattedBindString(bindings.notes[index], currentOctave);
+                }
+            });
+        }
+
         function updateOctaveDisplay() {
             if (octaveMode === 'restricted') {
                 if (currentOctave === 3) octaveDisplay.textContent = 'Octave: Low';
@@ -703,6 +720,7 @@
             } else {
                 octaveDisplay.textContent = `Octave: ${currentOctave}`;
             }
+            updateAllKeyLabels();
         }
 
         function updateOctave(delta) {
@@ -721,7 +739,7 @@
             if (isRemappingMode) startRebind(e, 'octaveDown', null, btnOctDown);
             else {
                 updateOctave(-1);
-                btnOctDown.classList.add('active'); 
+                btnOctDown.classList.add('active');
                 setTimeout(() => btnOctDown.classList.remove('active'), 100);
             }
         };
@@ -730,7 +748,7 @@
             if (isRemappingMode) startRebind(e, 'octaveUp', null, btnOctUp);
             else {
                 updateOctave(1);
-                btnOctUp.classList.add('active'); 
+                btnOctUp.classList.add('active');
                 setTimeout(() => btnOctUp.classList.remove('active'), 100);
             }
         };
@@ -770,15 +788,15 @@
 
         // --- Keyboard Mapping ---
         window.addEventListener('keydown', (e) => {
-            if (e.repeat) return; 
-            
+            if (e.repeat) return;
+
             // Prevent default browser actions for Function keys (Help, Refresh, etc.)
             if (/^F\d+$/.test(e.code)) e.preventDefault();
-            
+
             if (activeRebind) {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 const code = e.code;
                 if (code === 'Escape') {
                     cancelRebind();
@@ -788,7 +806,7 @@
 
                 if (activeRebind.type === 'note') {
                     bindings.notes[activeRebind.index] = code;
-                    activeRebind.el.innerHTML = `[ ${formatKey(code)} ]`;
+                    activeRebind.el.innerHTML = getFormattedBindString(code, currentOctave);
                 }
                 else if (activeRebind.type === 'octaveDown') {
                     bindings.octaveDown = code;
@@ -798,7 +816,7 @@
                     bindings.octaveUp = code;
                     activeRebind.el.innerHTML = `[ ${formatKey(code)} ] Octave +`;
                 }
-                
+
                 showMessage(`Key bound to ${formatKey(code)}.`);
                 activeRebind = null;
                 return;
@@ -812,11 +830,11 @@
                 btnOctUp.classList.add('active'); setTimeout(() => btnOctUp.classList.remove('active'), 100);
             } else {
                 let noteIndex = bindings.notes.indexOf(e.code);
-                
+
                 // Fallback for Numpad if standard digits are bound
                 let fallbackIndex = -1;
                 const defaultDigitMap = {
-                    'Numpad1': 0, 'Numpad2': 2, 'Numpad3': 4, 'Numpad4': 5, 
+                    'Numpad1': 0, 'Numpad2': 2, 'Numpad3': 4, 'Numpad4': 5,
                     'Numpad5': 7, 'Numpad6': 9, 'Numpad7': 11, 'Numpad8': 12
                 };
                 if (defaultDigitMap[e.code] !== undefined) {
@@ -834,11 +852,11 @@
 
         window.addEventListener('keyup', (e) => {
             if (activeRebind) return;
-            
+
             let noteIndex = bindings.notes.indexOf(e.code);
             let fallbackIndex = -1;
             const defaultDigitMap = {
-                'Numpad1': 0, 'Numpad2': 2, 'Numpad3': 4, 'Numpad4': 5, 
+                'Numpad1': 0, 'Numpad2': 2, 'Numpad3': 4, 'Numpad4': 5,
                 'Numpad5': 7, 'Numpad6': 9, 'Numpad7': 11, 'Numpad8': 12
             };
             if (defaultDigitMap[e.code] !== undefined) {
@@ -867,11 +885,11 @@
         btnUnloadSf2.addEventListener('click', () => {
             const optgroup = document.getElementById('sf2-optgroup');
             if (optgroup) optgroup.remove();
-            
+
             synthSelect.value = 'lute';
             sf2Data = { buffer: null, smplOffset: 0, smplSize: 0, presets: [], bufferCache: {} };
             sf2Upload.value = '';
-            
+
             btnUnloadSf2.classList.add('hidden');
             showMessage("Soundfont un-attuned. Memory cleared.");
         });
@@ -882,15 +900,15 @@
 
             showMessage(`Attuning ${file.name}... parsing arcane structures.`);
             const reader = new FileReader();
-            
+
             reader.onload = function(evt) {
                 try {
                     const arrayBuffer = evt.target.result;
                     const dv = new DataView(arrayBuffer);
                     let offset = 0;
-                    
+
                     sf2Data = { buffer: arrayBuffer, smplOffset: 0, smplSize: 0, presets: [], bufferCache: {} };
-                    
+
                     function readStrAt(off, len) {
                         let s = '';
                         for(let i=0; i<len; i++) {
@@ -913,29 +931,29 @@
                     while (offset < arrayBuffer.byteLength - 8) {
                         let chunkId = readStr(4);
                         let chunkSize = dv.getUint32(offset, true); offset += 4;
-                        
+
                         if (chunkId === 'RIFF' || chunkId === 'LIST') {
                             readStr(4); // Skip sub-type id
                             continue;
                         }
-                        
+
                         let nextOffset = offset + chunkSize;
                         if (chunkSize % 2 !== 0) nextOffset++; // 2-byte alignment padding
-                        
+
                         if (chunkId === 'smpl') {
                             sf2Data.smplOffset = offset;
                             sf2Data.smplSize = chunkSize;
                         } else if (['phdr', 'pbag', 'pgen', 'inst', 'ibag', 'igen', 'shdr'].includes(chunkId)) {
                             pdtaChunks[chunkId] = { offset, size: chunkSize };
                         }
-                        
+
                         offset = nextOffset;
                     }
-                    
+
                     // Pass 2: Reconstruct Instrument Presets
                     if (pdtaChunks.phdr && pdtaChunks.shdr && sf2Data.smplSize > 0) {
                         let shdr = [], igen = [], ibag = [], inst = [], pgen = [], pbag = [], phdr = [];
-                        
+
                         // Parse Samples
                         let o = pdtaChunks.shdr.offset, end = o + pdtaChunks.shdr.size;
                         while(o < end) {
@@ -950,23 +968,23 @@
                         // Parse Generators and Bags
                         o = pdtaChunks.igen.offset; end = o + pdtaChunks.igen.size;
                         while(o < end) { igen.push({ oper: dv.getUint16(o, true), amount: dv.getUint16(o+2, true), amountInt: dv.getInt16(o+2, true) }); o += 4; }
-                        
+
                         o = pdtaChunks.ibag.offset; end = o + pdtaChunks.ibag.size;
                         while(o < end) { ibag.push({ genNdx: dv.getUint16(o, true) }); o += 4; }
-                        
+
                         o = pdtaChunks.inst.offset; end = o + pdtaChunks.inst.size;
                         while(o < end) { inst.push({ name: readStrAt(o, 20), ibagNdx: dv.getUint16(o+20, true) }); o += 22; }
-                        
+
                         o = pdtaChunks.pgen.offset; end = o + pdtaChunks.pgen.size;
                         while(o < end) { pgen.push({ oper: dv.getUint16(o, true), amount: dv.getUint16(o+2, true) }); o += 4; }
-                        
+
                         o = pdtaChunks.pbag.offset; end = o + pdtaChunks.pbag.size;
                         while(o < end) { pbag.push({ genNdx: dv.getUint16(o, true) }); o += 4; }
-                        
+
                         o = pdtaChunks.phdr.offset; end = o + pdtaChunks.phdr.size;
-                        while(o < end) { 
-                            phdr.push({ name: readStrAt(o, 20), preset: dv.getUint16(o+20, true), bank: dv.getUint16(o+22, true), pbagNdx: dv.getUint16(o+24, true) }); 
-                            o += 38; 
+                        while(o < end) {
+                            phdr.push({ name: readStrAt(o, 20), preset: dv.getUint16(o+20, true), bank: dv.getUint16(o+22, true), pbagNdx: dv.getUint16(o+24, true) });
+                            o += 38;
                         }
 
                         // Build Preset -> Instrument -> Zone Mapping
@@ -981,10 +999,10 @@
                                 for (let k = pbag[j].genNdx; k < pGenEnd; k++) if (pgen[k].oper === 41) instId = pgen[k].amount;
 
                                 if (instId >= 0 && instId < inst.length - 1) {
-                                    
+
                                     // Instrument Global Zone defaults
-                                    let globalInstZone = { 
-                                        tuneCents: 0, 
+                                    let globalInstZone = {
+                                        tuneCents: 0,
                                         velRange: { low: 0, high: 127 },
                                         sampleModes: 0,
                                         volEnv: { delay: -12000, attack: -12000, hold: -12000, decay: -12000, sustain: 0, release: -12000 }
@@ -992,10 +1010,10 @@
 
                                     for (let z = inst[instId].ibagNdx; z < inst[instId+1].ibagNdx; z++) {
                                         let iGenEnd = ibag[z+1] ? ibag[z+1].genNdx : igen.length;
-                                        
+
                                         // Inherit parameters from the Global Zone
-                                        let zoneData = { 
-                                            keyRange: { low: 0, high: 127 }, 
+                                        let zoneData = {
+                                            keyRange: { low: 0, high: 127 },
                                             velRange: { ...globalInstZone.velRange },
                                             tuneCents: globalInstZone.tuneCents,
                                             sampleModes: globalInstZone.sampleModes,
@@ -1012,7 +1030,7 @@
                                             else if (gen.oper === 51) zoneData.tuneCents += gen.amountInt * 100;
                                             else if (gen.oper === 52) zoneData.tuneCents += gen.amountInt;
                                             else if (gen.oper === 54) zoneData.sampleModes = gen.amount;
-                                            
+
                                             // Volume Envelope Modulators
                                             else if (gen.oper === 33) zoneData.volEnv.delay = gen.amountInt;
                                             else if (gen.oper === 34) zoneData.volEnv.attack = gen.amountInt;
@@ -1037,7 +1055,7 @@
                             }
                         }
                     }
-                    
+
                     // Inject newly built Presets into UI
                     if (sf2Data.presets.length > 0) {
                         let optgroup = document.getElementById('sf2-optgroup');
@@ -1047,8 +1065,8 @@
                             optgroup.label = `SF2: ${file.name}`;
                             synthSelect.appendChild(optgroup);
                         }
-                        optgroup.innerHTML = ''; 
-                        
+                        optgroup.innerHTML = '';
+
                         sf2Data.presets.forEach((preset, index) => {
                             let opt = document.createElement('option');
                             opt.value = 'sf2_' + index;
@@ -1056,20 +1074,20 @@
                             opt.textContent = `[Bank ${bnk}] ${preset.name}`;
                             optgroup.appendChild(opt);
                         });
-                        
-                        synthSelect.value = 'sf2_0'; 
+
+                        synthSelect.value = 'sf2_0';
                         btnUnloadSf2.classList.remove('hidden');
                         showMessage(`Success! Reconstructed ${sf2Data.presets.length} Presets from ${file.name}.`);
                     } else {
                         showMessage(`Could not read valid instrument presets from ${file.name}.`);
                     }
-                    
+
                 } catch (e) {
                     console.error(e);
                     showMessage(`Error parsing Soundfont file.`);
                 }
             };
-            
+
             reader.readAsArrayBuffer(file);
         });
 
