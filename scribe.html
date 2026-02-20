@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarya's Music Thingy - Tome Scribe</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="saryamusic2.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --gw2-red-dark: #3a0e0e;
+            --gw2-red: #6a1f1f;
+            --gw2-gold: #d4af37;
+            --gw2-gold-dark: #8c7355;
+            --gw2-bg: #1a1818;
+            --gw2-parchment: #e6d8c3;
+        }
+
+        body {
+            background-color: var(--gw2-bg);
+            background-image:
+                radial-gradient(circle at 50% 50%, #3a2e2a 0%, #1a1818 100%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" opacity="0.03"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4"/></filter><rect width="200" height="200" filter="url(%23n)"/></svg>');
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--gw2-parchment);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            box-sizing: border-box;
+        }
+
+        .gw2-panel {
+            background: linear-gradient(135deg, #2c2420, #181514);
+            border: 2px solid #5a4b3c;
+            box-shadow: 0 0 30px rgba(0,0,0,0.9), inset 0 0 20px rgba(0,0,0,0.8);
+            position: relative;
+        }
+
+        .gw2-panel::before {
+            content: '';
+            position: absolute;
+            top: 6px; left: 6px; right: 6px; bottom: 6px;
+            border: 1px solid var(--gw2-gold-dark);
+            pointer-events: none;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .gw2-title {
+            font-family: 'Cinzel', serif;
+            color: var(--gw2-gold);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.9), 0 0 15px rgba(212,175,55,0.4);
+            letter-spacing: 3px;
+        }
+
+        .gw2-button {
+            background: linear-gradient(to bottom, var(--gw2-red), var(--gw2-red-dark));
+            border: 1px solid #a83a3a;
+            color: var(--gw2-parchment);
+            font-family: 'Cinzel', serif;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.2);
+            transition: all 0.15s ease;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .gw2-button:hover {
+            background: linear-gradient(to bottom, #8a2a2a, #4a1515);
+            border-color: var(--gw2-gold-dark);
+            transform: translateY(-1px);
+        }
+
+        .gw2-button:active, .gw2-button.active {
+            transform: translateY(2px) scale(0.98);
+            background: linear-gradient(to bottom, #fff3e0, #ffb347);
+            color: #5a1e00;
+            border-color: var(--gw2-gold);
+            box-shadow: inset -1px -1px 3px rgba(255,255,255,0.5),
+                        inset 2px 4px 8px rgba(0,0,0,0.3),
+                        0 0 15px #ff8c00;
+        }
+
+        .status-text {
+            color: #a39581;
+            font-style: italic;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        /* --- Custom Editor Styles --- */
+        .editor-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            max-width: 100%;
+        }
+
+        #textareaA, #textareaB {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            padding: 1.5rem;
+            font-family: monospace;
+            font-size: 1rem;
+            line-height: 1.6rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow: auto;
+            border-radius: 0.5rem;
+            box-sizing: border-box;
+            text-align: left;
+        }
+
+        #textareaA {
+            color: transparent;
+            caret-color: var(--gw2-gold);
+            z-index: 10;
+            resize: vertical;
+            outline: none;
+            border: 2px solid transparent;
+        }
+
+        #textareaB {
+            background-color: rgba(0, 0, 0, 0.4);
+            color: var(--gw2-parchment);
+            border: 1px solid #5a4b3c;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.9);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .highlight-red { color: #ff5555; font-weight: bold; text-shadow: 0 0 5px rgba(255,0,0,0.5); }
+        .highlight-blue { color: #6fa8dc; font-weight: bold; text-shadow: 0 0 5px rgba(100,150,255,0.5); }
+        .highlight-pipe { color: var(--gw2-gold); opacity: 0.6; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="flex flex-col w-full max-w-[1200px] mx-auto items-center justify-center">
+        <!-- Main Panel -->
+        <div class="gw2-panel p-6 sm:p-10 rounded-xl flex flex-col items-center w-full z-10">
+
+            <!-- Return Button -->
+            <a href="index.html" class="absolute top-4 left-4 sm:top-6 sm:left-6 gw2-button px-3 py-1.5 sm:px-4 sm:py-2 rounded font-bold text-xs sm:text-sm tracking-widest text-center shadow-lg border border-[#5a4b3c] flex items-center gap-1 sm:gap-2 no-underline z-50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                <span class="hidden sm:inline">Return to Piano</span>
+                <span class="inline sm:hidden">Return</span>
+            </a>
+
+            <!-- Header Section -->
+            <div class="text-center mb-8 relative w-full mt-10 sm:mt-0">
+                <!-- Logo -->
+                <img src="saryamusic2.png" alt="Sarya's Music Thingy" class="mx-auto h-32 sm:h-40 mb-4 object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]" onerror="this.style.display='none'">
+
+                <h1 class="gw2-title text-3xl sm:text-5xl mb-2">Sarya's Music Thingy</h1>
+                <h2 class="text-[#d4af37] font-['Cinzel'] text-xl sm:text-2xl tracking-widest font-bold mb-2">Tome Scribe</h2>
+                <p class="status-text text-md mb-2">Convert arcane MIDI magic into playable tabs.</p>
+            </div>
+
+            <!-- Controls: Row 1 (Upload) -->
+            <div class="flex justify-center items-center w-full mb-4 relative z-20">
+                <label for="midiFileInput" class="gw2-button px-8 py-3 rounded font-bold text-sm tracking-widest cursor-pointer text-center shadow-lg flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>
+                    Upload MIDI
+                </label>
+                <input type="file" id="midiFileInput" accept=".mid,.midi" class="hidden">
+            </div>
+
+            <!-- Controls: Row 2 (Actions) -->
+            <div class="flex flex-wrap justify-center items-stretch gap-4 w-full mb-6 relative z-20">
+
+                <button id="copyTabBtn" class="gw2-button px-5 py-2 rounded text-center shadow-lg flex flex-col items-center justify-center gap-1 border-[#5a4b3c] min-w-[140px]">
+                    <div class="flex items-center gap-2 font-bold text-xs tracking-widest">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                        Copy Tab
+                    </div>
+                    <span class="text-[0.65rem] text-[#e6d8c3]/60 font-serif tracking-normal normal-case">Format by Powerina</span>
+                </button>
+
+                <button id="downloadSpreadsheetBtn" class="gw2-button px-5 py-2 rounded text-center shadow-lg flex flex-col items-center justify-center gap-1 border-[#5a4b3c] min-w-[140px]">
+                    <div class="flex items-center gap-2 font-bold text-xs tracking-widest">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        Spreadsheet
+                    </div>
+                    <span class="text-[0.65rem] text-[#e6d8c3]/60 font-serif tracking-normal normal-case">Format by Jenpai</span>
+                </button>
+
+                <button id="exportImageBtn" class="gw2-button px-5 py-2 rounded text-center shadow-lg flex flex-col items-center justify-center gap-1 border-[#5a4b3c] min-w-[140px]">
+                    <div class="flex items-center gap-2 font-bold text-xs tracking-widest">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        Export Image
+                    </div>
+                    <span class="text-[0.65rem] text-[#e6d8c3]/60 font-serif tracking-normal normal-case">Spell Page PNG</span>
+                </button>
+
+            </div>
+
+            <div id="sys-message" class="text-[#d4af37] font-['Cinzel'] h-6 mb-4 opacity-0 transition-opacity duration-500 text-sm tracking-wider font-bold text-center">
+                Awaiting input...
+            </div>
+
+            <!-- Editor -->
+            <div class="editor-container relative z-20">
+                <div id="textareaB"></div>
+                <div id="textareaA" contenteditable="true" spellcheck="false">Your converted tabs will appear here. You can edit them freely!</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Logic Modules -->
+    <script type="module">
+        import { Midi } from "https://cdn.skypack.dev/@tonejs/midi";
+        import * as XLSX from "https://cdn.sheetjs.com/xlsx-latest/package/xlsx.mjs";
+
+        let originalFileName = "converted";
+
+        const sysMessage = document.getElementById('sys-message');
+        function showMessage(msg) {
+            sysMessage.textContent = msg;
+            sysMessage.style.opacity = 1;
+            setTimeout(() => { sysMessage.style.opacity = 0; }, 4000);
+        }
+
+        // --- ORIGINAL AUTHOR'S NOTATION ENGINE LOGIC ---
+        const settings = {
+            beatNote: 'time',
+            octaveOffset: 0,
+            steps: 0,
+            barSkip: 0,
+            barsPerRow: 4
+        };
+
+        const timeSigUnits = (timesignature, ppq) => {
+            let barUnit = ppq;
+            let ticksPerBar = ppq * 4;
+            switch (timesignature[1]) {
+                case 1: barUnit = ppq * 4; break;
+                case 2: barUnit = ppq * 2; break;
+                case 4: barUnit = ppq; break;
+                case 8: barUnit = ppq / 2; break;
+                case 16: barUnit = ppq / 4; break;
+                case 32: barUnit = ppq / 8; break;
+                default: break;
+            }
+
+            ticksPerBar = barUnit * timesignature[0];
+
+            if (settings.beatNote !== 'time') {
+                switch (settings.beatNote) {
+                    case '2': barUnit = ppq * 2; break;
+                    case '4': barUnit = ppq; break;
+                    case '8': barUnit = ppq / 2; break;
+                    case '16': barUnit = ppq / 4; break;
+                    case '32': barUnit = ppq / 8; break;
+                    case '64': barUnit = ppq / 16; break;
+                    case '128': barUnit = ppq / 32; break;
+                    case '256': barUnit = ppq / 64; break;
+                    default: break;
+                }
+            }
+
+            return { unit: barUnit, perBar: ticksPerBar };
+        }
+
+        const nextTimeSig = (timesignatures, index, currTick) => {
+            return (timesignatures[index].ticks <= currTick);
+        }
+
+        const nextTempo = (tempos, index, currTick) => {
+            return (tempos[index].ticks <= currTick);
+        }
+
+        const getOctaveBrackets = (octave, min, max) => {
+            let middleOctave = min + Math.floor((max - min) / 2);
+            middleOctave += settings.octaveOffset;
+            if (octave > middleOctave + 1) return { start: '<', end: '>', high: true };
+            if (octave < middleOctave - 1) return { start: '{', end: '}', low: true };
+            if (octave === middleOctave - 1) return { start: '[', end: ']' };
+            if (octave === middleOctave + 1) return { start: '(', end: ')' };
+            return { start: '', end: '' };
+        }
+
+        const ticksToPause = (ticks, quarter, isNote) => {
+            let sixteenth = quarter / 4;
+            const notes = [
+                { ticks: (sixteenth * 7), pause: '.  -' }, // Double dotted quarter note
+                { ticks: (sixteenth * 6), pause: '  -' }, // Dotted quarter note
+                { ticks: (sixteenth * 5), pause: '.  ' }, // Quarter note + 16th note
+                { ticks: (sixteenth * 4), pause: '  ' }, // Quarter note
+                { ticks: (sixteenth * 3.5), pause: '\u00B7. ' }, // Double dotted 8th note
+                { ticks: (sixteenth * 3), pause: '\u00B7 ', notNote: '\u00B7' }, // Dotted 8th note
+                { ticks: (sixteenth * 2.5), pause: '. ' }, // 8th note + 32nd note
+                { ticks: (sixteenth * 2), pause: ' ' }, // 8th note
+                { ticks: (sixteenth * 1.75), pause: '\u00B7.' }, // Double dotted 16th note
+                { ticks: (sixteenth * 1.5), pause: '\u00B7' }, // Dotted 16th note
+                { ticks: (sixteenth * 1.25), pause: '.' }, // 16th note + 64th note
+                { ticks: (sixteenth), pause: '', notNote: '\u00B7' }, // 16th note
+                { ticks: (sixteenth * 0.5), pause: '' }, // 32nd note
+                { ticks: (sixteenth * 0.25), pause: '' }, // 64th note
+                { ticks: (sixteenth * 0.125), pause: '' } // 128th note
+            ];
+
+            const closest = notes.reduce((resp, note) => {
+                if (ticks > notes[0].ticks) return false;
+                if (resp === false) resp = note;
+                let respVal = Math.abs(resp.ticks - ticks);
+                let noteVal = Math.abs(note.ticks - ticks);
+                if (respVal === 0) return resp;
+                if (noteVal <= respVal) return note;
+                return resp;
+            }, false);
+            let ret = closest.pause;
+            if (closest.notNote && !isNote) ret = closest.notNote;
+            return { ticks: closest.ticks, ret: ret };
+        }
+
+        const addPauseTicks = (gw2, ticks, unit, note, first) => {
+            if (first && !note) {
+                gw2 += (ticks / unit >= 1) ? ' ' : ''
+                while ((ticks / unit) >= 1) {
+                    gw2 += '\u2501 ';
+                    ticks -= unit;
+                }
+                switch (ticks) {
+                    case unit / 1.5: gw2 += '-. '; ticks = 0; break;
+                    case unit / 2: gw2 += '- '; ticks = 0; break;
+                    case unit / 4: gw2 += '. '; ticks = 0; break;
+                    default: break;
+                }
+            }
+
+            if (ticks <= 0) return gw2;
+
+            let addOn = '';
+            while ((ticks / unit) > 1.5) { addOn += '\u2501 '; ticks -= unit; }
+            let pause = ticksToPause(ticks, unit, note);
+
+            if (pause) {
+                let append = false;
+                append = pause.ret[pause.ret.length - 1] !== ' ' ? pause.ret + '' + addOn : pause.ret + addOn + ''
+                append = append.replace('  -\u2501', ' \u2501 \u2501');
+                gw2 += append;
+            }
+            else
+                gw2 += '' + addOn + '';
+
+            return gw2;
+        }
+
+
+        const transposeNote = (note) => {
+            const notes = { 1: 1, '1#': 2, 2: 3, '2#': 4, 3: 5, 4: 6, '4#': 7, 5: 8, '5#': 9, 6: 10, '6#': 11, 7: 12 }
+            let nVal = notes[note] + settings.steps
+            let octaveDiff = 0
+            while (nVal > 12) { nVal -= 12; octaveDiff++; }
+            while (nVal < 1) { nVal += 12; octaveDiff--; }
+            let key = Object.keys(notes).find(key => notes[key] === nVal)
+            return { note: key, octaveDiff: octaveDiff }
+        }
+
+
+        const parseFile = async (arrayBuffer) => {
+            let midi = new Midi(arrayBuffer);
+            const ppq = midi.header.ppq;
+            const quarter = ppq;
+            const multipleSignatures = midi.header.timeSignatures.length > 1;
+            let gw2 = '';
+            const tempos = midi.header.tempos;
+
+            const keyToNum = { C: 1, D: 2, E: 3, F: 4, G: 5, A: 6, B: 7 };
+
+            midi.tracks = midi.tracks.reduce((sum, val) => {
+                if (val.notes && val.notes.length > 0)
+                    sum.push(val);
+                return sum;
+            }, []);
+
+            const tracks = midi.tracks.map(track => {
+                let currTimeSig = midi.header.timeSignatures[0].timeSignature;
+                let timeSigIndex = 1;
+                let tempoIndex = 1;
+                let units = timeSigUnits(currTimeSig, ppq);
+                let ticksPerBar = units.perBar;
+                let barUnit = units.unit;
+
+                let currTick = 0;
+                let bars = [{ notes: [], tick: currTick, ticks: ticksPerBar, unit: barUnit, timeSignatureChange: [currTimeSig] }];
+                const notes = track.notes;
+
+                let minOctave = 1337;
+                let maxOctave = -1337;
+
+                notes.forEach(n => { n.isSharp = n.pitch.indexOf('#') !== -1; n.pitch = n.pitch.substr(0, 1); })
+
+                notes.sort((a, b) => {
+                    if (a.ticks - b.ticks !== 0) return a.ticks - b.ticks;
+                    if (a.octave - b.octave !== 0) return a.octave - b.octave;
+                    return keyToNum[a.pitch] - keyToNum[b.pitch];
+                });
+
+                let currentOctave = -1;
+                let prevTick = 0;
+
+                // Setup notes
+                notes.forEach((note, index) => {
+                    if (index === 0) {
+                        currentOctave = note.octave;
+                        prevTick = note.ticks;
+                    }
+                    currentOctave = note.octave;
+                    prevTick = note.ticks;
+                    if (tempos[tempoIndex] && nextTempo(tempos, tempoIndex, prevTick)) {
+                        note.tempo = Math.floor(tempos[tempoIndex].bpm);
+                        tempoIndex++;
+                        while (tempos[tempoIndex] && nextTempo(tempos, tempoIndex, prevTick)) {
+                            note.tempoChange = Math.floor(tempos[tempoIndex].bpm);
+                            tempoIndex++;
+                        }
+                    }
+                    while (currTick <= note.ticks) {
+                        currTick += ticksPerBar;
+                        if (multipleSignatures && midi.header.timeSignatures[timeSigIndex] && nextTimeSig(midi.header.timeSignatures, timeSigIndex, currTick)) {
+                            units = timeSigUnits(midi.header.timeSignatures[timeSigIndex].timeSignature, ppq);
+                            currTimeSig = midi.header.timeSignatures[timeSigIndex];
+                            timeSigIndex++;
+                            ticksPerBar = units.perBar;
+                            barUnit = units.unit;
+                            bars.push({ notes: [], tick: currTick, ticks: ticksPerBar, unit: barUnit, timeSignature: currTimeSig });
+                        }
+                        else
+                            bars.push({ notes: [], tick: currTick, ticks: ticksPerBar, unit: barUnit });
+                    }
+                    const barIndex = bars.findIndex(x => note.ticks >= x.tick && note.ticks < (x.tick + x.ticks));
+                    bars[barIndex].notes.push(note);
+
+                    if (note.octave > maxOctave) maxOctave = note.octave;
+                    if (note.octave < minOctave) minOctave = note.octave;
+                })
+                // -----------------------------------------------------------------------------
+
+                currentOctave = -1;
+                let previousOctave = -1;
+                let brackets = { start: '', end: '' };
+                let count = 1;
+
+                bars = bars.map((bar, bIndex) => {
+                    gw2 = '|';
+                    if (bar.notes.length > 0) {
+                        let pauseTicks = bar.notes[0].ticks - bar.tick;
+                        if (pauseTicks > 0) // There is a pause at the start of the bar
+                            gw2 = addPauseTicks(gw2, pauseTicks, bar.unit, false, true);
+                        prevTick = 0;
+                        bar.notes.forEach((note, index) => {
+                            if (note.tempoChange && note.tempoChange !== '') {
+                                gw2 += note.tempoChange;
+                            }
+
+                            let key = keyToNum[note.pitch] + (note.isSharp ? '#' : '');
+                            let nTransposed = transposeNote(key)
+                            note.octave = note.octave + nTransposed.octaveDiff
+                            key = nTransposed.note
+
+                            if (!isNaN(key))
+                                key = parseInt(key)
+                            const nextNote = bar.notes[index + 1];
+                            let startOffset = 0;
+                            if (currentOctave === -1)
+                                currentOctave = note.octave;
+                            if (index === 0) { // First note in the bar
+                                prevTick = note.ticks;
+                                if (key === 1 && currentOctave < note.octave) {
+                                    key = 8;
+                                    startOffset = -1;
+                                }
+                                let noteOctave = note.octave + startOffset;
+                                brackets = getOctaveBrackets(noteOctave, minOctave, maxOctave);
+                                if (key === 1 && brackets.high) {
+                                    key = 8;
+                                    startOffset = -1;
+                                    brackets = getOctaveBrackets(noteOctave, minOctave, maxOctave);
+                                }
+                                noteOctave = note.octave + startOffset;
+                                currentOctave = noteOctave;
+                                gw2 += brackets.start;
+                                gw2 += key;
+                            }
+                            else // Not first note in bar
+                            {
+                                let starterBracket = false;
+                                let checkBrack = getOctaveBrackets(note.octave, minOctave, maxOctave);
+                                if (previousOctave !== note.octave && key !== 1) { // Octave has changed
+                                    gw2 += brackets.end;
+                                    currentOctave = note.octave;
+                                    brackets = getOctaveBrackets(currentOctave, minOctave, maxOctave);
+                                    starterBracket = true;
+                                } else if (previousOctave !== note.octave) {
+                                    if (previousOctave === note.octave - 1) {
+
+                                    }
+                                    // A 1 but it is not a chord
+                                    if (previousOctave < note.octave && (!nextNote || (nextNote && nextNote.ticks !== note.ticks))) {
+                                        key = 8;
+                                        if (previousOctave !== note.octave - 1) {
+                                            gw2 += brackets.end;
+                                            starterBracket = true;
+                                        }
+                                        currentOctave = note.octave - 1;
+                                        brackets = getOctaveBrackets(currentOctave, minOctave, maxOctave);
+                                    } else { // A 1 in a chord
+                                        gw2 += brackets.end;
+                                        currentOctave = note.octave;
+                                        brackets = getOctaveBrackets(currentOctave, minOctave, maxOctave);
+                                        starterBracket = true;
+                                    }
+                                } else if ((brackets.high || checkBrack.high) && key === 1) {
+                                    gw2 += brackets.end;
+                                    key = 8;
+                                    currentOctave = note.octave - 1;
+                                    brackets = getOctaveBrackets(currentOctave, minOctave, maxOctave);
+                                }
+                                else if (key === 1 && nextNote && nextNote.octave < note.octave && nextNote.ticks !== note.ticks && (nextNote.ticks - note.ticks) < quarter) {
+                                    gw2 += brackets.end;
+                                    key = 8;
+                                    currentOctave = note.octave - 1;
+                                    brackets = getOctaveBrackets(currentOctave, minOctave, maxOctave);
+                                }
+
+                                if (previousOctave !== currentOctave)
+                                    starterBracket = true;
+
+                                pauseTicks = note.ticks - prevTick;
+                                // Pause or chord
+                                gw2 = (pauseTicks > 0 ? addPauseTicks(gw2, pauseTicks, bar.unit, true) : gw2 + '/');
+                                gw2 += (starterBracket ? brackets.start : '');
+                                gw2 += key;
+                                prevTick = note.ticks;
+                            }
+
+                            if (index === bar.notes.length - 1) {
+                                gw2 += brackets.end;
+                                pauseTicks = (bar.tick + bar.ticks) - note.ticks;
+                                if (pauseTicks > 0)
+                                    gw2 = addPauseTicks(gw2, pauseTicks, bar.unit, false);
+                            }
+                            previousOctave = currentOctave;
+                        });
+                    } // No notes
+                    else { gw2 = addPauseTicks(gw2, bar.ticks, bar.unit, false, true); }
+
+                    let trueIndex = bIndex - settings.barSkip;
+                    if (trueIndex > -1) {
+                        if (count === settings.barsPerRow) {
+                            gw2 += '|\n';
+                            count = 0;
+                        }
+                        count++;
+                    } else if (trueIndex === -1)
+                        gw2 += '|';
+
+                    bar.text = gw2
+                    return bar
+                });
+
+                return {
+                    name: track.name || "Instrument",
+                    bars: bars
+                };
+            })
+
+            return tracks
+        }
+        // --- END OF AUTHOR'S LOGIC ---
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const midiInput = document.getElementById("midiFileInput");
+            const textareaA = document.getElementById("textareaA");
+            const textareaB = document.getElementById("textareaB");
+            const downloadSpreadsheetBtn = document.getElementById("downloadSpreadsheetBtn");
+            const copyTabBtn = document.getElementById("copyTabBtn");
+            const exportImageBtn = document.getElementById("exportImageBtn");
+
+            // --- 1. Highlighter & Sync Logic ---
+            function escapeHtml(unsafe) {
+                return unsafe
+                     .replace(/&/g, "&amp;")
+                     .replace(/</g, "&lt;")
+                     .replace(/>/g, "&gt;")
+                     .replace(/"/g, "&quot;")
+                     .replace(/'/g, "&#039;");
+            }
+
+            function applyHighlighting(text) {
+                let safeText = escapeHtml(text);
+                safeText = safeText.replace(/\((.*?)\)/g, `<span class="highlight-red">($1)</span>`);
+                safeText = safeText.replace(/\[(.*?)\]/g, `<span class="highlight-blue">[$1]</span>`);
+                safeText = safeText.replace(/\|/g, `<span class="highlight-pipe">|</span>`);
+                return safeText;
+            }
+
+            function syncText() {
+                const text = textareaA.innerText;
+                textareaB.innerHTML = applyHighlighting(text);
+            }
+
+            const syncScroll = (source, target) => {
+                target.scrollTop = source.scrollTop;
+                target.scrollLeft = source.scrollLeft;
+            };
+
+            textareaA.addEventListener('scroll', () => syncScroll(textareaA, textareaB));
+            textareaB.addEventListener('scroll', () => syncScroll(textareaB, textareaA));
+
+            const resizeObserver = new ResizeObserver(() => {
+                setTimeout(() => {
+                    if (textareaA && textareaB) {
+                        textareaB.style.width = `${textareaA.offsetWidth}px`;
+                        textareaB.style.height = `${textareaA.offsetHeight}px`;
+                    }
+                }, 0);
+            });
+            resizeObserver.observe(textareaA);
+
+            syncText();
+            textareaA.addEventListener("input", syncText);
+
+
+            // --- 2. Controller & Exporter UI Logic ---
+            midiInput.addEventListener("change", async () => {
+                const file = midiInput.files[0];
+                if (!file) return;
+
+                showMessage(`Scribing ${file.name}... Please wait.`);
+                originalFileName = file.name;
+
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+
+                    // Route directly through the Original Authors' implementation
+                    const tracks = await parseFile(arrayBuffer);
+
+                    let tabNotes = file.name + "\n\n";
+
+                    tracks.forEach(track => {
+                        tabNotes += "--- " + track.name + " ---\n";
+
+                        let trackStr = "";
+                        track.bars.forEach(bar => {
+                            trackStr += bar.text;
+                        });
+
+                        // Apply known bug fix: remove stray dots right before a barline
+                        trackStr = trackStr.replace(/·\|/g, "|");
+
+                        tabNotes += trackStr + "\n\n";
+                    });
+
+                    textareaA.innerText = '';
+                    textareaA.innerText = tabNotes;
+
+                    const event = new Event('input', { bubbles: true });
+                    textareaA.dispatchEvent(event);
+
+                    showMessage(`Scribe complete. Notation generated successfully.`);
+                } catch (e) {
+                    showMessage(`Error parsing MIDI file.`);
+                    console.error(e);
+                }
+
+                midiFileInput.value = '';
+            });
+
+            // --- 3. Export & Clipboard Utilities ---
+            copyTabBtn.addEventListener("click", () => {
+                const content = textareaA.innerText.trim();
+                if (!content) return showMessage("Nothing to copy!");
+
+                const textArea = document.createElement("textarea");
+                textArea.value = content;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showMessage("Tabs copied to clipboard!");
+                } catch (ex) {
+                    showMessage("Failed to copy tabs.");
+                }
+                document.body.removeChild(textArea);
+            });
+
+            exportImageBtn.addEventListener("click", () => {
+                const text = textareaA.innerText.trim();
+                if (!text) return showMessage("There is nothing to export.");
+
+                showMessage("Inking Spell Page...");
+                let canvas = document.createElement('canvas');
+                let ctx = canvas.getContext('2d');
+
+                let lines = text.split('\n');
+                ctx.font = "bold 16px monospace";
+                let maxLineObj = lines.reduce((a, b) => a.length > b.length ? a : b, "");
+                let textWidth = ctx.measureText(maxLineObj).width;
+
+                canvas.width = Math.max(800, textWidth + 100);
+                canvas.height = lines.length * 24 + 160;
+
+                // Draw Background Gradient
+                let grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                grad.addColorStop(0, '#2c2420');
+                grad.addColorStop(1, '#181514');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Draw Inner Border
+                ctx.strokeStyle = '#8c7355';
+                ctx.lineWidth = 4;
+                ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+
+                // Draw Title
+                ctx.fillStyle = '#d4af37';
+                ctx.font = "bold 26px serif";
+                ctx.textAlign = "center";
+                ctx.fillText("Tome of Melodies: Transcribed Spell Page", canvas.width / 2, 50);
+
+                // Draw Text
+                ctx.textAlign = "left";
+                ctx.font = "bold 16px monospace";
+                ctx.fillStyle = '#e6d8c3';
+
+                let y = 100;
+                for (let line of lines) {
+                    if (line.startsWith('---')) {
+                        ctx.fillStyle = '#d4af37'; // Highlight Track Titles
+                        ctx.fillText(line, 50, y);
+                        ctx.fillStyle = '#e6d8c3';
+                    } else {
+                        ctx.fillText(line, 50, y);
+                    }
+                    y += 24;
+                }
+
+                // Trigger Download
+                let link = document.createElement('a');
+                link.download = `${originalFileName.replace(/\.(mid|midi)$/i, '')}_SpellPage.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+
+            // Original Author's Spreadsheet Logic
+            downloadSpreadsheetBtn.addEventListener("click", () => {
+                const content = textareaA.innerText.trim();
+                if (!content) return showMessage("There is nothing to download.");
+
+                showMessage("Generating Spreadsheet...");
+                const lines = content.split("\n");
+                const sheets = {};
+                const sheetCounts = {};
+                let currentSheetKey = null;
+                let baseFileName = "converted";
+
+                const isValidWord = word => /^[a-zA-Z]{3,}$/.test(word) && !/\.midi?$/i.test(word);
+
+                for (const rawLine of lines) {
+                    const line = rawLine.trim();
+
+                    if (!baseFileName || baseFileName === "converted") {
+                        const match = line.match(/(.+?)\.(mid|midi)$/i);
+                        if (match) {
+                            baseFileName = match[1].trim();
+                        }
+                    }
+
+                    if (isValidWord(line)) {
+                        const baseName = line.slice(0, 31);
+                        const count = (sheetCounts[baseName] || 0) + 1;
+                        sheetCounts[baseName] = count;
+
+                        const sheetName = count === 1 ? baseName : `${baseName} ${count}`;
+                        currentSheetKey = sheetName;
+                        sheets[currentSheetKey] = [[baseName]];
+                    } else if (currentSheetKey && line !== "") {
+                        const row = rawLine.split(/ {4}/g).map(cell => cell.trim());
+                        sheets[currentSheetKey].push(row);
+                    }
+                }
+
+                const wb = XLSX.utils.book_new();
+                for (const [sheetName, data] of Object.entries(sheets)) {
+                    const ws = XLSX.utils.aoa_to_sheet(data);
+                    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+                }
+
+                XLSX.writeFile(wb, `${baseFileName}.xlsx`);
+                showMessage("Spreadsheet successfully exported!");
+            });
+
+        });
+    </script>
+</body>
+</html>
