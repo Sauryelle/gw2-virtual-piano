@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarya's Play Thingy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --gw2-red-dark: #3a0e0e;
+            --gw2-red: #6a1f1f;
+            --gw2-gold: #d4af37;
+            --gw2-gold-dark: #8c7355;
+            --gw2-bg: #1a1818;
+            --gw2-parchment: #e6d8c3;
+        }
+
+        body {
+            background-color: var(--gw2-bg);
+            background-image:
+                radial-gradient(circle at 50% 50%, #3a2e2a 0%, #1a1818 100%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" opacity="0.03"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4"/></filter><rect width="200" height="200" filter="url(%23n)"/></svg>');
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--gw2-parchment);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        .gw2-panel {
+            background: linear-gradient(135deg, #2c2420, #181514);
+            border: 2px solid #5a4b3c;
+            box-shadow: 0 0 30px rgba(0,0,0,0.9), inset 0 0 20px rgba(0,0,0,0.8);
+            position: relative;
+        }
+
+        .gw2-panel::before {
+            content: '';
+            position: absolute;
+            top: 6px; left: 6px; right: 6px; bottom: 6px;
+            border: 1px solid var(--gw2-gold-dark);
+            pointer-events: none;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .gw2-title {
+            font-family: 'Cinzel', serif;
+            color: var(--gw2-gold);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.9), 0 0 15px rgba(212,175,55,0.4);
+            letter-spacing: 3px;
+        }
+
+        .gw2-button {
+            background: linear-gradient(to bottom, var(--gw2-red), var(--gw2-red-dark));
+            border: 1px solid #a83a3a;
+            color: var(--gw2-parchment);
+            font-family: 'Cinzel', serif;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.2);
+            transition: all 0.15s ease;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .gw2-button:hover {
+            background: linear-gradient(to bottom, #8a2a2a, #4a1515);
+            border-color: var(--gw2-gold-dark);
+            transform: translateY(-1px);
+        }
+
+        .gw2-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.8), inset 0 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .gw2-select {
+            background: linear-gradient(to bottom, #2c2420, #181514);
+            border: 1px solid #5a4b3c;
+            color: var(--gw2-gold);
+            font-family: 'Cinzel', serif;
+            max-width: 280px;
+            text-overflow: ellipsis;
+        }
+
+        .gw2-select option, .gw2-select optgroup {
+            background: #181514;
+            color: var(--gw2-parchment);
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .piano-container {
+            display: flex;
+            gap: 4px;
+            padding: 10px;
+            background: #0a0808;
+            border: 2px solid #3a2e2a;
+            border-radius: 4px;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.9);
+        }
+
+        .piano-key {
+            width: 70px;
+            height: 240px;
+            background: linear-gradient(to bottom, #d9d0c1, #a39581);
+            border: 1px solid #4a3e31;
+            border-radius: 2px 2px 8px 8px;
+            box-shadow: inset -2px -2px 5px rgba(255,255,255,0.3),
+                        inset 2px 2px 5px rgba(0,0,0,0.1),
+                        3px 5px 10px rgba(0,0,0,0.7);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.05s, box-shadow 0.05s;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .piano-key { width: 40px; height: 180px; }
+            .key-note { font-size: 1rem !important; }
+            .key-bind { font-size: 0.7rem !important; }
+        }
+
+        .piano-key::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 10%; right: 10%; height: 60%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
+            border-radius: 2px;
+            pointer-events: none;
+        }
+
+        .piano-key.active {
+            transform: translateY(4px) scale(0.98);
+            background: linear-gradient(to bottom, #fff3e0, #ffb347);
+            box-shadow: inset -1px -1px 3px rgba(255,255,255,0.5),
+                        inset 2px 4px 8px rgba(0,0,0,0.3),
+                        0 0 20px #ff8c00;
+            border-color: var(--gw2-gold);
+        }
+
+        .key-note {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #2c2420;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.4);
+        }
+
+        .key-bind {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #5a4b3c;
+            margin-top: 5px;
+        }
+
+        .piano-key.active .key-note, .piano-key.active .key-bind {
+            color: #5a1e00;
+        }
+
+        .status-text {
+            color: #a39581;
+            font-style: italic;
+            text-shadow: 1px 1px 2px black;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gw2-panel p-6 sm:p-10 rounded-xl flex flex-col items-center max-w-full">
+
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <h1 class="gw2-title text-4xl sm:text-5xl mb-2">Sarya's Play Thingy</h1>
+            <p class="status-text text-lg">For exclusive use of everyone.</p>
+
+            <!-- Song Tabs / Tomes -->
+            <div class="flex justify-center flex-wrap gap-4 mt-5">
+                <a href="https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/edit?tab=t.0" target="_blank" class="text-[#d4af37] hover:text-[#fff3e0] transition-colors font-['Cinzel'] text-sm tracking-widest border border-[#5a4b3c] bg-black/40 px-4 py-1.5 rounded hover:bg-[#3a0e0e]/60 no-underline flex items-center gap-2 shadow-lg hover:border-[#d4af37]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    Tome of Melodies I
+                </a>
+
+                <a href="#" target="_blank" class="text-[#8c7355] hover:text-[#d4af37] transition-colors font-['Cinzel'] text-sm tracking-widest border border-[#3a2e2a] bg-black/20 px-4 py-1.5 rounded hover:bg-[#3a0e0e]/60 no-underline flex items-center gap-2 shadow-lg hover:border-[#8c7355]" title="Replace '#' with your second link in the code">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    Tome of Melodies II
+                </a>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex flex-col w-full max-w-4xl mb-6 gap-4 px-2 mt-2">
+
+            <!-- Instrument Row -->
+            <div class="flex justify-center w-full gap-2 items-center">
+                <select id="synth-select" class="gw2-select w-full max-w-xs px-4 py-2 rounded font-bold text-sm tracking-widest cursor-pointer text-center outline-none focus:border-[#d4af37]">
+                    <optgroup label="Default Magic Instruments">
+                        <option value="lute">Instrument: Lute</option>
+                        <option value="brass">Instrument: Brass</option>
+                        <option value="flute">Instrument: Flute</option>
+                        <option value="crystal">Instrument: Crystal</option>
+                    </optgroup>
+                    <!-- Dynamic SF2 group appended here via JS -->
+                </select>
+            </div>
+
+            <!-- Octave Row -->
+            <div class="flex flex-col sm:flex-row justify-center w-full gap-2 items-center">
+                <button id="btn-oct-down" class="gw2-button w-full sm:w-auto px-4 py-2 rounded font-bold text-sm tracking-widest text-center">
+                    [ Q ] Octave -
+                </button>
+
+                <div class="bg-black/50 border border-[#5a4b3c] px-4 py-2 rounded text-center w-full sm:w-auto min-w-[140px]">
+                    <span class="text-[#d4af37] font-['Cinzel'] font-bold text-lg" id="octave-display">Octave: Mid</span>
+                </div>
+
+                <button id="btn-oct-up" class="gw2-button w-full sm:w-auto px-4 py-2 rounded font-bold text-sm tracking-widest text-center">
+                    [ E ] Octave +
+                </button>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center items-center w-full mt-2 gap-4 sm:gap-8">
+                <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors">
+                    <input type="checkbox" id="octave-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer" checked>
+                    <span>Restrict Octaves (Low / Mid / High)</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors" title="Simulates a sustain pedal for a reverberating effect">
+                    <input type="checkbox" id="sustain-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer">
+                    <span>Extend Notes (Sustain)</span>
+                </label>
+            </div>
+        </div>
+
+        <div id="sys-message" class="text-[#d4af37] font-['Cinzel'] h-6 mb-4 opacity-0 transition-opacity duration-500 text-sm tracking-wider">
+            Instrument Attuned.
+        </div>
+
+        <!-- Piano Keys -->
+        <div class="piano-container" id="piano">
+            <!-- Keys generated via JS -->
+        </div>
+
+        <!-- Advanced Controls -->
+        <div class="flex flex-wrap justify-center items-center w-full mt-6 gap-4 px-4">
+            <button id="btn-edit-binds" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest text-center border border-[#5a4b3c] transition-all">
+                Edit Binds: OFF
+            </button>
+
+            <label for="sf2-upload" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest cursor-pointer text-center whitespace-nowrap">
+                Load SF2
+            </label>
+            <input type="file" id="sf2-upload" accept=".sf2" class="hidden">
+
+            <button id="btn-unload-sf2" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest text-center hidden whitespace-nowrap">
+                Unload SF2
+            </button>
+        </div>
+
+        <div class="mt-6 text-center status-text text-sm max-w-md" id="helper-text">
+            Use keys to play notes. Toggle <b class="text-[#d4af37]">Edit Binds</b> to change mapping. Click or touch keys to interact.
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration & State ---
+        const notes = [
+            { name: 'C', offset: 0 },
+            { name: 'D', offset: 2 },
+            { name: 'E', offset: 4 },
+            { name: 'F', offset: 5 },
+            { name: 'G', offset: 7 },
+            { name: 'A', offset: 9 },
+            { name: 'B', offset: 11 },
+            { name: 'C', offset: 12 } // Next octave's C
+        ];
+
+        let currentOctave = 4; // Mid
+        let octaveMode = 'restricted'; // 'restricted' or 'full'
+        let audioCtx;
+        let activeNodes = {}; // Tracks active oscillators per key
+
+        // --- Keybindings ---
+        let bindings = {
+            notes: ['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8'],
+            octaveDown: 'KeyQ',
+            octaveUp: 'KeyE'
+        };
+        let activeRebind = null;
+        let isRemappingMode = false;
+        let isSustainEnabled = false;
+
+        function formatKey(code) {
+            if (code.startsWith('Key')) return code.slice(3);
+            if (code.startsWith('Digit')) return code.slice(5);
+            if (code.startsWith('Numpad')) return 'Num ' + code.slice(6);
+            if (code === 'Space') return 'Spc';
+            if (code === 'Minus') return '-';
+            if (code === 'Equal') return '=';
+            return code;
+        }
+
+        function startRebind(e, type, index, targetEl) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            if (activeRebind) cancelRebind();
+
+            let originalText = targetEl.innerHTML;
+            targetEl.innerHTML = '<span class="text-[#ff8c00] animate-pulse">[ ? ]</span>';
+
+            activeRebind = { type, index, el: targetEl, originalText };
+            showMessage("Press any key to bind...");
+        }
+
+        function cancelRebind() {
+            if (!activeRebind) return;
+            activeRebind.el.innerHTML = activeRebind.originalText;
+            activeRebind = null;
+        }
+
+        // Native Custom Soundfont Storage
+        let sf2Data = { buffer: null, smplOffset: 0, smplSize: 0, presets: [], bufferCache: {} };
+
+        // Helper to convert SF2 timecents to real seconds
+        function timecentsToSecs(tc) {
+            if (tc <= -11950) return 0.001; // nearly instantaneous
+            return Math.pow(2, tc / 1200);
+        }
+
+        // --- DOM Elements ---
+        const pianoContainer = document.getElementById('piano');
+        const octaveDisplay = document.getElementById('octave-display');
+        const btnOctDown = document.getElementById('btn-oct-down');
+        const btnOctUp = document.getElementById('btn-oct-up');
+        const synthSelect = document.getElementById('synth-select');
+        const octaveToggle = document.getElementById('octave-toggle');
+        const sustainToggle = document.getElementById('sustain-toggle');
+        const sf2Upload = document.getElementById('sf2-upload');
+        const btnUnloadSf2 = document.getElementById('btn-unload-sf2');
+        const sysMessage = document.getElementById('sys-message');
+        const btnEditBinds = document.getElementById('btn-edit-binds');
+        const helperText = document.getElementById('helper-text');
+
+        // --- Key Generation ---
+        notes.forEach((note, index) => {
+            const keyEl = document.createElement('div');
+            keyEl.className = 'piano-key';
+            keyEl.dataset.index = index;
+            keyEl.innerHTML = `
+                <div class="key-note pointer-events-none">${note.name}</div>
+                <div class="key-bind pointer-events-none text-[#5a4b3c] transition-colors mt-1" data-index="${index}">[ ${formatKey(bindings.notes[index])} ]</div>
+            `;
+
+            const handleInteract = (e) => {
+                if (isRemappingMode) {
+                    startRebind(e, 'note', index, keyEl.querySelector('.key-bind'));
+                } else {
+                    triggerNoteOn(index);
+                }
+            };
+
+            keyEl.addEventListener('mousedown', handleInteract);
+            keyEl.addEventListener('touchstart', (e) => { e.preventDefault(); handleInteract(e); });
+
+            keyEl.addEventListener('mouseup', () => { if (!isRemappingMode) triggerNoteOff(index); });
+            keyEl.addEventListener('mouseleave', () => { if (!isRemappingMode) triggerNoteOff(index); });
+            keyEl.addEventListener('touchend', (e) => { e.preventDefault(); if (!isRemappingMode) triggerNoteOff(index); });
+            keyEl.addEventListener('touchcancel', (e) => { e.preventDefault(); if (!isRemappingMode) triggerNoteOff(index); });
+
+            pianoContainer.appendChild(keyEl);
+        });
+
+        // --- Audio Engine ---
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        // Repitches and buffers the raw PCM data of a specific Soundfont chunk
+        function loadSf2Buffer(sampleInfo) {
+            initAudio();
+            try {
+                const numSamples = sampleInfo.end - sampleInfo.start;
+                if (numSamples <= 0 || numSamples > 50000000) return null; // Safe parsing check
+
+                let sr = sampleInfo.sampleRate || 44100;
+                if (sr < 8000) sr = 8000;
+                if (sr > 96000) sr = 96000;
+
+                const buffer = audioCtx.createBuffer(1, numSamples, sr);
+                const channelData = buffer.getChannelData(0);
+                const dv = new DataView(sf2Data.buffer);
+
+                // Words to Bytes offset
+                let byteOffset = sf2Data.smplOffset + (sampleInfo.start * 2);
+
+                for (let i = 0; i < numSamples; i++) {
+                    channelData[i] = dv.getInt16(byteOffset, true) / 32768.0; // 16bit signed to float
+                    byteOffset += 2;
+                }
+                return buffer;
+            } catch(e) {
+                console.error("Buffer creation failed", e);
+                return null;
+            }
+        }
+
+        function triggerNoteOn(index) {
+            initAudio();
+            if (activeNodes[index]) return;
+
+            const noteData = notes[index];
+            const midiNote = 12 * (currentOctave + 1) + noteData.offset; // C4 is MIDI 60
+            const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
+
+            const instrumentMode = synthSelect.value;
+
+            if (instrumentMode.startsWith('sf2_')) {
+                // --- Real SF2 Sample Playback with Envelopes & Velocity Mapping ---
+                const sfIndex = parseInt(instrumentMode.split('_')[1]);
+                const preset = sf2Data.presets[sfIndex];
+
+                // Match key range AND a fixed standard velocity (100) to avoid playing soft/hard dynamics simultaneously
+                const velocity = 100;
+                let matchedZones = preset.zones.filter(z =>
+                    midiNote >= z.keyRange.low && midiNote <= z.keyRange.high &&
+                    velocity >= z.velRange.low && velocity <= z.velRange.high
+                );
+
+                // Fallbacks if strictly filtered ranges are missing
+                if (matchedZones.length === 0) {
+                    matchedZones = preset.zones.filter(z => midiNote >= z.keyRange.low && midiNote <= z.keyRange.high);
+                }
+                if (matchedZones.length === 0 && preset.zones.length > 0) matchedZones = [preset.zones[0]];
+
+                const sources = [];
+                const gainNodes = [];
+
+                matchedZones.forEach(zone => {
+                    let cacheKey = zone.sample.name + "_" + zone.sample.start;
+                    if (!sf2Data.bufferCache[cacheKey]) {
+                        sf2Data.bufferCache[cacheKey] = loadSf2Buffer(zone.sample);
+                    }
+
+                    const buffer = sf2Data.bufferCache[cacheKey];
+                    if (buffer) {
+                        const gainNode = audioCtx.createGain();
+
+                        let rootPitch = zone.rootKey !== undefined ? zone.rootKey : zone.sample.originalPitch;
+                        if (rootPitch === 255 || rootPitch === 0) rootPitch = 60;
+
+                        let centsOffset = zone.tuneCents + (zone.sample.pitchCorrection || 0);
+                        const playbackRate = Math.pow(2, (midiNote - rootPitch + (centsOffset / 100)) / 12);
+
+                        const source = audioCtx.createBufferSource();
+                        source.buffer = buffer;
+                        source.playbackRate.value = playbackRate;
+
+                        // Apply Looping if specified in SF2
+                        if ((zone.sampleModes & 1) === 1 || (zone.sampleModes & 3) === 3) {
+                            source.loop = true;
+                            source.loopStart = Math.max(0, (zone.sample.startLoop - zone.sample.start) / zone.sample.sampleRate);
+                            source.loopEnd = Math.max(0, (zone.sample.endLoop - zone.sample.start) / zone.sample.sampleRate);
+                        }
+
+                        // Soundfont ADSR Envelope Calculation
+                        let dly = timecentsToSecs(zone.volEnv.delay);
+                        let atk = timecentsToSecs(zone.volEnv.attack);
+                        let hld = timecentsToSecs(zone.volEnv.hold);
+                        let dec = timecentsToSecs(zone.volEnv.decay);
+
+                        let susGain = 1.0;
+                        if (zone.volEnv.sustain > 0) {
+                            let attenuationDB = zone.volEnv.sustain / 10;
+                            susGain = Math.max(0.001, Math.pow(10, -attenuationDB / 20)); // Centibels to Gain
+                        }
+
+                        // Attenuate slightly to prevent clipping if stereo/layers stack
+                        let baseGain = 1.0 / Math.max(1, matchedZones.length);
+                        let now = audioCtx.currentTime;
+
+                        // Apply the exact Volume Envelope
+                        gainNode.gain.setValueAtTime(0, now);
+                        if (dly > 0.002) gainNode.gain.setValueAtTime(0, now + dly);
+                        gainNode.gain.linearRampToValueAtTime(baseGain, now + dly + atk);
+                        if (hld > 0.002) gainNode.gain.setValueAtTime(baseGain, now + dly + atk + hld);
+
+                        // Decay towards sustain level naturally
+                        gainNode.gain.exponentialRampToValueAtTime(Math.max(0.001, baseGain * susGain), now + dly + atk + hld + dec);
+
+                        source.connect(gainNode);
+                        gainNode.connect(audioCtx.destination);
+                        source.start(now + dly);
+
+                        sources.push(source);
+                        gainNodes.push(gainNode);
+                    }
+                });
+
+                if (sources.length > 0) {
+                    activeNodes[index] = { sources, gainNodes, zones: matchedZones, mode: 'sf2' };
+                }
+
+            } else {
+                // --- Default Magical Synthesizer Playback ---
+                const gainNode = audioCtx.createGain();
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const filterNode = audioCtx.createBiquadFilter();
+
+                if (instrumentMode === 'lute') {
+                    osc1.type = 'sawtooth'; osc2.type = 'triangle';
+                    osc1.frequency.value = freq; osc2.frequency.value = freq * 1.002;
+                    filterNode.type = 'lowpass';
+                    filterNode.frequency.setValueAtTime(4000, audioCtx.currentTime);
+                    filterNode.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.5);
+                    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.8, audioCtx.currentTime + 0.01);
+                    gainNode.gain.exponentialRampToValueAtTime(0.1, audioCtx.currentTime + 1.2);
+                } else if (instrumentMode === 'brass') {
+                    osc1.type = 'square'; osc2.type = 'sine';
+                    osc1.frequency.value = freq; osc2.frequency.value = freq * 0.998;
+                    filterNode.type = 'lowpass';
+                    filterNode.frequency.setValueAtTime(1000, audioCtx.currentTime);
+                    filterNode.frequency.linearRampToValueAtTime(2500, audioCtx.currentTime + 0.1);
+                    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.6, audioCtx.currentTime + 0.1);
+                    gainNode.gain.setTargetAtTime(0.4, audioCtx.currentTime + 0.1, 0.3);
+                } else if (instrumentMode === 'flute') {
+                    osc1.type = 'sine'; osc2.type = 'sine';
+                    osc1.frequency.value = freq; osc2.frequency.value = freq * 1.005;
+                    filterNode.type = 'lowpass'; filterNode.frequency.setValueAtTime(2000, audioCtx.currentTime);
+                    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.15);
+                    gainNode.gain.setTargetAtTime(0.4, audioCtx.currentTime + 0.15, 0.2);
+                } else if (instrumentMode === 'crystal') {
+                    osc1.type = 'triangle'; osc2.type = 'sine';
+                    osc1.frequency.value = freq; osc2.frequency.value = freq * 2;
+                    filterNode.type = 'bandpass'; filterNode.frequency.setValueAtTime(freq * 2, audioCtx.currentTime);
+                    filterNode.Q.value = 5;
+                    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.02);
+                    gainNode.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + 2.0);
+                }
+
+                osc1.connect(filterNode); osc2.connect(filterNode);
+                filterNode.connect(gainNode); gainNode.connect(audioCtx.destination);
+                osc1.start(); osc2.start();
+
+                activeNodes[index] = { osc1, osc2, gainNode, mode: instrumentMode };
+            }
+
+            // Visuals
+            const keyEl = pianoContainer.children[index];
+            if (keyEl) keyEl.classList.add('active');
+        }
+
+        function triggerNoteOff(index) {
+            if (!activeNodes[index]) return;
+
+            const node = activeNodes[index];
+            const mode = node.mode;
+
+            if (mode === 'sf2') {
+                const { sources, gainNodes, zones } = node;
+                let now = audioCtx.currentTime;
+
+                for (let i = 0; i < sources.length; i++) {
+                    let gainNode = gainNodes[i];
+                    let source = sources[i];
+                    let zone = zones[i];
+
+                    // Enforce a minimum release of 1.5s (or much longer if extended) so notes ring out and blend smoothly
+                    let rel = timecentsToSecs(zone.volEnv.release);
+                    rel = Math.max(rel, isSustainEnabled ? 5.0 : 1.5);
+
+                    gainNode.gain.cancelScheduledValues(now);
+                    gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, now + rel);
+                    source.stop(now + rel + 0.1);
+                }
+            } else {
+                const { osc1, osc2, gainNode } = node;
+                // Extended release for default instruments to prevent choppiness
+                let baseRelease = (mode === 'crystal') ? 2.5 : (mode === 'brass' ? 1.5 : 1.5);
+                let releaseTime = isSustainEnabled ? baseRelease * 3 : baseRelease;
+
+                gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(gainNode.gain.value, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + releaseTime);
+                osc1.stop(audioCtx.currentTime + releaseTime);
+                osc2.stop(audioCtx.currentTime + releaseTime);
+            }
+
+            delete activeNodes[index];
+
+            // Visuals
+            const keyEl = pianoContainer.children[index];
+            if (keyEl) keyEl.classList.remove('active');
+        }
+
+        // --- Controls ---
+        function updateOctaveDisplay() {
+            if (octaveMode === 'restricted') {
+                if (currentOctave === 3) octaveDisplay.textContent = 'Octave: Low';
+                else if (currentOctave === 4) octaveDisplay.textContent = 'Octave: Mid';
+                else if (currentOctave === 5) octaveDisplay.textContent = 'Octave: High';
+            } else {
+                octaveDisplay.textContent = `Octave: ${currentOctave}`;
+            }
+        }
+
+        function updateOctave(delta) {
+            currentOctave += delta;
+            if (octaveMode === 'restricted') {
+                if (currentOctave < 3) currentOctave = 3;
+                if (currentOctave > 5) currentOctave = 5;
+            } else {
+                if (currentOctave < 1) currentOctave = 1;
+                if (currentOctave > 7) currentOctave = 7;
+            }
+            updateOctaveDisplay();
+        }
+
+        const handleOctaveDown = (e) => {
+            if (isRemappingMode) startRebind(e, 'octaveDown', null, btnOctDown);
+            else updateOctave(-1);
+        };
+
+        const handleOctaveUp = (e) => {
+            if (isRemappingMode) startRebind(e, 'octaveUp', null, btnOctUp);
+            else updateOctave(1);
+        };
+
+        btnOctDown.addEventListener('mousedown', handleOctaveDown);
+        btnOctUp.addEventListener('mousedown', handleOctaveUp);
+        btnOctDown.addEventListener('touchstart', (e) => { e.preventDefault(); handleOctaveDown(e); });
+        btnOctUp.addEventListener('touchstart', (e) => { e.preventDefault(); handleOctaveUp(e); });
+
+        btnEditBinds.addEventListener('click', () => {
+            isRemappingMode = !isRemappingMode;
+            if (isRemappingMode) {
+                btnEditBinds.textContent = 'Edit Binds: ON';
+                btnEditBinds.classList.add('border-[#d4af37]', 'text-[#d4af37]');
+                helperText.innerHTML = 'Click any <b class="text-[#d4af37]">Piano Key</b> or <b class="text-[#d4af37]">Octave Button</b> to remap it.';
+            } else {
+                btnEditBinds.textContent = 'Edit Binds: OFF';
+                btnEditBinds.classList.remove('border-[#d4af37]', 'text-[#d4af37]');
+                helperText.innerHTML = 'Use keys to play notes. Toggle <b class="text-[#d4af37]">Edit Binds</b> to change mapping. Click or touch keys to interact.';
+                cancelRebind();
+            }
+        });
+
+        octaveToggle.addEventListener('change', (e) => {
+            octaveMode = e.target.checked ? 'restricted' : 'full';
+            if (octaveMode === 'restricted') {
+                if (currentOctave < 3) currentOctave = 3;
+                if (currentOctave > 5) currentOctave = 5;
+            }
+            updateOctaveDisplay();
+        });
+
+        sustainToggle.addEventListener('change', (e) => {
+            isSustainEnabled = e.target.checked;
+            showMessage(isSustainEnabled ? "Sustain engaged: Notes will resonate." : "Sustain disengaged.");
+        });
+
+        // --- Keyboard Mapping ---
+        window.addEventListener('keydown', (e) => {
+            if (e.repeat) return;
+
+            if (activeRebind) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const code = e.code;
+                if (code === 'Escape') {
+                    cancelRebind();
+                    showMessage("Binding cancelled.");
+                    return;
+                }
+
+                if (activeRebind.type === 'note') {
+                    bindings.notes[activeRebind.index] = code;
+                    activeRebind.el.innerHTML = `[ ${formatKey(code)} ]`;
+                }
+                else if (activeRebind.type === 'octaveDown') {
+                    bindings.octaveDown = code;
+                    activeRebind.el.innerHTML = `[ ${formatKey(code)} ] Octave -`;
+                }
+                else if (activeRebind.type === 'octaveUp') {
+                    bindings.octaveUp = code;
+                    activeRebind.el.innerHTML = `[ ${formatKey(code)} ] Octave +`;
+                }
+
+                showMessage(`Key bound to ${formatKey(code)}.`);
+                activeRebind = null;
+                return;
+            }
+
+            if (e.code === bindings.octaveDown) {
+                updateOctave(-1);
+                btnOctDown.classList.add('active'); setTimeout(() => btnOctDown.classList.remove('active'), 100);
+            } else if (e.code === bindings.octaveUp) {
+                updateOctave(1);
+                btnOctUp.classList.add('active'); setTimeout(() => btnOctUp.classList.remove('active'), 100);
+            } else {
+                let noteIndex = bindings.notes.indexOf(e.code);
+
+                // Fallback for Numpad if standard digits are bound
+                let fallbackIndex = -1;
+                if (e.code.startsWith('Numpad') && e.code.length === 7) {
+                    let num = parseInt(e.code.slice(6));
+                    if (num >= 1 && num <= 8 && bindings.notes[num-1] === `Digit${num}`) {
+                        fallbackIndex = num - 1;
+                    }
+                }
+
+                if (noteIndex !== -1) triggerNoteOn(noteIndex);
+                else if (fallbackIndex !== -1) triggerNoteOn(fallbackIndex);
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (activeRebind) return;
+
+            let noteIndex = bindings.notes.indexOf(e.code);
+            let fallbackIndex = -1;
+            if (e.code.startsWith('Numpad') && e.code.length === 7) {
+                let num = parseInt(e.code.slice(6));
+                if (num >= 1 && num <= 8 && bindings.notes[num-1] === `Digit${num}`) {
+                    fallbackIndex = num - 1;
+                }
+            }
+
+            if (noteIndex !== -1) triggerNoteOff(noteIndex);
+            else if (fallbackIndex !== -1) triggerNoteOff(fallbackIndex);
+        });
+
+        function showMessage(msg) {
+            sysMessage.textContent = msg;
+            sysMessage.style.opacity = 1;
+            setTimeout(() => { sysMessage.style.opacity = 0; }, 3000);
+        }
+
+        synthSelect.addEventListener('change', (e) => {
+            showMessage(`Instrument attuned to: ${e.target.options[e.target.selectedIndex].text}`);
+        });
+
+        // --- NATIVE SF2 PARSER ---
+        btnUnloadSf2.addEventListener('click', () => {
+            const optgroup = document.getElementById('sf2-optgroup');
+            if (optgroup) optgroup.remove();
+
+            synthSelect.value = 'lute';
+            sf2Data = { buffer: null, smplOffset: 0, smplSize: 0, presets: [], bufferCache: {} };
+            sf2Upload.value = '';
+
+            btnUnloadSf2.classList.add('hidden');
+            showMessage("Soundfont un-attuned. Memory cleared.");
+        });
+
+        sf2Upload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            showMessage(`Attuning ${file.name}... parsing arcane structures.`);
+            const reader = new FileReader();
+
+            reader.onload = function(evt) {
+                try {
+                    const arrayBuffer = evt.target.result;
+                    const dv = new DataView(arrayBuffer);
+                    let offset = 0;
+
+                    sf2Data = { buffer: arrayBuffer, smplOffset: 0, smplSize: 0, presets: [], bufferCache: {} };
+
+                    function readStrAt(off, len) {
+                        let s = '';
+                        for(let i=0; i<len; i++) {
+                            let c = dv.getUint8(off + i);
+                            if (c === 0) break; // Null terminated
+                            if (c >= 32 && c <= 126) s += String.fromCharCode(c);
+                        }
+                        return s.trim();
+                    }
+
+                    function readStr(len) {
+                        let s = readStrAt(offset, len);
+                        offset += len;
+                        return s;
+                    }
+
+                    let pdtaChunks = {};
+
+                    // Pass 1: Find major chunks
+                    while (offset < arrayBuffer.byteLength - 8) {
+                        let chunkId = readStr(4);
+                        let chunkSize = dv.getUint32(offset, true); offset += 4;
+
+                        if (chunkId === 'RIFF' || chunkId === 'LIST') {
+                            readStr(4); // Skip sub-type id
+                            continue;
+                        }
+
+                        let nextOffset = offset + chunkSize;
+                        if (chunkSize % 2 !== 0) nextOffset++; // 2-byte alignment padding
+
+                        if (chunkId === 'smpl') {
+                            sf2Data.smplOffset = offset;
+                            sf2Data.smplSize = chunkSize;
+                        } else if (['phdr', 'pbag', 'pgen', 'inst', 'ibag', 'igen', 'shdr'].includes(chunkId)) {
+                            pdtaChunks[chunkId] = { offset, size: chunkSize };
+                        }
+
+                        offset = nextOffset;
+                    }
+
+                    // Pass 2: Reconstruct Instrument Presets
+                    if (pdtaChunks.phdr && pdtaChunks.shdr && sf2Data.smplSize > 0) {
+                        let shdr = [], igen = [], ibag = [], inst = [], pgen = [], pbag = [], phdr = [];
+
+                        // Parse Samples
+                        let o = pdtaChunks.shdr.offset, end = o + pdtaChunks.shdr.size;
+                        while(o < end) {
+                            shdr.push({
+                                name: readStrAt(o, 20), start: dv.getUint32(o+20, true), end: dv.getUint32(o+24, true),
+                                startLoop: dv.getUint32(o+28, true), endLoop: dv.getUint32(o+32, true),
+                                sampleRate: dv.getUint32(o+36, true), originalPitch: dv.getUint8(o+40),
+                                pitchCorrection: dv.getInt8(o+41), sampleType: dv.getUint16(o+44, true)
+                            }); o += 46;
+                        }
+
+                        // Parse Generators and Bags
+                        o = pdtaChunks.igen.offset; end = o + pdtaChunks.igen.size;
+                        while(o < end) { igen.push({ oper: dv.getUint16(o, true), amount: dv.getUint16(o+2, true), amountInt: dv.getInt16(o+2, true) }); o += 4; }
+
+                        o = pdtaChunks.ibag.offset; end = o + pdtaChunks.ibag.size;
+                        while(o < end) { ibag.push({ genNdx: dv.getUint16(o, true) }); o += 4; }
+
+                        o = pdtaChunks.inst.offset; end = o + pdtaChunks.inst.size;
+                        while(o < end) { inst.push({ name: readStrAt(o, 20), ibagNdx: dv.getUint16(o+20, true) }); o += 22; }
+
+                        o = pdtaChunks.pgen.offset; end = o + pdtaChunks.pgen.size;
+                        while(o < end) { pgen.push({ oper: dv.getUint16(o, true), amount: dv.getUint16(o+2, true) }); o += 4; }
+
+                        o = pdtaChunks.pbag.offset; end = o + pdtaChunks.pbag.size;
+                        while(o < end) { pbag.push({ genNdx: dv.getUint16(o, true) }); o += 4; }
+
+                        o = pdtaChunks.phdr.offset; end = o + pdtaChunks.phdr.size;
+                        while(o < end) {
+                            phdr.push({ name: readStrAt(o, 20), preset: dv.getUint16(o+20, true), bank: dv.getUint16(o+22, true), pbagNdx: dv.getUint16(o+24, true) });
+                            o += 38;
+                        }
+
+                        // Build Preset -> Instrument -> Zone Mapping
+                        for (let i = 0; i < phdr.length - 1; i++) {
+                            let preset = phdr[i];
+                            if (preset.name === 'EOP') continue;
+                            let presetZones = [];
+
+                            for (let j = preset.pbagNdx; j < phdr[i+1].pbagNdx; j++) {
+                                let pGenEnd = pbag[j+1] ? pbag[j+1].genNdx : pgen.length;
+                                let instId = -1;
+                                for (let k = pbag[j].genNdx; k < pGenEnd; k++) if (pgen[k].oper === 41) instId = pgen[k].amount;
+
+                                if (instId >= 0 && instId < inst.length - 1) {
+
+                                    // Instrument Global Zone defaults
+                                    let globalInstZone = {
+                                        tuneCents: 0,
+                                        velRange: { low: 0, high: 127 },
+                                        sampleModes: 0,
+                                        volEnv: { delay: -12000, attack: -12000, hold: -12000, decay: -12000, sustain: 0, release: -12000 }
+                                    };
+
+                                    for (let z = inst[instId].ibagNdx; z < inst[instId+1].ibagNdx; z++) {
+                                        let iGenEnd = ibag[z+1] ? ibag[z+1].genNdx : igen.length;
+
+                                        // Inherit parameters from the Global Zone
+                                        let zoneData = {
+                                            keyRange: { low: 0, high: 127 },
+                                            velRange: { ...globalInstZone.velRange },
+                                            tuneCents: globalInstZone.tuneCents,
+                                            sampleModes: globalInstZone.sampleModes,
+                                            volEnv: { ...globalInstZone.volEnv }
+                                        };
+                                        let sampleId = -1;
+
+                                        for (let g = ibag[z].genNdx; g < iGenEnd; g++) {
+                                            let gen = igen[g];
+                                            if (gen.oper === 43) zoneData.keyRange = { low: gen.amount & 0xFF, high: gen.amount >> 8 };
+                                            else if (gen.oper === 44) zoneData.velRange = { low: gen.amount & 0xFF, high: gen.amount >> 8 };
+                                            else if (gen.oper === 53) sampleId = gen.amount;
+                                            else if (gen.oper === 58) zoneData.rootKey = gen.amount & 0xFF;
+                                            else if (gen.oper === 51) zoneData.tuneCents += gen.amountInt * 100;
+                                            else if (gen.oper === 52) zoneData.tuneCents += gen.amountInt;
+                                            else if (gen.oper === 54) zoneData.sampleModes = gen.amount;
+
+                                            // Volume Envelope Modulators
+                                            else if (gen.oper === 33) zoneData.volEnv.delay = gen.amountInt;
+                                            else if (gen.oper === 34) zoneData.volEnv.attack = gen.amountInt;
+                                            else if (gen.oper === 35) zoneData.volEnv.hold = gen.amountInt;
+                                            else if (gen.oper === 36) zoneData.volEnv.decay = gen.amountInt;
+                                            else if (gen.oper === 37) zoneData.volEnv.sustain = gen.amountInt;
+                                            else if (gen.oper === 38) zoneData.volEnv.release = gen.amountInt;
+                                        }
+
+                                        if (sampleId === -1 && z === inst[instId].ibagNdx) {
+                                            globalInstZone = zoneData; // Save global zone to apply to subsequent local zones
+                                        } else if (sampleId >= 0 && sampleId < shdr.length) {
+                                            zoneData.sample = shdr[sampleId];
+                                            presetZones.push(zoneData);
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (presetZones.length > 0) {
+                                sf2Data.presets.push({ name: preset.name, bank: preset.bank, presetId: preset.preset, zones: presetZones });
+                            }
+                        }
+                    }
+
+                    // Inject newly built Presets into UI
+                    if (sf2Data.presets.length > 0) {
+                        let optgroup = document.getElementById('sf2-optgroup');
+                        if (!optgroup) {
+                            optgroup = document.createElement('optgroup');
+                            optgroup.id = 'sf2-optgroup';
+                            optgroup.label = `SF2: ${file.name}`;
+                            synthSelect.appendChild(optgroup);
+                        }
+                        optgroup.innerHTML = '';
+
+                        sf2Data.presets.forEach((preset, index) => {
+                            let opt = document.createElement('option');
+                            opt.value = 'sf2_' + index;
+                            let bnk = preset.bank === 128 ? 'Perc' : preset.bank;
+                            opt.textContent = `[Bank ${bnk}] ${preset.name}`;
+                            optgroup.appendChild(opt);
+                        });
+
+                        synthSelect.value = 'sf2_0';
+                        btnUnloadSf2.classList.remove('hidden');
+                        showMessage(`Success! Reconstructed ${sf2Data.presets.length} Presets from ${file.name}.`);
+                    } else {
+                        showMessage(`Could not read valid instrument presets from ${file.name}.`);
+                    }
+
+                } catch (e) {
+                    console.error(e);
+                    showMessage(`Error parsing Soundfont file.`);
+                }
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+
+        updateOctaveDisplay();
+
+    </script>
+</body>
+</html>
