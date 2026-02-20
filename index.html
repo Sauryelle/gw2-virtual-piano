@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sarya's Play Thingy</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="saryamusic2.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
     
@@ -289,77 +293,77 @@
                 <img src="saryamusic2.png" alt="Sarya's Music Thingy" class="mx-auto h-48 sm:h-64 mb-4 object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]" onerror="this.style.display='none'">
                 
                 <h1 class="gw2-title text-4xl sm:text-5xl mb-2">Sarya's Music Thingy</h1>
-            <!-- Song Tabs / Tomes -->
-            <div class="flex justify-center flex-wrap gap-4 mt-5">
-                <a href="https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/edit?tab=t.0" target="_blank" class="text-[#d4af37] hover:text-[#fff3e0] transition-colors font-['Cinzel'] text-sm tracking-widest border border-[#5a4b3c] bg-black/40 px-4 py-1.5 rounded hover:bg-[#3a0e0e]/60 no-underline flex items-center gap-2 shadow-lg hover:border-[#d4af37]">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                    Tome of Melodies I
-                </a>
-                
-                <a href="https://docs.google.com/document/d/1Z3IU5J_hb1xtaNVnv6UK5Xnz2MwDj_RtrCC46QR1zJU/edit?tab=t.0" target="_blank" class="text-[#d4af37] hover:text-[#fff3e0] transition-colors font-['Cinzel'] text-sm tracking-widest border border-[#5a4b3c] bg-black/40 px-4 py-1.5 rounded hover:bg-[#3a0e0e]/60 no-underline flex items-center gap-2 shadow-lg hover:border-[#d4af37]">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                    Tome of Melodies II
-                </a>
-            </div>
-        </div>
+                <p class="status-text text-lg mb-5">For exclusive use of everyone.</p>
 
-        <!-- Global Advanced Controls -->
-        <div class="flex flex-col w-full max-w-4xl mb-6 gap-4 px-2 mt-2">
-            
-            <!-- SF2 Loading -->
-            <div class="flex justify-center w-full gap-4 items-center">
-                <label for="sf2-upload" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest cursor-pointer text-center whitespace-nowrap">
-                    Load SF2
-                </label>
-                <input type="file" id="sf2-upload" accept=".sf2" class="hidden">
-                <button id="btn-unload-sf2" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest text-center hidden whitespace-nowrap">
-                    Unload SF2
+                <button id="btn-toggle-songbook" class="gw2-button px-6 py-2 rounded font-bold text-sm tracking-widest text-center shadow-lg border border-[#8c7355] text-[#e6d8c3]">
+                    Open Songbook
                 </button>
             </div>
 
-            <!-- Instrument Row -->
-            <div class="flex justify-center w-full gap-2 items-center">
-                <select id="synth-select" class="gw2-select w-full max-w-xs px-4 py-2 rounded font-bold text-sm tracking-widest cursor-pointer text-center outline-none focus:border-[#d4af37]">
-                    <optgroup label="Default Magic Instruments">
-                        <option value="lute">Instrument: Lute</option>
-                        <option value="brass">Instrument: Brass</option>
-                        <option value="flute">Instrument: Flute</option>
-                        <option value="crystal">Instrument: Crystal</option>
-                    </optgroup>
-                    <!-- Dynamic SF2 group appended here via JS -->
-                </select>
+            <!-- Global Advanced Controls -->
+            <div class="flex flex-col w-full max-w-4xl mb-6 gap-4 px-2 mt-2">
+                <!-- SF2 Loading -->
+                <div class="flex justify-center w-full gap-4 items-center">
+                    <label for="sf2-upload" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest cursor-pointer text-center whitespace-nowrap">
+                        Load SF2
+                    </label>
+                    <input type="file" id="sf2-upload" accept=".sf2" class="hidden">
+                    <button id="btn-unload-sf2" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest text-center hidden whitespace-nowrap">
+                        Unload SF2
+                    </button>
+                </div>
+
+                <!-- Instrument Row -->
+                <div class="flex justify-center w-full gap-2 items-center">
+                    <select id="synth-select" class="gw2-select w-full max-w-xs px-4 py-2 rounded font-bold text-sm tracking-widest cursor-pointer text-center outline-none focus:border-[#d4af37]">
+                        <optgroup label="Default Magic Instruments">
+                            <option value="lute">Instrument: Lute</option>
+                            <option value="brass">Instrument: Brass</option>
+                            <option value="flute">Instrument: Flute</option>
+                            <option value="crystal">Instrument: Crystal</option>
+                        </optgroup>
+                        <!-- Dynamic SF2 group appended here via JS -->
+                    </select>
+                </div>
             </div>
 
-            <div class="flex justify-center items-center w-full mt-2 gap-4 sm:gap-8">
-                <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors" title="Simulates a sustain pedal for a reverberating effect">
-                    <input type="checkbox" id="sustain-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer">
-                    <span>Extend Notes (Sustain)</span>
-                </label>
+            <div id="sys-message" class="text-[#d4af37] font-['Cinzel'] h-6 mb-4 opacity-0 transition-opacity duration-500 text-sm tracking-wider">
+                Instrument Attuned.
             </div>
-        </div>
 
-        <div id="sys-message" class="text-[#d4af37] font-['Cinzel'] h-6 mb-4 opacity-0 transition-opacity duration-500 text-sm tracking-wider">
-            Instrument Attuned.
-        </div>
-
-        <!-- ============================== -->
-        <!-- VIEW 1: GW2 PIANO (1 Octave)   -->
-        <!-- ============================== -->
-        <div id="gw2-view" class="flex flex-col items-center w-full">
-            
-            <!-- Octave Row (GW2 Only) -->
-            <div class="flex flex-col sm:flex-row justify-center w-full gap-2 items-center mb-4">
-                <button id="btn-oct-down" class="gw2-button w-full sm:w-auto px-4 py-2 rounded font-bold text-sm tracking-widest text-center">
-                    [ Q ] Octave -
-                </button>
+            <!-- ============================== -->
+            <!-- VIEW 1: GW2 PIANO (1 Octave)   -->
+            <!-- ============================== -->
+            <div id="gw2-view" class="flex flex-col items-center w-full">
                 
-                <div class="bg-black/50 border border-[#5a4b3c] px-4 py-2 rounded text-center w-full sm:w-auto min-w-[140px]">
-                    <span class="text-[#d4af37] font-['Cinzel'] font-bold text-lg" id="octave-display">Octave: Mid</span>
+                <!-- Octave Row (GW2 Only) -->
+                <div class="flex flex-col sm:flex-row justify-center w-full gap-2 items-center mb-4">
+                    <button id="btn-oct-down" class="gw2-button w-full sm:w-auto px-4 py-2 rounded font-bold text-sm tracking-widest text-center">
+                        [ Q ] Octave -
+                    </button>
+                    
+                    <div class="bg-black/50 border border-[#5a4b3c] px-4 py-2 rounded text-center w-full sm:w-auto min-w-[140px]">
+                        <span class="text-[#d4af37] font-['Cinzel'] font-bold text-lg" id="octave-display">Octave: Mid</span>
+                    </div>
+                    
+                    <button id="btn-oct-up" class="gw2-button w-full sm:w-auto px-4 py-2 rounded font-bold text-sm tracking-widest text-center">
+                        [ E ] Octave +
+                    </button>
                 </div>
                 
-                <button id="btn-oct-up" class="gw2-button w-full sm:w-auto px-4 py-2 rounded font-bold text-sm tracking-widest text-center">
-                    [ E ] Octave +
-                </button>
+                <div class="flex flex-col sm:flex-row justify-center items-center w-full mb-6 gap-4 sm:gap-8">
+                    <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors">
+                        <input type="checkbox" id="octave-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer" checked>
+                        <span>Restrict Octaves (Low / Mid / High)</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors" title="Simulates a sustain pedal for a reverberating effect">
+                        <input type="checkbox" id="sustain-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer">
+                        <span>Extend Notes (Sustain)</span>
+                    </label>
+                </div>
+
+                <!-- Piano Keys -->
+                <div class="piano-container" id="piano">
             </div>
             
             <div class="flex justify-center items-center w-full mb-6">
@@ -407,10 +411,6 @@
 
         <!-- Global View Controls -->
         <div class="flex flex-col justify-center items-center w-full mt-8 gap-4 px-4">
-            <button id="btn-toggle-songbook" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest text-center shadow-lg border border-[#8c7355] text-[#e6d8c3]">
-                Open Songbook
-            </button>
-
             <button id="btn-toggle-view" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest text-center shadow-lg border border-[#d4af37] text-[#d4af37]">
                 Switch to Heartopia View
             </button>
@@ -422,8 +422,20 @@
         <div id="songbook-panel" class="gw2-panel hidden flex-col w-full xl:w-[500px] 2xl:w-[600px] rounded-xl p-4">
             <h2 class="gw2-title text-2xl mb-4 text-center">Tome Viewer</h2>
             
+            <!-- Quick Load Tomes -->
+            <div class="flex flex-wrap justify-center gap-3 mb-5">
+                <button id="btn-load-tome-light" class="gw2-button px-3 py-1.5 rounded font-bold text-xs tracking-widest border border-[#5a4b3c] flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    Tome of Melodies (Light)
+                </button>
+                <button id="btn-load-tome-dark" class="gw2-button px-3 py-1.5 rounded font-bold text-xs tracking-widest border border-[#d4af37] flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                    Tome of Melodies (Dark)
+                </button>
+            </div>
+
             <div class="flex justify-center gap-2 mb-2 w-full max-w-md mx-auto">
-                <input type="text" id="songbook-url" class="gw2-select flex-1 px-3 py-1.5 rounded text-sm outline-none placeholder-[#8c7355]" placeholder="Paste Google Doc link here..." value="https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview">
+                <input type="text" id="songbook-url" class="gw2-select flex-1 px-3 py-1.5 rounded text-sm outline-none placeholder-[#8c7355]" placeholder="Paste Google Doc link here..." value="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview">
                 <button id="btn-load-songbook" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest">Load</button>
             </div>
             
@@ -431,7 +443,7 @@
                 Paste a <b class="text-[#d4af37]">Google Doc</b> link in the field above to view it here.
             </div>
 
-            <iframe id="songbook-frame" class="w-full flex-1 bg-[#e6d8c3] rounded border border-[#5a4b3c] min-h-[500px] xl:min-h-0" src="https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview" title="Songbook"></iframe>
+            <iframe id="songbook-frame" class="w-full flex-1 bg-[#e6d8c3] rounded border border-[#5a4b3c] min-h-[500px] xl:min-h-0" src="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview" title="Songbook"></iframe>
         </div>
 
     </div> <!-- End Flex Wrapper -->
@@ -456,6 +468,10 @@
         const songbookUrlInput = document.getElementById('songbook-url');
         const btnLoadSongbook = document.getElementById('btn-load-songbook');
         const songbookFrame = document.getElementById('songbook-frame');
+        
+        const btnLoadTomeLight = document.getElementById('btn-load-tome-light');
+        const btnLoadTomeDark = document.getElementById('btn-load-tome-dark');
+
         let isSongbookOpen = false;
 
         btnToggleSongbook.addEventListener('click', () => {
@@ -488,6 +504,25 @@
         btnLoadSongbook.addEventListener('click', loadSongbookUrl);
         songbookUrlInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') loadSongbookUrl();
+        });
+
+        function setActiveTomeButton(activeBtn, inactiveBtn) {
+            activeBtn.classList.add('border-[#d4af37]');
+            activeBtn.classList.remove('border-[#5a4b3c]');
+            inactiveBtn.classList.add('border-[#5a4b3c]');
+            inactiveBtn.classList.remove('border-[#d4af37]');
+        }
+
+        btnLoadTomeLight.addEventListener('click', () => {
+            songbookUrlInput.value = 'https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview';
+            setActiveTomeButton(btnLoadTomeLight, btnLoadTomeDark);
+            loadSongbookUrl();
+        });
+
+        btnLoadTomeDark.addEventListener('click', () => {
+            songbookUrlInput.value = 'https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview';
+            setActiveTomeButton(btnLoadTomeDark, btnLoadTomeLight);
+            loadSongbookUrl();
         });
 
         btnToggleView.addEventListener('click', () => {
