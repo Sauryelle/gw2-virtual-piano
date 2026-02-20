@@ -19,18 +19,9 @@ A zero-dependency, browser-based virtual piano inspired by the dark fantasy aest
     * **Polyphonic Playback:** Full velocity and envelope management.
 * **Tomes of Melodies:** Built-in links to community-sourced tabs and sheet music.
 
----
-
-## 📸 Preview
-
-![Sarya's Play Thingy Screenshot](screenshot.png)
-*Typical UI: Dark parchment, gold accents, and reactive key feedback.*
-
----
-
 ## 🚀 Live Demo
 
-**[➔ Play The Mystic Octave Here](https://yourusername.github.io/your-repo-name/)**
+**[➔ Play The Mystic Octave Here](https://sauryelle.github.io/gw2-virtual-piano/)**
 
 ---
 
