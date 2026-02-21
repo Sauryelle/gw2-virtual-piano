@@ -389,7 +389,7 @@
 <body>
 
     <div class="flex flex-col xl:flex-row w-full max-w-[2200px] mx-auto items-stretch justify-center mt-12 sm:mt-0">
-
+        
         <!-- ============================== -->
         <!-- LEFT PANEL: SONGBOOK           -->
         <!-- ============================== -->
@@ -526,9 +526,23 @@
         <!-- RIGHT PANEL: TOME SCRIBE       -->
         <!-- ============================== -->
         <div id="scribe-panel" class="gw2-panel flex-col w-full xl:w-[600px] 2xl:w-[650px] rounded-xl p-4">
-            <h2 class="gw2-title text-3xl mb-1 text-center">Tome Scribe</h2>
-            <h3 class="text-[#d4af37] font-['Cinzel'] text-sm tracking-widest font-bold mb-4 text-center">Convert arcane MIDI magic</h3>
-
+            
+            <!-- Toggleable Scribe Header -->
+            <div class="w-full flex justify-between items-end mb-4 px-2">
+                <div>
+                    <h2 class="gw2-title text-3xl mb-1 text-left">Tome Scribe</h2>
+                    <h3 class="text-[#d4af37] font-['Cinzel'] text-sm tracking-widest font-bold m-0">Convert arcane MIDI magic</h3>
+                </div>
+                <div class="flex items-center gap-2 mb-1">
+                    <select id="bprSelect" class="gw2-select px-2 py-1 rounded font-bold text-xs tracking-widest text-center shadow-lg border border-[#5a4b3c] outline-none cursor-pointer" title="Bars Per Row">
+                        <option value="4">4 BPR</option>
+                        <option value="3">3 BPR</option>
+                        <option value="2">2 BPR</option>
+                        <option value="1">1 BPR</option>
+                    </select>
+                </div>
+            </div>
+            
             <div class="flex justify-center items-center w-full mb-4">
                 <label for="midiFileInput" class="gw2-button px-8 py-2 rounded font-bold text-sm tracking-widest cursor-pointer text-center shadow-lg flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>
@@ -547,7 +561,7 @@
                     <span class="text-[0.55rem] text-[#e6d8c3]/60 font-serif tracking-normal normal-case">Export by Jenpai</span>
                 </button>
                 <button id="exportImageBtn" class="gw2-button px-3 py-1.5 rounded text-center shadow-lg flex flex-col items-center justify-center gap-1 border-[#5a4b3c] flex-1">
-                    <div class="flex items-center gap-1 font-bold text-[0.65rem] tracking-widest whitespace-nowrap"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>Export Image</div>
+                    <div class="flex items-center gap-1 font-bold text-[0.65rem] tracking-widest whitespace-nowrap"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z" /></svg>Export Image</div>
                     <span class="text-[0.55rem] text-[#e6d8c3]/60 font-serif tracking-normal normal-case">Spell Page PNG</span>
                 </button>
             </div>
@@ -599,13 +613,13 @@
         const songbookFrame = document.getElementById('songbook-frame');
         const btnLoadTomeLight = document.getElementById('btn-load-tome-light');
         const btnLoadTomeDark = document.getElementById('btn-load-tome-dark');
-
+        
         const btnToggleScribe = document.getElementById('btn-toggle-scribe');
         const scribePanel = document.getElementById('scribe-panel');
 
         const metronomeToggle = document.getElementById('metronome-toggle');
         const bpmInput = document.getElementById('metronome-bpm');
-
+        
         const btnEditBinds = document.getElementById('btn-edit-binds');
         const btnOctDown = document.getElementById('btn-oct-down');
         const btnOctUp = document.getElementById('btn-oct-up');
@@ -746,7 +760,7 @@
             { octave: 3, dot: 'bottom', keys: [ { offset: 0, solfege: 'DO', bindLabel: ',', code: 'Comma', num: 1, type: 'white' }, { offset: 1, bindLabel: 'L', code: 'KeyL', type: 'black' }, { offset: 2, solfege: 'RE', bindLabel: '.', code: 'Period', num: 2, type: 'white' }, { offset: 3, bindLabel: ';', code: 'Semicolon', type: 'black' }, { offset: 4, solfege: 'MI', bindLabel: '/', code: 'Slash', num: 3, type: 'white' }, { offset: 5, solfege: 'FA', bindLabel: 'O', code: 'KeyO', num: 4, type: 'white', gap: true }, { offset: 6, bindLabel: '0', code: 'Digit0', type: 'black' }, { offset: 7, solfege: 'SOL', bindLabel: 'P', code: 'KeyP', num: 5, type: 'white' }, { offset: 8, bindLabel: '-', code: 'Minus', type: 'black' }, { offset: 9, solfege: 'LA', bindLabel: '[', code: 'BracketLeft', num: 6, type: 'white' }, { offset: 10, bindLabel: '=', code: 'Equal', type: 'black' }, { offset: 11, solfege: 'SI', bindLabel: ']', code: 'BracketRight', num: 7, type: 'white' } ]}
         ];
         const heartopiaBindsMap = {};
-
+        
         // Restore fully featured SF2 Storage Cache
         let sf2Data = { buffer: null, smplOffset: 0, smplSize: 0, presets: [], bufferCache: {} };
 
@@ -1367,13 +1381,20 @@
         });
 
         // ==========================================
-        // 4. TOME SCRIBE LOGIC (Original Formats)
+        // 4. TOME SCRIBE LOGIC (Powerina Preview, Jenpai Export)
         // ==========================================
         let originalFileName = "converted";
+        let globalMidiFile = null;
+
+        const bprSelect = document.getElementById("bprSelect");
+        const midiInput = document.getElementById("midiFileInput");
+        const textareaA = document.getElementById("textareaA");
+        const textareaB = document.getElementById("textareaB");
 
         function showScribeMessage(msg) {
             const sm = document.getElementById('scribe-sys-message');
-            sm.textContent = msg; sm.style.opacity = 1;
+            sm.textContent = msg; 
+            sm.style.opacity = 1;
             setTimeout(() => sm.style.opacity = 0, 4000);
         }
 
@@ -1469,7 +1490,8 @@
             return { note: key, octaveDiff: octaveDiff }
         }
 
-        const parseFile = async (arrayBuffer) => {
+        // --- POWERINA FORMAT PARSER (Preview Window) ---
+        const parseFilePowerina = async (arrayBuffer) => {
             let midi = new Midi(arrayBuffer);
             const ppq = midi.header.ppq; const quarter = ppq;
             const multipleSignatures = midi.header.timeSignatures.length > 1;
@@ -1540,11 +1562,11 @@
                             note.octave = note.octave + nTransposed.octaveDiff;
                             key = nTransposed.note;
                             if (!isNaN(key)) key = parseInt(key);
-
+                            
                             const nextNote = bar.notes[index + 1];
                             let startOffset = 0;
                             if (currentOctave === -1) currentOctave = note.octave;
-
+                            
                             if (index === 0) {
                                 prevTick = note.ticks;
                                 if (key === 1 && currentOctave < note.octave) { key = 8; startOffset = -1; }
@@ -1607,10 +1629,287 @@
             return tracks;
         }
 
-        const midiInput = document.getElementById("midiFileInput");
-        const textareaA = document.getElementById("textareaA");
-        const textareaB = document.getElementById("textareaB");
+        // --- JENPAI FORMAT PARSER (Spreadsheet Exporter) ---
+        const generateJenpaiFormat = async (arrayBuffer, fileName) => {
+            let midi = new Midi(arrayBuffer);
+            const pitches = { "C": "1", "C#": "#1", "D": "2", "D#": "#2", "E": "3", "F": "4", "F#": "#4", "G": "5", "G#": "#5", "A": "6", "A#": "#6", "B": "7" };
+            const octaveBrackets = [ {left: "{", right: "}"}, {left: "{", right: "}"}, {left: "{", right: "}"}, {left: "[", right: "]"}, {left: "", right: ""}, {left: "(", right: ")"}, {left: "<", right: ">"}, {left: "<", right: ">"}, {left: "<", right: ">"} ];
+            let rest4th = "—"; let rest8th = "–"; let rest16th = "-";
+            let sep4th = "    "; let sep8th = "  "; let sep16th = " ";
+            let sepMeasure = "\n";
+            let rest8thOptional = ""; let rest16thOptional = ""; let sep8thOptional = ""; let sep16thOptional = "";
+            let lessMeasureBrackets = false; 
+            
+            let lastTick = midi.durationTicks + 1;
+            let ticksPerQuarter = midi.header.ppq;
+            let measures = {};
 
+            midi.header.timeSignatures.forEach((timeSig, timeSigIndex) => {
+                let beatsPerMeasure = timeSig.timeSignature[0];
+                let ticksPerBeat = (4 / timeSig.timeSignature[1]) * ticksPerQuarter;
+                let ticksPerMeasure = timeSig.timeSignature[0] * ticksPerBeat;
+                let nextTimeSigStartingTick = (midi.header.timeSignatures[timeSigIndex+1] == null) ? lastTick : midi.header.timeSignatures[timeSigIndex+1].ticks;
+                let thisTimeSigTicksDuration = nextTimeSigStartingTick - timeSig.ticks;
+                let measuresOfThisTimeSig = Math.ceil(thisTimeSigTicksDuration/ticksPerMeasure);
+
+                for (let measureCount = 1; measureCount <= measuresOfThisTimeSig; measureCount++) {
+                    let measureNumber = Object.keys(measures).length+1;
+                    measures[measureNumber] = {firstTick: timeSig.ticks+(measureCount-1)*ticksPerMeasure, beatTicks: ticksPerBeat, beatNotes: {}, lastTick: timeSig.ticks+(measureCount)*ticksPerMeasure};
+                    for (let beat = 1; beat <= beatsPerMeasure; beat++) measures[measureNumber].beatNotes[beat] = {1:[], 2:[], 3:[], 4:[]};
+                }
+            });
+
+            function getRealMeasureFromTick(tick) {
+                for (let measure = 1; measure <= Object.keys(measures).length; measure++) {
+                    if (measures[measure].firstTick <= tick && tick < measures[measure].lastTick) return measure;
+                }
+                return "TICK " + tick + " IS NOT IN THE SONG!!!";
+            }
+
+            function getBeatType(beat) {
+                let beatType = "";
+                for (let microBeat = 1; microBeat <= Object.keys(beat).length; microBeat++) {
+                    if (beat[microBeat].length === 0) beatType += "0"; else beatType += "1";
+                }
+                return beatType;
+            }
+
+            let tabNotes = fileName + "\n\n";
+
+            midi.tracks.forEach((track, trackIndex) => {
+                if (track.notes.length < 1) return;
+                let beatNotes;
+                let trackMeasures = JSON.parse(JSON.stringify(measures));
+
+                let trackName = trackIndex === 0 ? midi.header.name : midi.tracks[trackIndex - 1].name;
+                trackName = trackName ? trackName.slice(0, -1) : "Track";
+
+                track.notes.forEach((note, noteIndex) => {
+                    note.pitchKey = note.pitch.replace(/\d/g, ''); 
+
+                    let noteMeasure = getRealMeasureFromTick(note.ticks);
+                    if (typeof noteMeasure === 'string') return;
+                    let localTick = note.ticks - trackMeasures[noteMeasure].firstTick;
+                    let noteBeat = Math.floor(localTick/trackMeasures[noteMeasure].beatTicks + 1);
+                    let microBeat = Math.floor(1+4*(localTick/trackMeasures[noteMeasure].beatTicks % 1));
+
+                    let prevNoteIndex = noteIndex-1;
+                    let thePrevNote = track.notes[prevNoteIndex];
+                    while (thePrevNote !== undefined && thePrevNote.midi === note.midi) {
+                        prevNoteIndex--;
+                        thePrevNote = track.notes[prevNoteIndex];
+                    }
+                    if (thePrevNote !== undefined) {
+                        let prevPrevNoteIndex = prevNoteIndex-1;
+                        let prevPrevNote = track.notes[prevPrevNoteIndex];
+                        let highestPrevMidi = thePrevNote.midi;
+                        let highestPrevMidiIndex = prevNoteIndex;
+                        while (prevPrevNote !== undefined && prevPrevNote.ticks === thePrevNote.ticks) {
+                            if (prevPrevNote.midi > highestPrevMidi && prevPrevNote.midi !== note.midi) {
+                                highestPrevMidi = prevPrevNote.midi;
+                                highestPrevMidiIndex = prevPrevNoteIndex;
+                            }
+                            prevPrevNoteIndex--;
+                            prevPrevNote = track.notes[prevPrevNoteIndex];
+                        }
+                        thePrevNote = track.notes[highestPrevMidiIndex];
+                    }
+
+                    let nextNoteIndex = noteIndex+1;
+                    let theNextNote = track.notes[nextNoteIndex];
+                    while (theNextNote !== undefined && theNextNote.midi === note.midi) {
+                        nextNoteIndex++;
+                        theNextNote = track.notes[nextNoteIndex];
+                    }
+                    if (theNextNote !== undefined) {
+                        let nextNextNoteIndex = nextNoteIndex+1;
+                        let nextNextNote = track.notes[nextNextNoteIndex];
+                        let lowestNextMidi = theNextNote.midi;
+                        let lowestNextMidiIndex = nextNoteIndex;
+                        while (nextNextNote !== undefined && nextNextNote.ticks === theNextNote.ticks) {
+                            if (nextNextNote.midi < lowestNextMidi && nextNextNote.midi !== note.midi) {
+                                lowestNextMidi = nextNextNote.midi;
+                                lowestNextMidiIndex = nextNextNoteIndex;
+                            }
+                            nextNextNoteIndex++;
+                            nextNextNote = track.notes[nextNextNoteIndex];
+                        }
+                        theNextNote = track.notes[lowestNextMidiIndex];
+                    }
+
+                    let noteSet = {prevNote:thePrevNote, thisNote:note, nextNote:theNextNote};
+                    if (trackMeasures[noteMeasure] && trackMeasures[noteMeasure].beatNotes[noteBeat] && trackMeasures[noteMeasure].beatNotes[noteBeat][microBeat]) {
+                        trackMeasures[noteMeasure].beatNotes[noteBeat][microBeat].push(noteSet);
+                        if (thePrevNote !== undefined && thePrevNote.ticks === note.ticks) {
+                            trackMeasures[noteMeasure].beatNotes[noteBeat][microBeat].sort(function (x, y) {
+                                return (x.thisNote.ticks - y.thisNote.ticks || x.thisNote.midi - y.thisNote.midi);
+                            });
+                        }
+                    }
+                });
+
+                let partNotes = "--- " + trackName + " ---\n";
+
+                function microBeatNotes(measure, beat, microBeat) {
+                    if (!trackMeasures[measure] || !trackMeasures[measure].beatNotes[beat] || !trackMeasures[measure].beatNotes[beat][microBeat]) return;
+                    trackMeasures[measure].beatNotes[beat][microBeat].forEach((noteSet) => {
+                        let note = noteSet.thisNote;
+                        let octave = note.octave;
+                        if (trackName === "Bass") { octave += 1; } else if (trackName === "Verdarach") { octave += 2; }
+
+                        let pitchKey = note.pitchKey;
+                        let currNote = octaveBrackets[octave] ? octaveBrackets[octave].left + pitches[pitchKey] + octaveBrackets[octave].right : pitches[pitchKey];
+
+                        if (trackMeasures[measure].beatNotes[beat][microBeat].length === 1 && (pitchKey === "C" || pitchKey === "C#")) {
+                            let prevNote = noteSet.prevNote;
+                            let nextNote = noteSet.nextNote;
+                            let closestNoteOctave;
+
+                            if (prevNote == null && nextNote == null) { closestNoteOctave = octave; }
+                            else if (prevNote !== null && nextNote == null) { closestNoteOctave = prevNote.octave; }
+                            else if (prevNote == null && nextNote !== null) { closestNoteOctave = nextNote.octave; }
+                            else if (prevNote !== null && nextNote != null) {
+                                if ((note.ticks - prevNote.ticks) <= (nextNote.ticks - note.ticks)) { closestNoteOctave = prevNote.octave; }
+                                else { closestNoteOctave = nextNote.octave; }
+                            }
+
+                            if (trackName === "Bass") { closestNoteOctave += 1; } else if (trackName === "Verdarach") { closestNoteOctave += 2; }
+
+                            if (closestNoteOctave < octave) {
+                                switch (currNote) {
+                                    case "1": currNote = "[8]"; break;
+                                    case "#1": currNote = "[#8]"; break;
+                                    case "(1)": currNote = "8"; break;
+                                    case "(#1)": currNote = "#8"; break;
+                                }
+                            }
+                        }
+                        beatNotes += currNote + "/";
+                    });
+                    if (beatNotes.endsWith("/")) beatNotes = beatNotes.slice(0, -1);
+
+                    beatNotes = beatNotes.replace(/<1>/g, "(8)");
+                    beatNotes = beatNotes.replace(/\/\(1\)/g, "/8");
+                    beatNotes = beatNotes.replace(/\]\/1/g, "/8]");
+                    beatNotes = beatNotes.replace(/\]\/\[/g, "/");
+                    beatNotes = beatNotes.replace(/\)\/\(/g, "/");
+                    beatNotes = beatNotes.replace(")" + sep8th + "(", sep8th);
+                    beatNotes = beatNotes.replace("]" + sep8th + "[", sep8th);
+                    beatNotes = beatNotes.replace(")" + sep16th + "(", sep16th);
+                    beatNotes = beatNotes.replace("]" + sep16th + "[", sep16th);
+                    beatNotes = beatNotes.replace(/\)\/8\/\(/g, "/1/");
+                    beatNotes = beatNotes.replace(/\/\[8\]\//g, "/1/");
+                    beatNotes = beatNotes.replace(/\)\/8$/g, "/1)");
+                    beatNotes = beatNotes.replace(")/8" + sep8th, "/1)" + sep8th);
+                    beatNotes = beatNotes.replace(")/8" + sep16th, "/1)" + sep16th);
+                    beatNotes = beatNotes.replace(/\/\[8\]$/g, "/1");
+                    beatNotes = beatNotes.replace("/[8]" + sep8th, "/1" + sep8th);
+                    beatNotes = beatNotes.replace("/[8]" + sep16th, "/1" + sep16th);
+                    beatNotes = beatNotes.replace(/^\(1\)\//g, "8/");
+                    beatNotes = beatNotes.replace(sep8th + "(1)/", sep8th + "8/");
+                    beatNotes = beatNotes.replace(sep16th + "(1)/", sep16th + "8/");
+                    beatNotes = beatNotes.replace(/^1\/\[/g, "[8/");
+                    beatNotes = beatNotes.replace(sep8th + "1/[", sep8th + "[8/");
+                    beatNotes = beatNotes.replace(sep16th + "1/[", sep16th + "[8/");
+                    beatNotes = beatNotes.replace(")" + sep16th + rest16th + sep16th + "(", sep16th + rest16th + sep16th);
+                    beatNotes = beatNotes.replace("]" + sep16th + rest16th + sep16th + "[", sep16th + rest16th + sep16th);
+                    beatNotes = beatNotes.replace(")" + sep8th + rest16th + sep16th + "(", sep8th + rest16th + sep16th);
+                    beatNotes = beatNotes.replace("]" + sep8th + rest16th + sep16th + "[", sep8th + rest16th + sep16th);
+                }
+
+                for (let measure = 1; measure <= Object.keys(trackMeasures).length; measure++) {
+                    let measureNotes = "";
+                    let beatCount = Object.keys(trackMeasures[measure].beatNotes).length;
+                    for (let beat = 1; beat <= beatCount; beat++) {
+                        beatNotes = "";
+                        let beatType = getBeatType(trackMeasures[measure].beatNotes[beat]);
+
+                        switch (beatType) {
+                            case "0000": beatNotes += rest4th; break;
+                            case "0001": beatNotes += rest8th + sep8th + rest16th + sep16th; microBeatNotes(measure, beat, 4); break;
+                            case "0010": beatNotes += rest8th + sep8th; microBeatNotes(measure, beat, 3); beatNotes += sep16thOptional + rest16thOptional; break;
+                            case "0011": beatNotes += rest8th + sep8th; microBeatNotes(measure, beat, 3); beatNotes += sep16th; microBeatNotes(measure, beat, 4); break;
+                            case "0100": beatNotes += rest16th + sep16th; microBeatNotes(measure, beat, 2); beatNotes += sep8thOptional + rest8thOptional; break;
+                            case "0101": beatNotes += rest16th + sep16th; microBeatNotes(measure, beat, 2); beatNotes += sep16th + rest16th + sep16th; microBeatNotes(measure, beat, 4); break;
+                            case "0110": beatNotes += rest16th + sep16th; microBeatNotes(measure, beat, 2); beatNotes += sep16th; microBeatNotes(measure, beat, 3); beatNotes += sep16thOptional + rest16thOptional; break;
+                            case "0111": beatNotes += rest16th + sep16th; microBeatNotes(measure, beat, 2); beatNotes += sep16th; microBeatNotes(measure, beat, 3); beatNotes += sep16th; microBeatNotes(measure, beat, 4); break;
+                            case "1000": microBeatNotes(measure, beat, 1); beatNotes += sep16thOptional + rest16thOptional + sep8thOptional + rest8thOptional; break;
+                            case "1001": microBeatNotes(measure, beat, 1); beatNotes += sep16thOptional + rest16thOptional + sep8th + rest16th + sep16th; microBeatNotes(measure, beat, 4); break;
+                            case "1010": microBeatNotes(measure, beat, 1); beatNotes += sep16thOptional + rest16thOptional + sep8th; microBeatNotes(measure, beat, 3); beatNotes += sep16thOptional + rest16thOptional; break;
+                            case "1011": microBeatNotes(measure, beat, 1); beatNotes += sep16thOptional + rest16thOptional + sep8th; microBeatNotes(measure, beat, 3); beatNotes += sep16th; microBeatNotes(measure, beat, 4); break;
+                            case "1100": microBeatNotes(measure, beat, 1); beatNotes += sep16th; microBeatNotes(measure, beat, 2); beatNotes += sep8thOptional + rest8thOptional; break;
+                            case "1101": microBeatNotes(measure, beat, 1); beatNotes += sep16th; microBeatNotes(measure, beat, 2); beatNotes += sep16th + rest16th + sep16th; microBeatNotes(measure, beat, 4); break;
+                            case "1110": microBeatNotes(measure, beat, 1); beatNotes += sep16th; microBeatNotes(measure, beat, 2); beatNotes += sep16th; microBeatNotes(measure, beat, 3); beatNotes += sep16thOptional + rest16thOptional; break;
+                            case "1111": microBeatNotes(measure, beat, 1); beatNotes += sep16th; microBeatNotes(measure, beat, 2); beatNotes += sep16th; microBeatNotes(measure, beat, 3); beatNotes += sep16th; microBeatNotes(measure, beat, 4); break;
+                        }
+                        measureNotes += beatNotes + sep4th;
+                    }
+                    measureNotes = measureNotes.slice(0, -sep4th.length);
+
+                    if (lessMeasureBrackets) {
+                        measureNotes = measureNotes.replace(/\)(\D+)\(/g, "$1");
+                        measureNotes = measureNotes.replace(/](\D+)\[/g, "$1");
+                        measureNotes = measureNotes.replace(/^(\D+)\(/g, "($1");
+                        measureNotes = measureNotes.replace(/^(\D+)\[/g, "[$1");
+                        measureNotes = measureNotes.replace(/\)(\D+)$/g, "$1)");
+                        measureNotes = measureNotes.replace(/](\D+)$/g, "$1]");
+                    }
+                    partNotes += measureNotes + sepMeasure;
+                }
+                tabNotes += partNotes + "\n";
+            });
+            return tabNotes;
+        }
+
+        // --- Core UI Processing Logic ---
+        bprSelect.addEventListener('change', () => {
+            settings.barsPerRow = parseInt(bprSelect.value);
+            if (globalMidiFile) {
+                showScribeMessage(`Formatting to ${settings.barsPerRow} BPR...`);
+                processMidiFile();
+            }
+        });
+
+        async function processMidiFile() {
+            if (!globalMidiFile) return;
+            try {
+                const arrayBuffer = await globalMidiFile.arrayBuffer();
+
+                const tracks = await parseFilePowerina(arrayBuffer);
+                let tabNotes = globalMidiFile.name + "\n\n";
+                tracks.forEach(track => {
+                    tabNotes += "--- " + track.name + " ---\n";
+                    let trackStr = "";
+                    track.bars.forEach(bar => { trackStr += bar.text; });
+                    trackStr = trackStr.replace(/·\|/g, "|");
+                    tabNotes += trackStr + "\n\n";
+                });
+                textareaA.innerText = '';
+                textareaA.innerText = tabNotes;
+                
+                textareaA.dispatchEvent(new Event('input', { bubbles: true }));
+            } catch (e) { 
+                showScribeMessage(`Error parsing MIDI file.`); 
+                console.error(e);
+            }
+        }
+
+        midiInput.addEventListener("change", async () => {
+            const file = midiInput.files[0];
+            if (!file) return;
+            showScribeMessage(`Scribing ${file.name}... Please wait.`);
+            originalFileName = file.name;
+            globalMidiFile = file;
+
+            bprSelect.value = "4";
+            settings.barsPerRow = 4;
+
+            await processMidiFile();
+            showScribeMessage(`Scribe complete. Notation generated successfully.`);
+            midiFileInput.value = '';
+        });
+
+        // --- Highlighter Logic ---
         function escapeHtml(unsafe) {
             return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
@@ -1625,7 +1924,7 @@
 
         function syncText() { textareaB.innerHTML = applyHighlighting(textareaA.innerText); }
         const syncScroll = (source, target) => { target.scrollTop = source.scrollTop; target.scrollLeft = source.scrollLeft; };
-
+        
         textareaA.addEventListener('scroll', () => syncScroll(textareaA, textareaB));
         textareaB.addEventListener('scroll', () => syncScroll(textareaB, textareaA));
 
@@ -1635,39 +1934,12 @@
         resizeObserver.observe(textareaA);
         textareaA.addEventListener("input", syncText);
 
-        midiInput.addEventListener("change", async () => {
-            const file = midiInput.files[0];
-            if (!file) return;
-            showScribeMessage(`Scribing ${file.name}... Please wait.`);
-            originalFileName = file.name;
-
-            try {
-                const arrayBuffer = await file.arrayBuffer();
-                const tracks = await parseFile(arrayBuffer);
-                let tabNotes = file.name + "\n\n";
-
-                tracks.forEach(track => {
-                    tabNotes += "--- " + track.name + " ---\n";
-                    let trackStr = "";
-                    track.bars.forEach(bar => { trackStr += bar.text; });
-                    trackStr = trackStr.replace(/·\|/g, "|");
-                    tabNotes += trackStr + "\n\n";
-                });
-
-                textareaA.innerText = '';
-                textareaA.innerText = tabNotes;
-                textareaA.dispatchEvent(new Event('input', { bubbles: true }));
-                showScribeMessage(`Scribe complete. Notation generated successfully.`);
-            } catch (e) { showScribeMessage(`Error parsing MIDI file.`); }
-            midiFileInput.value = '';
-        });
-
         document.getElementById("copyTabBtn").addEventListener("click", () => {
             const content = textareaA.innerText.trim();
             if (!content) return showScribeMessage("Nothing to copy!");
             const textArea = document.createElement("textarea");
             textArea.value = content; document.body.appendChild(textArea); textArea.select();
-            try { document.execCommand('copy'); showScribeMessage("Tabs copied to clipboard!"); }
+            try { document.execCommand('copy'); showScribeMessage("Tabs copied to clipboard!"); } 
             catch (ex) { showScribeMessage("Failed to copy tabs."); }
             document.body.removeChild(textArea);
         });
@@ -1676,104 +1948,82 @@
             const text = textareaA.innerText.trim();
             if (!text) return showScribeMessage("There is nothing to export.");
             showScribeMessage("Inking Spell Page...");
-
+            
             let canvas = document.createElement('canvas'); let ctx = canvas.getContext('2d');
             let lines = text.split('\n'); ctx.font = "bold 16px monospace";
             let maxLineObj = lines.reduce((a, b) => a.length > b.length ? a : b, "");
             let textWidth = ctx.measureText(maxLineObj).width;
-
-            canvas.width = Math.max(800, textWidth + 100); canvas.height = lines.length * 24 + 160;
+            
+            canvas.width = Math.max(800, textWidth + 100); canvas.height = lines.length * 24 + 160; 
             let grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
             grad.addColorStop(0, '#2c2420'); grad.addColorStop(1, '#181514');
             ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.strokeStyle = '#8c7355'; ctx.lineWidth = 4; ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
-
+            
             ctx.fillStyle = '#d4af37'; ctx.font = "bold 26px serif"; ctx.textAlign = "center";
             ctx.fillText("Tome of Melodies: Transcribed Spell Page", canvas.width / 2, 50);
-
+            
             ctx.textAlign = "left"; ctx.font = "bold 16px monospace"; ctx.fillStyle = '#e6d8c3';
             let y = 100;
             for (let line of lines) {
-                if (line.startsWith('---')) { ctx.fillStyle = '#d4af37'; ctx.fillText(line, 50, y); ctx.fillStyle = '#e6d8c3'; }
+                if (line.startsWith('---')) { ctx.fillStyle = '#d4af37'; ctx.fillText(line, 50, y); ctx.fillStyle = '#e6d8c3'; } 
                 else { ctx.fillText(line, 50, y); }
                 y += 24;
             }
-
+            
             let link = document.createElement('a');
             link.download = `${originalFileName.replace(/\.(mid|midi)$/i, '')}_SpellPage.png`;
             link.href = canvas.toDataURL('image/png'); link.click();
         });
 
-        // 5. ISOLATED SPREADSHEET EXPORTER FIX
-        document.getElementById("downloadSpreadsheetBtn").addEventListener("click", () => {
-            const content = textareaA.innerText.trim();
-            if (!content) return showScribeMessage("There is nothing to download.");
+        // --- 5. TRUE JENPAI SPREADSHEET EXPORTER ---
+        document.getElementById("downloadSpreadsheetBtn").addEventListener("click", async () => {
+            if (!globalMidiFile) return showScribeMessage("There is nothing to download.");
             showScribeMessage("Generating Spreadsheet...");
+            
+            let content = "";
+            try {
+                const arrayBuffer = await globalMidiFile.arrayBuffer();
+                content = await generateJenpaiFormat(arrayBuffer, globalMidiFile.name);
+                content = content.trim();
+            } catch (e) {
+                return showScribeMessage("Error generating spreadsheet data.");
+            }
+
+            if (!content) return showScribeMessage("There is nothing to download.");
 
             const lines = content.split("\n");
             const sheets = {}; const sheetCounts = {};
             let currentSheetKey = null;
-            let baseFileName = "converted";
+            let baseFileName = originalFileName.replace(/\.(mid|midi)$/i, '') || "converted";
+
+            const isValidWord = word => /^[a-zA-Z]{3,}$/.test(word) && !/\.midi?$/i.test(word);
 
             for (const rawLine of lines) {
                 const line = rawLine.trim();
 
-                if (!baseFileName || baseFileName === "converted") {
-                    const match = line.match(/(.+?)\.(mid|midi)$/i);
-                    if (match) baseFileName = match[1].trim();
+                let isHeader = false;
+                let baseName = "";
+                
+                if (line.startsWith("--- ") && line.endsWith(" ---")) {
+                    isHeader = true;
+                    baseName = line.replace(/-/g, '').trim().slice(0, 31);
+                } else if (isValidWord(line)) {
+                    isHeader = true;
+                    baseName = line.slice(0, 31);
                 }
 
-                // Detect exactly the track headers we output
-                if (line.startsWith("--- ") && line.endsWith(" ---")) {
-                    const baseName = line.replace(/-/g, '').trim().slice(0, 31);
+                if (isHeader) {
                     const count = (sheetCounts[baseName] || 0) + 1;
                     sheetCounts[baseName] = count;
-                    const sheetName = count === 1 ? baseName : `${baseName} ${count}`;
-                    currentSheetKey = sheetName;
-                    sheets[currentSheetKey] = [[baseName]];
-                }
-                // Convert each line into spreadsheet cells
+                    currentSheetKey = count === 1 ? baseName : `${baseName} ${count}`;
+                    sheets[currentSheetKey] = [[baseName]]; 
+                } 
                 else if (currentSheetKey && line !== "") {
-                    // Powerina Format: Pipes delineate measures
-                    if (line.includes('|')) {
-                        const measures = line.split('|').map(m => m.trim()).filter(m => m !== '');
-                        for (let measureStr of measures) {
-                            let tokens = measureStr.split(/\s+/).filter(t => t !== '');
-                            if (tokens.length === 0) continue;
-
-                            let cells = [];
-                            let numCells = 4;
-                            let baseSize = Math.floor(tokens.length / numCells);
-                            let remainder = tokens.length % numCells;
-
-                            let startIndex = 0;
-                            // Mathematically distribute the tokens into exactly 4 cells
-                            for (let i = 0; i < numCells; i++) {
-                                let size = baseSize + (i < remainder ? 1 : 0);
-                                if (size === 0) {
-                                    cells.push(''); // Pad empty cells if fewer than 4 items
-                                } else {
-                                    let cellTokens = tokens.slice(startIndex, startIndex + size);
-                                    cells.push(cellTokens.join(' ')); // Group items like [6] 3/6/8 into one cell
-                                    startIndex += size;
-                                }
-                            }
-                            sheets[currentSheetKey].push(cells);
-                        }
-                    }
-                    // Legacy Jenpai Format: Separated by multiple spaces or tabs
-                    else if (rawLine.includes('  ') || rawLine.includes('\t')) {
-                        let items = rawLine.split(/ {2,}|\t/g).map(cell => cell.trim()).filter(c => c !== '');
-                        // Force 4 cells per row, moving downwards
-                        for (let i = 0; i < items.length; i += 4) {
-                            let row = items.slice(i, i + 4);
-                            while (row.length < 4) row.push(''); // Pad to 4 columns
-                            sheets[currentSheetKey].push(row);
-                        }
-                    }
-                    // Standard text fallback
-                    else {
-                        sheets[currentSheetKey].push([line]);
+                    // Uses exact Jenpai separation logic (4 spaces)
+                    const row = rawLine.split(/ {4}/g).map(cell => cell.trim());
+                    if (row.join('') !== '') {
+                        sheets[currentSheetKey].push(row);
                     }
                 }
             }
