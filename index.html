@@ -384,6 +384,23 @@
             font-style: italic;
             text-shadow: 1px 1px 2px black;
         }
+
+        /* WebKit Scrollbar styling for native songbook */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #5a4b3c;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d4af37;
+        }
     </style>
 </head>
 <body>
@@ -403,17 +420,37 @@
                     Tome: Dark
                 </button>
             </div>
-            <div class="flex justify-center gap-2 mb-2 w-full max-w-md mx-auto">
-                <input type="text" id="songbook-url" class="gw2-select flex-1 px-3 py-1.5 rounded text-sm outline-none placeholder-[#8c7355]" placeholder="Paste link..." value="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview">
-                <button id="btn-load-songbook" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest">Load</button>
+            
+            <div class="flex flex-col justify-center items-center gap-2 mb-4 w-full max-w-md mx-auto">
+                <div class="flex justify-center gap-2 w-full">
+                    <input type="text" id="songbook-url" class="gw2-select flex-1 px-3 py-1.5 rounded text-sm outline-none placeholder-[#8c7355]" placeholder="Paste link..." value="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview">
+                    <button id="btn-load-songbook" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest">Load</button>
+                </div>
+                <!-- Native Render Toggle (Idea 2) -->
+                <div class="flex justify-between items-center w-full px-1 mt-1">
+                    <span class="status-text text-xs">Load a <b class="text-[#d4af37]">Google Doc</b> link above.</span>
+                    <button id="btn-toggle-render" class="gw2-button px-2 py-1 rounded font-bold text-[0.65rem] tracking-widest border border-[#5a4b3c] transition-colors">
+                        View: Standard
+                    </button>
+                </div>
             </div>
+
+            <!-- Standard Iframe -->
             <iframe id="songbook-frame" class="w-full flex-1 bg-[#e6d8c3] rounded border border-[#5a4b3c] min-h-[500px] xl:min-h-0" src="" title="Songbook"></iframe>
+            
+            <!-- Native Dark Parchment Div (Idea 2) -->
+            <div id="native-songbook" class="w-full flex-1 bg-black/40 rounded border border-[#5a4b3c] min-h-[500px] xl:min-h-0 hidden overflow-auto p-5 font-['Cormorant_Garamond'] text-[#e6d8c3] whitespace-pre-wrap text-lg font-bold shadow-inner">
+                <!-- Content injected via JS -->
+            </div>
         </div>
 
         <!-- ============================== -->
         <!-- CENTER PANEL: PIANO            -->
         <!-- ============================== -->
-        <div class="gw2-panel p-6 sm:p-10 rounded-xl flex flex-col items-center flex-1 w-full max-w-[1000px] z-20">
+        <div id="center-panel" class="gw2-panel p-6 sm:p-10 rounded-xl flex flex-col items-center flex-1 w-full max-w-[1000px] z-20 overflow-hidden">
+
+            <!-- Visual Magic Canvas (Idea 1) -->
+            <canvas id="particle-canvas" class="absolute top-0 left-0 w-full h-full pointer-events-none z-50 rounded-xl"></canvas>
 
             <!-- Top Left: Open Songbook Button -->
             <button id="btn-toggle-songbook" class="gw2-button absolute top-4 left-4 sm:top-6 sm:left-6 px-3 py-1.5 sm:px-4 sm:py-2 rounded font-bold text-xs sm:text-sm tracking-widest text-center shadow-lg border border-[#5a4b3c] flex items-center gap-1 sm:gap-2 no-underline z-50">
@@ -430,7 +467,7 @@
             </button>
 
             <!-- Header Section -->
-            <div class="text-center mb-6 mt-10 sm:mt-0">
+            <div class="text-center mb-6 mt-10 sm:mt-0 relative z-40">
                 <img src="saryamusic2.png" alt="Sarya's Music Thingy" class="mx-auto h-48 sm:h-64 mb-4 object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]" onerror="this.style.display='none'">
 
                 <h1 class="gw2-title text-4xl sm:text-5xl mb-2">Sarya's Music Thingy</h1>
@@ -445,7 +482,7 @@
             </div>
 
             <!-- Unified Audio Dashboard -->
-            <div class="bg-black/30 border border-[#3a2e2a] rounded-xl p-5 w-full max-w-4xl mb-6 flex flex-col gap-5 shadow-inner">
+            <div class="bg-black/30 border border-[#3a2e2a] rounded-xl p-5 w-full max-w-4xl mb-6 flex flex-col gap-5 shadow-inner relative z-40">
                 <div class="flex flex-wrap justify-center items-center gap-4 w-full">
                     <select id="synth-select" class="gw2-select flex-1 min-w-[200px] max-w-[280px] px-4 py-2 rounded font-bold text-sm tracking-widest cursor-pointer text-center outline-none focus:border-[#d4af37] shadow-md">
                         <optgroup label="Default Magic Instruments">
@@ -487,18 +524,18 @@
                 </div>
             </div>
 
-            <div id="sys-message" class="text-[#d4af37] font-['Cinzel'] h-6 mb-4 opacity-0 transition-opacity duration-500 text-sm tracking-wider">
+            <div id="sys-message" class="text-[#d4af37] font-['Cinzel'] h-6 mb-4 opacity-0 transition-opacity duration-500 text-sm tracking-wider relative z-40">
                 Instrument Attuned.
             </div>
 
             <!-- VIEW 1: GW2 PIANO (1 Octave) -->
-            <div id="gw2-view" class="flex flex-col items-center w-full">
+            <div id="gw2-view" class="flex flex-col items-center w-full relative z-40">
                 <div class="flex flex-col sm:flex-row justify-center w-full gap-3 items-center mb-6">
-                    <button id="btn-oct-down" class="gw2-button w-full sm:w-auto px-5 py-2 rounded font-bold text-sm tracking-widest text-center shadow-md">[ Q ] Octave -</button>
+                    <button id="btn-oct-down" class="gw2-button w-full sm:w-auto px-5 py-2 rounded font-bold text-sm tracking-widest text-center shadow-md"><span id="lbl-oct-down">[ Q ]</span> Octave -</button>
                     <div class="bg-black/50 border-2 border-[#5a4b3c] px-6 py-2 rounded-lg text-center w-full sm:w-auto min-w-[160px] shadow-inner">
                         <span class="text-[#d4af37] font-['Cinzel'] font-bold text-xl drop-shadow-md" id="octave-display">Octave: Mid</span>
                     </div>
-                    <button id="btn-oct-up" class="gw2-button w-full sm:w-auto px-5 py-2 rounded font-bold text-sm tracking-widest text-center shadow-md">[ E ] Octave +</button>
+                    <button id="btn-oct-up" class="gw2-button w-full sm:w-auto px-5 py-2 rounded font-bold text-sm tracking-widest text-center shadow-md"><span id="lbl-oct-up">[ E ]</span> Octave +</button>
                 </div>
                 <div class="piano-container mb-6" id="piano"></div>
                 <div class="flex flex-wrap justify-center items-center w-full gap-6">
@@ -514,7 +551,7 @@
             </div>
 
             <!-- VIEW 2: HEARTOPIA (3 Octaves) -->
-            <div id="htp-view" class="hidden flex-col items-center w-full max-w-5xl px-4 py-8 rounded-2xl border-2 border-[#5a4b3c] shadow-inner overflow-x-auto">
+            <div id="htp-view" class="hidden flex-col items-center w-full max-w-5xl px-4 py-8 rounded-2xl border-2 border-[#5a4b3c] shadow-inner overflow-x-auto relative z-40">
                 <div id="heartopia-container" class="flex flex-col gap-8 min-w-[700px] py-4 px-8"></div>
                 <div class="mt-6 text-center status-text text-sm max-w-md">
                     Binds perfectly map to standard QWERTY rows to replicate the Heartopia layout exactly.
@@ -533,7 +570,14 @@
                     <h2 class="gw2-title text-3xl mb-1 text-left">Tome Scribe</h2>
                     <h3 class="text-[#d4af37] font-['Cinzel'] text-sm tracking-widest font-bold m-0">Convert arcane MIDI magic</h3>
                 </div>
+                
                 <div class="flex items-center gap-2 mb-1">
+                    <!-- Auto Scroll Toggle (Idea 3) -->
+                    <div class="flex items-center gap-1 bg-black/40 border border-[#5a4b3c] px-2 py-1 rounded shadow-inner" title="Auto-Scroll Transcriptions">
+                        <button id="btn-autoscroll" class="font-bold text-[0.65rem] tracking-widest text-[#8c7355] hover:text-[#d4af37] transition-colors outline-none uppercase">Scroll: OFF</button>
+                        <input type="range" id="scroll-speed" min="0.2" max="2" step="0.1" value="0.5" class="w-12 accent-[#d4af37] cursor-pointer">
+                    </div>
+
                     <select id="bprSelect" class="gw2-select px-2 py-1 rounded font-bold text-xs tracking-widest text-center shadow-lg border border-[#5a4b3c] outline-none cursor-pointer" title="Bars Per Row">
                         <option value="4">4 BPR</option>
                         <option value="3">3 BPR</option>
@@ -611,6 +655,8 @@
         const songbookUrlInput = document.getElementById('songbook-url');
         const btnLoadSongbook = document.getElementById('btn-load-songbook');
         const songbookFrame = document.getElementById('songbook-frame');
+        const nativeSongbookDiv = document.getElementById('native-songbook');
+        const btnToggleRender = document.getElementById('btn-toggle-render');
         const btnLoadTomeLight = document.getElementById('btn-load-tome-light');
         const btnLoadTomeDark = document.getElementById('btn-load-tome-dark');
         
@@ -623,12 +669,15 @@
         const btnEditBinds = document.getElementById('btn-edit-binds');
         const btnOctDown = document.getElementById('btn-oct-down');
         const btnOctUp = document.getElementById('btn-oct-up');
+        const lblOctDown = document.getElementById('lbl-oct-down');
+        const lblOctUp = document.getElementById('lbl-oct-up');
         const synthSelect = document.getElementById('synth-select');
         const octaveToggle = document.getElementById('octave-toggle');
         const sustainToggle = document.getElementById('sustain-toggle');
 
         let isSongbookOpen = false;
         let isScribeOpen = false;
+        let isNativeRenderMode = false;
 
         function showMessage(m) {
             const sm = document.getElementById('sys-message');
@@ -637,14 +686,14 @@
         }
 
         // ==========================================
-        // 2. SLIDING PANELS LOGIC
+        // 2. SLIDING PANELS & NATIVE SONGBOOK (IDEA 2)
         // ==========================================
         btnToggleSongbook.addEventListener('click', () => {
             isSongbookOpen = !isSongbookOpen;
             if (isSongbookOpen) {
                 songbookPanel.classList.add('is-open');
                 btnToggleSongbook.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg> <span class="hidden sm:inline">Close Songbook</span><span class="inline sm:hidden">Close</span>';
-                if (!songbookFrame.src) loadSongbookUrl();
+                if (!songbookFrame.src || songbookFrame.src === window.location.href) loadSongbookUrl();
             } else {
                 songbookPanel.classList.remove('is-open');
                 btnToggleSongbook.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg> <span class="hidden sm:inline">Open Songbook</span><span class="inline sm:hidden">Songs</span>';
@@ -665,15 +714,53 @@
         function loadSongbookUrl() {
             let url = songbookUrlInput.value.trim();
             if (!url) return;
-            if (url.includes('docs.google.com') && url.includes('/edit')) {
-                url = url.replace(/\/edit.*$/, '/preview');
-            }
-            songbookFrame.src = url;
+            
             showMessage("Loading Tome...");
+
+            if (isNativeRenderMode) {
+                songbookFrame.classList.add('hidden');
+                nativeSongbookDiv.classList.remove('hidden');
+                nativeSongbookDiv.innerHTML = '<div class="text-[#d4af37] animate-pulse text-center mt-20">Extracting magical ink...</div>';
+                
+                let exportUrl = url;
+                if(url.includes('docs.google.com')) {
+                    exportUrl = url.replace(/\/edit.*$/, '/export?format=txt').replace(/\/preview.*$/, '/export?format=txt');
+                }
+
+                fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(exportUrl)}`)
+                    .then(res => { if(res.ok) return res.json(); throw new Error('Network error'); })
+                    .then(data => { 
+                        nativeSongbookDiv.textContent = data.contents; 
+                        showMessage("Tome translated to native parchment.");
+                    })
+                    .catch(err => { 
+                        nativeSongbookDiv.innerHTML = '<div class="text-[#ff5555] text-center mt-20">Failed to extract text. The Tome might be protected by ancient wards.<br><br><span class="text-[#8c7355] text-sm">Ensure the Google Doc is shared as "Anyone with the link can view".</span></div>';
+                    });
+
+            } else {
+                nativeSongbookDiv.classList.add('hidden');
+                songbookFrame.classList.remove('hidden');
+                if (url.includes('docs.google.com') && url.includes('/edit')) {
+                    url = url.replace(/\/edit.*$/, '/preview');
+                }
+                songbookFrame.src = url;
+            }
         }
 
         btnLoadSongbook.addEventListener('click', loadSongbookUrl);
         songbookUrlInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') loadSongbookUrl(); });
+
+        btnToggleRender.addEventListener('click', () => {
+            isNativeRenderMode = !isNativeRenderMode;
+            if (isNativeRenderMode) {
+                btnToggleRender.textContent = "View: Native Text";
+                btnToggleRender.classList.add('text-[#d4af37]', 'border-[#d4af37]');
+            } else {
+                btnToggleRender.textContent = "View: Standard";
+                btnToggleRender.classList.remove('text-[#d4af37]', 'border-[#d4af37]');
+            }
+            loadSongbookUrl();
+        });
 
         btnLoadTomeLight.addEventListener('click', () => {
             songbookUrlInput.value = 'https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview';
@@ -701,6 +788,75 @@
                 showMessage("Tyrian Resonance engaged.");
             }
         });
+
+        // ==========================================
+        // 2.5 VISUAL MAGIC PARTICLE ENGINE (IDEA 1)
+        // ==========================================
+        const particleCanvas = document.getElementById('particle-canvas');
+        const pCtx = particleCanvas.getContext('2d');
+        let particles = [];
+
+        function resizeParticleCanvas() {
+            particleCanvas.width = particleCanvas.offsetWidth;
+            particleCanvas.height = particleCanvas.offsetHeight;
+        }
+        window.addEventListener('resize', resizeParticleCanvas);
+        setTimeout(resizeParticleCanvas, 500);
+
+        function spawnParticles(elementId, instrument) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            
+            const rect = el.getBoundingClientRect();
+            const canvasRect = particleCanvas.getBoundingClientRect();
+            
+            const x = rect.left - canvasRect.left + rect.width / 2;
+            const y = rect.top - canvasRect.top + 20; 
+            
+            let color = '#d4af37'; 
+            if (instrument === 'crystal') color = '#aaddff'; 
+            else if (instrument === 'brass') color = '#ffaa55'; 
+            else if (instrument === 'flute') color = '#bbffaa'; 
+            else if (instrument.startsWith('sf2_')) color = '#ffccff'; 
+
+            for (let i = 0; i < 6; i++) {
+                particles.push({
+                    x: x + (Math.random() - 0.5) * (rect.width * 0.8),
+                    y: y + (Math.random() - 0.5) * 10,
+                    vx: (Math.random() - 0.5) * 1.5,
+                    vy: Math.random() * -2 - 1.5,
+                    life: 1.0,
+                    decay: Math.random() * 0.02 + 0.02,
+                    color: color,
+                    size: Math.random() * 2 + 1
+                });
+            }
+        }
+
+        function animateParticles() {
+            pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= p.decay;
+                
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+                
+                pCtx.globalAlpha = p.life;
+                pCtx.fillStyle = p.color;
+                pCtx.beginPath();
+                pCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                pCtx.fill();
+            }
+            pCtx.globalAlpha = 1.0;
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
 
         // ==========================================
         // 3. PIANO BINDINGS & AUDIO LOGIC
@@ -738,6 +894,10 @@
             if (octave > 4) return `( ${keyStr} )`;
             return keyStr;
         }
+
+        // Apply loaded bindings to Octave buttons on load
+        if(lblOctDown) lblOctDown.textContent = `[ ${formatKey(bindings.octaveDown)} ]`;
+        if(lblOctUp) lblOctUp.textContent = `[ ${formatKey(bindings.octaveUp)} ]`;
 
         function startRebind(e, type, index, targetEl) {
             e.stopPropagation(); e.preventDefault();
@@ -816,6 +976,9 @@
             const midiNote = 12 * (octave + 1) + offset;
             const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
             const instrumentMode = synthSelect.value;
+
+            // Trigger Particle Magic (Idea 1)
+            spawnParticles(elementId, instrumentMode);
 
             // Restored full SF2 vs Synth logic check
             if (instrumentMode.startsWith('sf2_')) {
@@ -1038,8 +1201,24 @@
             htpContainer.appendChild(rowEl);
         });
 
+        // Click listeners for Octave Rebinding
+        btnOctDown.addEventListener('click', (e) => {
+            if (isRemappingMode) {
+                startRebind(e, 'octaveDown', null, lblOctDown);
+            } else {
+                updateOctave(-1);
+            }
+        });
+
+        btnOctUp.addEventListener('click', (e) => {
+            if (isRemappingMode) {
+                startRebind(e, 'octaveUp', null, lblOctUp);
+            } else {
+                updateOctave(1);
+            }
+        });
+
         window.addEventListener('keydown', (e) => {
-            // Prevent browser default actions for F-keys (like F5 refresh or F1 help)
             if (/^F\d+$/.test(e.code)) {
                 e.preventDefault();
             }
@@ -1049,29 +1228,45 @@
 
             if (currentViewMode === 'gw2') {
                 if (activeRebind) {
-                    bindings.notes[activeRebind.index] = e.code;
-                    activeRebind.el.innerHTML = getFormattedBindString(e.code, currentOctave);
+                    if (activeRebind.type === 'note') {
+                        bindings.notes[activeRebind.index] = e.code;
+                        activeRebind.el.innerHTML = getFormattedBindString(e.code, currentOctave);
+                    } else if (activeRebind.type === 'octaveDown') {
+                        bindings.octaveDown = e.code;
+                        activeRebind.el.innerHTML = `[ ${formatKey(e.code)} ]`;
+                    } else if (activeRebind.type === 'octaveUp') {
+                        bindings.octaveUp = e.code;
+                        activeRebind.el.innerHTML = `[ ${formatKey(e.code)} ]`;
+                    }
                     saveBinds(); showMessage("Bound!"); activeRebind = null; return;
                 }
-                if (e.code === bindings.octaveDown) updateOctave(-1);
-                else if (e.code === bindings.octaveUp) updateOctave(1);
-                else {
-                    let idx = bindings.notes.indexOf(e.code);
+                
+                let idx = bindings.notes.indexOf(e.code);
+                let isNoteBound = (idx !== -1);
 
-                    // Restore Numpad Fallback Logic
-                    let fallbackIdx = -1;
-                    const defaultDigitMap = {
-                        'Numpad1': 0, 'Numpad2': 2, 'Numpad3': 4, 'Numpad4': 5,
-                        'Numpad5': 7, 'Numpad6': 9, 'Numpad7': 11, 'Numpad8': 12
-                    };
-                    if (defaultDigitMap[e.code] !== undefined) {
-                        let mappedIndex = defaultDigitMap[e.code];
-                        let digitCode = 'Digit' + e.code.slice(6);
-                        if (bindings.notes[mappedIndex] === digitCode) fallbackIdx = mappedIndex;
+                let fallbackIdx = -1;
+                const defaultDigitMap = {
+                    'Numpad1': 0, 'Numpad2': 2, 'Numpad3': 4, 'Numpad4': 5,
+                    'Numpad5': 7, 'Numpad6': 9, 'Numpad7': 11, 'Numpad8': 12
+                };
+                if (defaultDigitMap[e.code] !== undefined) {
+                    let mappedIndex = defaultDigitMap[e.code];
+                    let digitCode = 'Digit' + e.code.slice(6);
+                    if (bindings.notes[mappedIndex] === digitCode) {
+                        fallbackIdx = mappedIndex;
+                        isNoteBound = true;
                     }
+                }
 
+                // Conflict priority: Note play takes priority over octave shifting. 
+                // If a user binds a note to an octave shift key, it will play the note.
+                if (isNoteBound) {
                     if (idx !== -1) playNote(notes[idx].offset, currentOctave, `gw2-key-${idx}`);
                     else if (fallbackIdx !== -1) playNote(notes[fallbackIdx].offset, currentOctave, `gw2-key-${fallbackIdx}`);
+                } else if (e.code === bindings.octaveDown) {
+                    updateOctave(-1);
+                } else if (e.code === bindings.octaveUp) {
+                    updateOctave(1);
                 }
             } else {
                 let bind = heartopiaBindsMap[e.code];
@@ -1080,7 +1275,6 @@
         });
 
         window.addEventListener('keyup', (e) => {
-            // Prevent browser default actions for F-keys on release as well
             if (/^F\d+$/.test(e.code)) {
                 e.preventDefault();
             }
@@ -1089,7 +1283,6 @@
             if (currentViewMode === 'gw2') {
                 let idx = bindings.notes.indexOf(e.code);
 
-                // Restore Numpad Fallback Logic for Keyup
                 let fallbackIdx = -1;
                 const defaultDigitMap = {
                     'Numpad1': 0, 'Numpad2': 2, 'Numpad3': 4, 'Numpad4': 5,
@@ -1146,10 +1339,8 @@
             const envelope = audioCtx.createGain();
 
             osc.type = 'triangle';
-            // Higher pitched accent on the first beat of 4
             osc.frequency.value = (metronomeBeat % 4 === 0) ? 1000 : 800;
 
-            // Proper standard Web Audio node ramp init
             envelope.gain.setValueAtTime(1, time);
             envelope.gain.exponentialRampToValueAtTime(0.001, time + 0.1);
 
@@ -1381,7 +1572,7 @@
         });
 
         // ==========================================
-        // 4. TOME SCRIBE LOGIC (Powerina Preview, Jenpai Export)
+        // 4. TOME SCRIBE LOGIC
         // ==========================================
         let originalFileName = "converted";
         let globalMidiFile = null;
@@ -1390,13 +1581,6 @@
         const midiInput = document.getElementById("midiFileInput");
         const textareaA = document.getElementById("textareaA");
         const textareaB = document.getElementById("textareaB");
-
-        function showScribeMessage(msg) {
-            const sm = document.getElementById('scribe-sys-message');
-            sm.textContent = msg; 
-            sm.style.opacity = 1;
-            setTimeout(() => sm.style.opacity = 0, 4000);
-        }
 
         const settings = { beatNote: 'time', octaveOffset: 0, steps: 0, barSkip: 0, barsPerRow: 4 };
 
@@ -1870,6 +2054,34 @@
             }
         });
 
+        // --- 2.7 AUTO-SCROLL ENGINE (IDEA 3) ---
+        let isAutoScrolling = false;
+        let scrollSpeed = 0.5;
+        const btnAutoScroll = document.getElementById('btn-autoscroll');
+        const scrollSpeedInput = document.getElementById('scroll-speed');
+
+        btnAutoScroll.addEventListener('click', () => {
+            isAutoScrolling = !isAutoScrolling;
+            if (isAutoScrolling) {
+                btnAutoScroll.textContent = "Scroll: ON";
+                btnAutoScroll.classList.add('text-[#d4af37]', 'border-[#d4af37]');
+                autoScrollLoop();
+            } else {
+                btnAutoScroll.textContent = "Scroll: OFF";
+                btnAutoScroll.classList.remove('text-[#d4af37]', 'border-[#d4af37]');
+            }
+        });
+
+        scrollSpeedInput.addEventListener('input', (e) => {
+            scrollSpeed = parseFloat(e.target.value);
+        });
+
+        function autoScrollLoop() {
+            if (!isAutoScrolling) return;
+            textareaA.scrollTop += scrollSpeed;
+            requestAnimationFrame(autoScrollLoop);
+        }
+
         async function processMidiFile() {
             if (!globalMidiFile) return;
             try {
@@ -1987,6 +2199,7 @@
                 content = await generateJenpaiFormat(arrayBuffer, globalMidiFile.name);
                 content = content.trim();
             } catch (e) {
+                console.error(e);
                 return showScribeMessage("Error generating spreadsheet data.");
             }
 
@@ -2036,6 +2249,7 @@
             XLSX.writeFile(wb, `${baseFileName}.xlsx`);
             showScribeMessage("Spreadsheet successfully exported!");
         });
+
     </script>
 </body>
 </html>
