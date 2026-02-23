@@ -1201,20 +1201,40 @@
             htpContainer.appendChild(rowEl);
         });
 
-        // Click listeners for Octave Rebinding
-        btnOctDown.addEventListener('click', (e) => {
-            if (isRemappingMode) {
-                startRebind(e, 'octaveDown', null, lblOctDown);
-            } else {
+        // --- CORE FIX: RESTORED OCTAVE REBIND LISTENERS ---
+        btnOctDown.addEventListener('mousedown', (e) => {
+            if (isRemappingMode) startRebind(e, 'octaveDown', null, lblOctDown);
+            else {
                 updateOctave(-1);
+                btnOctDown.classList.add('active'); 
+                setTimeout(() => btnOctDown.classList.remove('active'), 100);
+            }
+        });
+        btnOctDown.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (isRemappingMode) startRebind(e, 'octaveDown', null, lblOctDown);
+            else {
+                updateOctave(-1);
+                btnOctDown.classList.add('active'); 
+                setTimeout(() => btnOctDown.classList.remove('active'), 100);
             }
         });
 
-        btnOctUp.addEventListener('click', (e) => {
-            if (isRemappingMode) {
-                startRebind(e, 'octaveUp', null, lblOctUp);
-            } else {
+        btnOctUp.addEventListener('mousedown', (e) => {
+            if (isRemappingMode) startRebind(e, 'octaveUp', null, lblOctUp);
+            else {
                 updateOctave(1);
+                btnOctUp.classList.add('active'); 
+                setTimeout(() => btnOctUp.classList.remove('active'), 100);
+            }
+        });
+        btnOctUp.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (isRemappingMode) startRebind(e, 'octaveUp', null, lblOctUp);
+            else {
+                updateOctave(1);
+                btnOctUp.classList.add('active'); 
+                setTimeout(() => btnOctUp.classList.remove('active'), 100);
             }
         });
 
@@ -1259,14 +1279,15 @@
                 }
 
                 // Conflict priority: Note play takes priority over octave shifting. 
-                // If a user binds a note to an octave shift key, it will play the note.
                 if (isNoteBound) {
                     if (idx !== -1) playNote(notes[idx].offset, currentOctave, `gw2-key-${idx}`);
                     else if (fallbackIdx !== -1) playNote(notes[fallbackIdx].offset, currentOctave, `gw2-key-${fallbackIdx}`);
                 } else if (e.code === bindings.octaveDown) {
                     updateOctave(-1);
+                    btnOctDown.classList.add('active'); setTimeout(() => btnOctDown.classList.remove('active'), 100);
                 } else if (e.code === bindings.octaveUp) {
                     updateOctave(1);
+                    btnOctUp.classList.add('active'); setTimeout(() => btnOctUp.classList.remove('active'), 100);
                 }
             } else {
                 let bind = heartopiaBindsMap[e.code];
@@ -1674,6 +1695,13 @@
             return { note: key, octaveDiff: octaveDiff }
         }
 
+        function showScribeMessage(msg) {
+            const sm = document.getElementById('scribe-sys-message');
+            sm.textContent = msg; 
+            sm.style.opacity = 1;
+            setTimeout(() => sm.style.opacity = 0, 4000);
+        }
+
         // --- POWERINA FORMAT PARSER (Preview Window) ---
         const parseFilePowerina = async (arrayBuffer) => {
             let midi = new Midi(arrayBuffer);
@@ -1685,7 +1713,8 @@
             midi.tracks = midi.tracks.reduce((sum, val) => { if (val.notes && val.notes.length > 0) sum.push(val); return sum; }, []);
 
             const tracks = midi.tracks.map(track => {
-                let currTimeSig = midi.header.timeSignatures[0].timeSignature;
+                // CORE FIX: Prevent crash if MIDI file lacks a time signature definition
+                let currTimeSig = midi.header.timeSignatures.length > 0 ? midi.header.timeSignatures[0].timeSignature : [4, 4];
                 let timeSigIndex = 1; let tempoIndex = 1;
                 let units = timeSigUnits(currTimeSig, ppq);
                 let ticksPerBar = units.perBar; let barUnit = units.unit;
@@ -1827,6 +1856,11 @@
             let lastTick = midi.durationTicks + 1;
             let ticksPerQuarter = midi.header.ppq;
             let measures = {};
+
+            // CORE FIX: Prevent crash if MIDI file lacks a time signature definition
+            if (midi.header.timeSignatures.length === 0) {
+                midi.header.timeSignatures.push({ ticks: 0, timeSignature: [4, 4] });
+            }
 
             midi.header.timeSignatures.forEach((timeSig, timeSigIndex) => {
                 let beatsPerMeasure = timeSig.timeSignature[0];
@@ -2101,24 +2135,30 @@
                 
                 textareaA.dispatchEvent(new Event('input', { bubbles: true }));
             } catch (e) { 
-                showScribeMessage(`Error parsing MIDI file.`); 
+                showScribeMessage(`Error parsing MIDI file. Check console.`); 
                 console.error(e);
             }
         }
 
-        midiInput.addEventListener("change", async () => {
-            const file = midiInput.files[0];
-            if (!file) return;
-            showScribeMessage(`Scribing ${file.name}... Please wait.`);
-            originalFileName = file.name;
-            globalMidiFile = file;
+        midiInput.addEventListener("change", async (e) => {
+            try {
+                const file = e.target.files[0];
+                if (!file) return;
+                showScribeMessage(`Scribing ${file.name}... Please wait.`);
+                originalFileName = file.name;
+                globalMidiFile = file;
 
-            bprSelect.value = "4";
-            settings.barsPerRow = 4;
+                bprSelect.value = "4";
+                settings.barsPerRow = 4;
 
-            await processMidiFile();
-            showScribeMessage(`Scribe complete. Notation generated successfully.`);
-            midiFileInput.value = '';
+                await processMidiFile();
+                showScribeMessage(`Scribe complete. Notation generated successfully.`);
+            } catch (err) {
+                console.error("Critical MIDI upload error:", err);
+                showScribeMessage("Failed to process MIDI file. Check console.");
+            } finally {
+                e.target.value = ''; // Safely clears the input so the same file can be selected again
+            }
         });
 
         // --- Highlighter Logic ---
