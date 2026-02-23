@@ -406,42 +406,41 @@
 <body>
 
     <div class="flex flex-col xl:flex-row w-full max-w-[2200px] mx-auto items-stretch justify-center mt-12 sm:mt-0">
-        
+
         <!-- ============================== -->
         <!-- LEFT PANEL: SONGBOOK           -->
         <!-- ============================== -->
-        <div id="songbook-panel" class="gw2-panel flex-col w-full xl:w-[500px] 2xl:w-[600px] rounded-xl p-4">
+        <div id="songbook-panel" class="gw2-panel hidden flex-col w-full xl:w-[500px] 2xl:w-[600px] rounded-xl p-4">
             <h2 class="gw2-title text-2xl mb-4 text-center">Tome Viewer</h2>
+
+            <!-- Quick Load Tomes & Toggles -->
             <div class="flex flex-wrap justify-center gap-3 mb-5">
-                <button id="btn-load-tome-light" class="gw2-button px-3 py-1.5 rounded font-bold text-xs tracking-widest border border-[#5a4b3c] flex items-center gap-2">
-                    Tome: Light
+                <button id="btn-load-tome-dark" class="gw2-button px-4 py-2 rounded font-bold text-xs tracking-widest border border-[#d4af37] flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                    Tome of Melodies
                 </button>
-                <button id="btn-load-tome-dark" class="gw2-button px-3 py-1.5 rounded font-bold text-xs tracking-widest border border-[#d4af37] flex items-center gap-2">
-                    Tome: Dark
+                <button id="btn-toggle-custom" class="gw2-button px-4 py-2 rounded font-bold text-xs tracking-widest border border-[#5a4b3c] flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                    Custom Notes
                 </button>
             </div>
-            
-            <div class="flex flex-col justify-center items-center gap-2 mb-4 w-full max-w-md mx-auto">
-                <div class="flex justify-center gap-2 w-full">
-                    <input type="text" id="songbook-url" class="gw2-select flex-1 px-3 py-1.5 rounded text-sm outline-none placeholder-[#8c7355]" placeholder="Paste link..." value="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview">
+
+            <!-- Google Doc Input Area -->
+            <div id="doc-input-area" class="flex flex-col justify-center items-center gap-1 mb-4 w-full max-w-md mx-auto">
+                <div class="flex justify-center gap-2 w-full mb-1">
+                    <input type="text" id="songbook-url" class="gw2-select flex-1 px-3 py-1.5 rounded text-sm outline-none placeholder-[#8c7355]" placeholder="Paste Google Doc link here..." value="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview">
                     <button id="btn-load-songbook" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest">Load</button>
                 </div>
-                <!-- Native Render Toggle (Idea 2) -->
-                <div class="flex justify-between items-center w-full px-1 mt-1">
-                    <span class="status-text text-xs">Load a <b class="text-[#d4af37]">Google Doc</b> link above.</span>
-                    <button id="btn-toggle-render" class="gw2-button px-2 py-1 rounded font-bold text-[0.65rem] tracking-widest border border-[#5a4b3c] transition-colors">
-                        View: Standard
-                    </button>
+                <div class="text-center status-text text-sm w-full">
+                    Load a <b class="text-[#d4af37]">Public Google Doc</b> link above.
                 </div>
             </div>
 
             <!-- Standard Iframe -->
-            <iframe id="songbook-frame" class="w-full flex-1 bg-[#e6d8c3] rounded border border-[#5a4b3c] min-h-[500px] xl:min-h-0" src="" title="Songbook"></iframe>
-            
-            <!-- Native Dark Parchment Div (Idea 2) -->
-            <div id="native-songbook" class="w-full flex-1 bg-black/40 rounded border border-[#5a4b3c] min-h-[500px] xl:min-h-0 hidden overflow-auto p-5 font-['Cormorant_Garamond'] text-[#e6d8c3] whitespace-pre-wrap text-lg font-bold shadow-inner">
-                <!-- Content injected via JS -->
-            </div>
+            <iframe id="songbook-frame" class="w-full flex-1 bg-[#e6d8c3] rounded border border-[#5a4b3c] min-h-[500px] xl:min-h-0" src="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview" title="Songbook"></iframe>
+
+            <!-- Custom Notes Area -->
+            <textarea id="custom-notes-area" class="w-full flex-1 bg-black/40 text-[#e6d8c3] rounded border border-[#5a4b3c] min-h-[500px] xl:min-h-0 hidden p-5 font-['Cormorant_Garamond'] text-lg font-bold outline-none resize-none shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] leading-relaxed" placeholder="Write or paste your own tabs here...&#10;&#10;Changes are automatically saved!"></textarea>
         </div>
 
         <!-- ============================== -->
@@ -563,14 +562,14 @@
         <!-- RIGHT PANEL: TOME SCRIBE       -->
         <!-- ============================== -->
         <div id="scribe-panel" class="gw2-panel flex-col w-full xl:w-[600px] 2xl:w-[650px] rounded-xl p-4">
-            
+
             <!-- Toggleable Scribe Header -->
             <div class="w-full flex justify-between items-end mb-4 px-2">
                 <div>
                     <h2 class="gw2-title text-3xl mb-1 text-left">Tome Scribe</h2>
                     <h3 class="text-[#d4af37] font-['Cinzel'] text-sm tracking-widest font-bold m-0">Convert arcane MIDI magic</h3>
                 </div>
-                
+
                 <div class="flex items-center gap-2 mb-1">
                     <!-- Auto Scroll Toggle (Idea 3) -->
                     <div class="flex items-center gap-1 bg-black/40 border border-[#5a4b3c] px-2 py-1 rounded shadow-inner" title="Auto-Scroll Transcriptions">
@@ -586,7 +585,7 @@
                     </select>
                 </div>
             </div>
-            
+
             <div class="flex justify-center items-center w-full mb-4">
                 <label for="midiFileInput" class="gw2-button px-8 py-2 rounded font-bold text-sm tracking-widest cursor-pointer text-center shadow-lg flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>
@@ -655,17 +654,18 @@
         const songbookUrlInput = document.getElementById('songbook-url');
         const btnLoadSongbook = document.getElementById('btn-load-songbook');
         const songbookFrame = document.getElementById('songbook-frame');
-        const nativeSongbookDiv = document.getElementById('native-songbook');
-        const btnToggleRender = document.getElementById('btn-toggle-render');
-        const btnLoadTomeLight = document.getElementById('btn-load-tome-light');
+
         const btnLoadTomeDark = document.getElementById('btn-load-tome-dark');
-        
+        const btnToggleCustom = document.getElementById('btn-toggle-custom');
+        const docInputArea = document.getElementById('doc-input-area');
+        const customNotesArea = document.getElementById('custom-notes-area');
+
         const btnToggleScribe = document.getElementById('btn-toggle-scribe');
         const scribePanel = document.getElementById('scribe-panel');
 
         const metronomeToggle = document.getElementById('metronome-toggle');
         const bpmInput = document.getElementById('metronome-bpm');
-        
+
         const btnEditBinds = document.getElementById('btn-edit-binds');
         const btnOctDown = document.getElementById('btn-oct-down');
         const btnOctUp = document.getElementById('btn-oct-up');
@@ -677,7 +677,18 @@
 
         let isSongbookOpen = false;
         let isScribeOpen = false;
-        let isNativeRenderMode = false;
+
+        // Initialize from cache if available
+        try {
+            const cachedUrl = localStorage.getItem('tyrianSongbookUrl');
+            if (cachedUrl) {
+                songbookUrlInput.value = cachedUrl;
+            }
+            const cachedNotes = localStorage.getItem('tyrianCustomNotes');
+            if (cachedNotes) {
+                customNotesArea.value = cachedNotes;
+            }
+        } catch(e) {}
 
         function showMessage(m) {
             const sm = document.getElementById('sys-message');
@@ -686,16 +697,20 @@
         }
 
         // ==========================================
-        // 2. SLIDING PANELS & NATIVE SONGBOOK (IDEA 2)
+        // 2. SLIDING PANELS & SONGBOOK
         // ==========================================
         btnToggleSongbook.addEventListener('click', () => {
             isSongbookOpen = !isSongbookOpen;
             if (isSongbookOpen) {
                 songbookPanel.classList.add('is-open');
+                songbookPanel.classList.remove('hidden');
                 btnToggleSongbook.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg> <span class="hidden sm:inline">Close Songbook</span><span class="inline sm:hidden">Close</span>';
-                if (!songbookFrame.src || songbookFrame.src === window.location.href) loadSongbookUrl();
+                if (!songbookFrame.src || songbookFrame.src === window.location.href || songbookFrame.src === 'about:blank') {
+                    loadSongbookUrl();
+                }
             } else {
                 songbookPanel.classList.remove('is-open');
+                setTimeout(() => songbookPanel.classList.add('hidden'), 600); // Hide after animation
                 btnToggleSongbook.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg> <span class="hidden sm:inline">Open Songbook</span><span class="inline sm:hidden">Songs</span>';
             }
         });
@@ -714,61 +729,50 @@
         function loadSongbookUrl() {
             let url = songbookUrlInput.value.trim();
             if (!url) return;
-            
+
+            try { localStorage.setItem('tyrianSongbookUrl', url); } catch (e) {}
+
             showMessage("Loading Tome...");
 
-            if (isNativeRenderMode) {
-                songbookFrame.classList.add('hidden');
-                nativeSongbookDiv.classList.remove('hidden');
-                nativeSongbookDiv.innerHTML = '<div class="text-[#d4af37] animate-pulse text-center mt-20">Extracting magical ink...</div>';
-                
-                let exportUrl = url;
-                if(url.includes('docs.google.com')) {
-                    exportUrl = url.replace(/\/edit.*$/, '/export?format=txt').replace(/\/preview.*$/, '/export?format=txt');
-                }
-
-                fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(exportUrl)}`)
-                    .then(res => { if(res.ok) return res.json(); throw new Error('Network error'); })
-                    .then(data => { 
-                        nativeSongbookDiv.textContent = data.contents; 
-                        showMessage("Tome translated to native parchment.");
-                    })
-                    .catch(err => { 
-                        nativeSongbookDiv.innerHTML = '<div class="text-[#ff5555] text-center mt-20">Failed to extract text. The Tome might be protected by ancient wards.<br><br><span class="text-[#8c7355] text-sm">Ensure the Google Doc is shared as "Anyone with the link can view".</span></div>';
-                    });
-
-            } else {
-                nativeSongbookDiv.classList.add('hidden');
-                songbookFrame.classList.remove('hidden');
-                if (url.includes('docs.google.com') && url.includes('/edit')) {
-                    url = url.replace(/\/edit.*$/, '/preview');
-                }
-                songbookFrame.src = url;
+            if (url.includes('docs.google.com') && url.includes('/edit')) {
+                url = url.replace(/\/edit.*$/, '/preview');
             }
+            songbookFrame.src = url;
         }
 
         btnLoadSongbook.addEventListener('click', loadSongbookUrl);
         songbookUrlInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') loadSongbookUrl(); });
 
-        btnToggleRender.addEventListener('click', () => {
-            isNativeRenderMode = !isNativeRenderMode;
-            if (isNativeRenderMode) {
-                btnToggleRender.textContent = "View: Native Text";
-                btnToggleRender.classList.add('text-[#d4af37]', 'border-[#d4af37]');
-            } else {
-                btnToggleRender.textContent = "View: Standard";
-                btnToggleRender.classList.remove('text-[#d4af37]', 'border-[#d4af37]');
-            }
+        // Tome of Melodies Button
+        btnLoadTomeDark.addEventListener('click', () => {
+            btnLoadTomeDark.classList.add('border-[#d4af37]');
+            btnLoadTomeDark.classList.remove('border-[#5a4b3c]');
+            btnToggleCustom.classList.remove('border-[#d4af37]');
+            btnToggleCustom.classList.add('border-[#5a4b3c]');
+
+            docInputArea.classList.remove('hidden');
+            customNotesArea.classList.add('hidden');
+            songbookFrame.classList.remove('hidden');
+
+            songbookUrlInput.value = 'https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview';
             loadSongbookUrl();
         });
 
-        btnLoadTomeLight.addEventListener('click', () => {
-            songbookUrlInput.value = 'https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview';
-            loadSongbookUrl();
+        // Custom Notes Toggle Button
+        btnToggleCustom.addEventListener('click', () => {
+            btnToggleCustom.classList.add('border-[#d4af37]');
+            btnToggleCustom.classList.remove('border-[#5a4b3c]');
+            btnLoadTomeDark.classList.remove('border-[#d4af37]');
+            btnLoadTomeDark.classList.add('border-[#5a4b3c]');
+
+            docInputArea.classList.add('hidden');
+            songbookFrame.classList.add('hidden');
+            customNotesArea.classList.remove('hidden');
         });
-        btnLoadTomeDark.addEventListener('click', () => {
-            songbookUrlInput.value = 'https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview';
-            loadSongbookUrl();
+
+        // Real-time saving of custom notes to local cache
+        customNotesArea.addEventListener('input', (e) => {
+            try { localStorage.setItem('tyrianCustomNotes', e.target.value); } catch(err) {}
         });
 
         btnToggleView.addEventListener('click', () => {
@@ -806,18 +810,18 @@
         function spawnParticles(elementId, instrument) {
             const el = document.getElementById(elementId);
             if (!el) return;
-            
+
             const rect = el.getBoundingClientRect();
             const canvasRect = particleCanvas.getBoundingClientRect();
-            
+
             const x = rect.left - canvasRect.left + rect.width / 2;
-            const y = rect.top - canvasRect.top + 20; 
-            
-            let color = '#d4af37'; 
-            if (instrument === 'crystal') color = '#aaddff'; 
-            else if (instrument === 'brass') color = '#ffaa55'; 
-            else if (instrument === 'flute') color = '#bbffaa'; 
-            else if (instrument.startsWith('sf2_')) color = '#ffccff'; 
+            const y = rect.top - canvasRect.top + 20;
+
+            let color = '#d4af37';
+            if (instrument === 'crystal') color = '#aaddff';
+            else if (instrument === 'brass') color = '#ffaa55';
+            else if (instrument === 'flute') color = '#bbffaa';
+            else if (instrument.startsWith('sf2_')) color = '#ffccff';
 
             for (let i = 0; i < 6; i++) {
                 particles.push({
@@ -840,12 +844,12 @@
                 p.x += p.vx;
                 p.y += p.vy;
                 p.life -= p.decay;
-                
+
                 if (p.life <= 0) {
                     particles.splice(i, 1);
                     continue;
                 }
-                
+
                 pCtx.globalAlpha = p.life;
                 pCtx.fillStyle = p.color;
                 pCtx.beginPath();
@@ -920,7 +924,7 @@
             { octave: 3, dot: 'bottom', keys: [ { offset: 0, solfege: 'DO', bindLabel: ',', code: 'Comma', num: 1, type: 'white' }, { offset: 1, bindLabel: 'L', code: 'KeyL', type: 'black' }, { offset: 2, solfege: 'RE', bindLabel: '.', code: 'Period', num: 2, type: 'white' }, { offset: 3, bindLabel: ';', code: 'Semicolon', type: 'black' }, { offset: 4, solfege: 'MI', bindLabel: '/', code: 'Slash', num: 3, type: 'white' }, { offset: 5, solfege: 'FA', bindLabel: 'O', code: 'KeyO', num: 4, type: 'white', gap: true }, { offset: 6, bindLabel: '0', code: 'Digit0', type: 'black' }, { offset: 7, solfege: 'SOL', bindLabel: 'P', code: 'KeyP', num: 5, type: 'white' }, { offset: 8, bindLabel: '-', code: 'Minus', type: 'black' }, { offset: 9, solfege: 'LA', bindLabel: '[', code: 'BracketLeft', num: 6, type: 'white' }, { offset: 10, bindLabel: '=', code: 'Equal', type: 'black' }, { offset: 11, solfege: 'SI', bindLabel: ']', code: 'BracketRight', num: 7, type: 'white' } ]}
         ];
         const heartopiaBindsMap = {};
-        
+
         // Restore fully featured SF2 Storage Cache
         let sf2Data = { buffer: null, smplOffset: 0, smplSize: 0, presets: [], bufferCache: {} };
 
@@ -1206,7 +1210,7 @@
             if (isRemappingMode) startRebind(e, 'octaveDown', null, lblOctDown);
             else {
                 updateOctave(-1);
-                btnOctDown.classList.add('active'); 
+                btnOctDown.classList.add('active');
                 setTimeout(() => btnOctDown.classList.remove('active'), 100);
             }
         });
@@ -1215,7 +1219,7 @@
             if (isRemappingMode) startRebind(e, 'octaveDown', null, lblOctDown);
             else {
                 updateOctave(-1);
-                btnOctDown.classList.add('active'); 
+                btnOctDown.classList.add('active');
                 setTimeout(() => btnOctDown.classList.remove('active'), 100);
             }
         });
@@ -1224,7 +1228,7 @@
             if (isRemappingMode) startRebind(e, 'octaveUp', null, lblOctUp);
             else {
                 updateOctave(1);
-                btnOctUp.classList.add('active'); 
+                btnOctUp.classList.add('active');
                 setTimeout(() => btnOctUp.classList.remove('active'), 100);
             }
         });
@@ -1233,7 +1237,7 @@
             if (isRemappingMode) startRebind(e, 'octaveUp', null, lblOctUp);
             else {
                 updateOctave(1);
-                btnOctUp.classList.add('active'); 
+                btnOctUp.classList.add('active');
                 setTimeout(() => btnOctUp.classList.remove('active'), 100);
             }
         });
@@ -1260,7 +1264,7 @@
                     }
                     saveBinds(); showMessage("Bound!"); activeRebind = null; return;
                 }
-                
+
                 let idx = bindings.notes.indexOf(e.code);
                 let isNoteBound = (idx !== -1);
 
@@ -1278,7 +1282,7 @@
                     }
                 }
 
-                // Conflict priority: Note play takes priority over octave shifting. 
+                // Conflict priority: Note play takes priority over octave shifting.
                 if (isNoteBound) {
                     if (idx !== -1) playNote(notes[idx].offset, currentOctave, `gw2-key-${idx}`);
                     else if (fallbackIdx !== -1) playNote(notes[fallbackIdx].offset, currentOctave, `gw2-key-${fallbackIdx}`);
@@ -1695,13 +1699,6 @@
             return { note: key, octaveDiff: octaveDiff }
         }
 
-        function showScribeMessage(msg) {
-            const sm = document.getElementById('scribe-sys-message');
-            sm.textContent = msg; 
-            sm.style.opacity = 1;
-            setTimeout(() => sm.style.opacity = 0, 4000);
-        }
-
         // --- POWERINA FORMAT PARSER (Preview Window) ---
         const parseFilePowerina = async (arrayBuffer) => {
             let midi = new Midi(arrayBuffer);
@@ -1775,11 +1772,11 @@
                             note.octave = note.octave + nTransposed.octaveDiff;
                             key = nTransposed.note;
                             if (!isNaN(key)) key = parseInt(key);
-                            
+
                             const nextNote = bar.notes[index + 1];
                             let startOffset = 0;
                             if (currentOctave === -1) currentOctave = note.octave;
-                            
+
                             if (index === 0) {
                                 prevTick = note.ticks;
                                 if (key === 1 && currentOctave < note.octave) { key = 8; startOffset = -1; }
@@ -1851,8 +1848,8 @@
             let sep4th = "    "; let sep8th = "  "; let sep16th = " ";
             let sepMeasure = "\n";
             let rest8thOptional = ""; let rest16thOptional = ""; let sep8thOptional = ""; let sep16thOptional = "";
-            let lessMeasureBrackets = false; 
-            
+            let lessMeasureBrackets = false;
+
             let lastTick = midi.durationTicks + 1;
             let ticksPerQuarter = midi.header.ppq;
             let measures = {};
@@ -1903,7 +1900,7 @@
                 trackName = trackName ? trackName.slice(0, -1) : "Track";
 
                 track.notes.forEach((note, noteIndex) => {
-                    note.pitchKey = note.pitch.replace(/\d/g, ''); 
+                    note.pitchKey = note.pitch.replace(/\d/g, '');
 
                     let noteMeasure = getRealMeasureFromTick(note.ticks);
                     if (typeof noteMeasure === 'string') return;
@@ -2132,10 +2129,10 @@
                 });
                 textareaA.innerText = '';
                 textareaA.innerText = tabNotes;
-                
+
                 textareaA.dispatchEvent(new Event('input', { bubbles: true }));
-            } catch (e) { 
-                showScribeMessage(`Error parsing MIDI file. Check console.`); 
+            } catch (e) {
+                showScribeMessage(`Error parsing MIDI file. Check console.`);
                 console.error(e);
             }
         }
@@ -2176,7 +2173,7 @@
 
         function syncText() { textareaB.innerHTML = applyHighlighting(textareaA.innerText); }
         const syncScroll = (source, target) => { target.scrollTop = source.scrollTop; target.scrollLeft = source.scrollLeft; };
-        
+
         textareaA.addEventListener('scroll', () => syncScroll(textareaA, textareaB));
         textareaB.addEventListener('scroll', () => syncScroll(textareaB, textareaA));
 
@@ -2191,7 +2188,7 @@
             if (!content) return showScribeMessage("Nothing to copy!");
             const textArea = document.createElement("textarea");
             textArea.value = content; document.body.appendChild(textArea); textArea.select();
-            try { document.execCommand('copy'); showScribeMessage("Tabs copied to clipboard!"); } 
+            try { document.execCommand('copy'); showScribeMessage("Tabs copied to clipboard!"); }
             catch (ex) { showScribeMessage("Failed to copy tabs."); }
             document.body.removeChild(textArea);
         });
@@ -2200,29 +2197,29 @@
             const text = textareaA.innerText.trim();
             if (!text) return showScribeMessage("There is nothing to export.");
             showScribeMessage("Inking Spell Page...");
-            
+
             let canvas = document.createElement('canvas'); let ctx = canvas.getContext('2d');
             let lines = text.split('\n'); ctx.font = "bold 16px monospace";
             let maxLineObj = lines.reduce((a, b) => a.length > b.length ? a : b, "");
             let textWidth = ctx.measureText(maxLineObj).width;
-            
-            canvas.width = Math.max(800, textWidth + 100); canvas.height = lines.length * 24 + 160; 
+
+            canvas.width = Math.max(800, textWidth + 100); canvas.height = lines.length * 24 + 160;
             let grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
             grad.addColorStop(0, '#2c2420'); grad.addColorStop(1, '#181514');
             ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.strokeStyle = '#8c7355'; ctx.lineWidth = 4; ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
-            
+
             ctx.fillStyle = '#d4af37'; ctx.font = "bold 26px serif"; ctx.textAlign = "center";
             ctx.fillText("Tome of Melodies: Transcribed Spell Page", canvas.width / 2, 50);
-            
+
             ctx.textAlign = "left"; ctx.font = "bold 16px monospace"; ctx.fillStyle = '#e6d8c3';
             let y = 100;
             for (let line of lines) {
-                if (line.startsWith('---')) { ctx.fillStyle = '#d4af37'; ctx.fillText(line, 50, y); ctx.fillStyle = '#e6d8c3'; } 
+                if (line.startsWith('---')) { ctx.fillStyle = '#d4af37'; ctx.fillText(line, 50, y); ctx.fillStyle = '#e6d8c3'; }
                 else { ctx.fillText(line, 50, y); }
                 y += 24;
             }
-            
+
             let link = document.createElement('a');
             link.download = `${originalFileName.replace(/\.(mid|midi)$/i, '')}_SpellPage.png`;
             link.href = canvas.toDataURL('image/png'); link.click();
@@ -2232,7 +2229,7 @@
         document.getElementById("downloadSpreadsheetBtn").addEventListener("click", async () => {
             if (!globalMidiFile) return showScribeMessage("There is nothing to download.");
             showScribeMessage("Generating Spreadsheet...");
-            
+
             let content = "";
             try {
                 const arrayBuffer = await globalMidiFile.arrayBuffer();
@@ -2257,7 +2254,7 @@
 
                 let isHeader = false;
                 let baseName = "";
-                
+
                 if (line.startsWith("--- ") && line.endsWith(" ---")) {
                     isHeader = true;
                     baseName = line.replace(/-/g, '').trim().slice(0, 31);
@@ -2270,8 +2267,8 @@
                     const count = (sheetCounts[baseName] || 0) + 1;
                     sheetCounts[baseName] = count;
                     currentSheetKey = count === 1 ? baseName : `${baseName} ${count}`;
-                    sheets[currentSheetKey] = [[baseName]]; 
-                } 
+                    sheets[currentSheetKey] = [[baseName]];
+                }
                 else if (currentSheetKey && line !== "") {
                     // Uses exact Jenpai separation logic (4 spaces)
                     const row = rawLine.split(/ {4}/g).map(cell => cell.trim());
