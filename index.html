@@ -103,7 +103,7 @@
             font-family: 'Cormorant Garamond', serif;
         }
 
-        /* --- Scribe Editor Styles --- */
+        /* --- Scribe & Custom Editor Styles --- */
         .editor-container {
             position: relative;
             width: 100%;
@@ -111,12 +111,13 @@
             max-width: 100%;
         }
 
-        #textareaA, #textareaB {
+        .editor-layer {
             width: 100%;
             height: 100%;
             position: absolute;
             top: 0; left: 0;
             padding: 1.5rem;
+            margin: 0;
             font-family: monospace;
             font-size: 1rem;
             line-height: 1.6rem;
@@ -128,16 +129,17 @@
             text-align: left;
         }
 
-        #textareaA {
+        .editor-front {
             color: transparent;
             caret-color: var(--gw2-gold);
             z-index: 10;
-            resize: vertical;
+            resize: none;
             outline: none;
             border: 2px solid transparent;
+            background: transparent;
         }
 
-        #textareaB {
+        .editor-back {
             background-color: rgba(0, 0, 0, 0.4);
             color: var(--gw2-parchment);
             border: 1px solid #5a4b3c;
@@ -145,6 +147,10 @@
             z-index: 1;
             pointer-events: none;
         }
+
+        /* Hide scrollbar on the background layer to prevent visual doubling */
+        .editor-back::-webkit-scrollbar { display: none; }
+        .editor-back { -ms-overflow-style: none; scrollbar-width: none; }
 
         .highlight-red { color: #ff5555; font-weight: bold; text-shadow: 0 0 5px rgba(255,0,0,0.5); }
         .highlight-blue { color: #6fa8dc; font-weight: bold; text-shadow: 0 0 5px rgba(100,150,255,0.5); }
@@ -406,13 +412,13 @@
 <body>
 
     <div class="flex flex-col xl:flex-row w-full max-w-[2200px] mx-auto items-stretch justify-center mt-12 sm:mt-0">
-
+        
         <!-- ============================== -->
         <!-- LEFT PANEL: SONGBOOK           -->
         <!-- ============================== -->
         <div id="songbook-panel" class="gw2-panel hidden flex-col w-full xl:w-[500px] 2xl:w-[600px] rounded-xl p-4">
             <h2 class="gw2-title text-2xl mb-4 text-center">Tome Viewer</h2>
-
+            
             <!-- Quick Load Tomes & Toggles -->
             <div class="flex flex-wrap justify-center gap-3 mb-5">
                 <button id="btn-load-tome-dark" class="gw2-button px-4 py-2 rounded font-bold text-xs tracking-widest border border-[#d4af37] flex items-center gap-2">
@@ -438,9 +444,12 @@
 
             <!-- Standard Iframe -->
             <iframe id="songbook-frame" class="w-full flex-1 bg-[#e6d8c3] rounded border border-[#5a4b3c] min-h-[500px] xl:min-h-0" src="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview" title="Songbook"></iframe>
-
-            <!-- Custom Notes Area -->
-            <textarea id="custom-notes-area" class="w-full flex-1 bg-black/40 text-[#e6d8c3] rounded border border-[#5a4b3c] min-h-[500px] xl:min-h-0 hidden p-5 font-['Cormorant_Garamond'] text-lg font-bold outline-none resize-none shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] leading-relaxed" placeholder="Write or paste your own tabs here...&#10;&#10;Changes are automatically saved!"></textarea>
+            
+            <!-- Custom Notes Area (Mirrors Scribe dual-layer text system precisely) -->
+            <div id="custom-notes-container" class="editor-container hidden flex-1 min-h-[500px] xl:min-h-0 w-full mt-2">
+                <div id="customTextareaB" class="editor-layer editor-back" aria-hidden="true"></div>
+                <textarea id="customTextareaA" spellcheck="false" class="editor-layer editor-front" placeholder="Write or paste your own tabs here...&#10;&#10;Changes are automatically saved!"></textarea>
+            </div>
         </div>
 
         <!-- ============================== -->
@@ -448,7 +457,7 @@
         <!-- ============================== -->
         <div id="center-panel" class="gw2-panel p-6 sm:p-10 rounded-xl flex flex-col items-center flex-1 w-full max-w-[1000px] z-20 overflow-hidden">
 
-            <!-- Visual Magic Canvas (Idea 1) -->
+            <!-- Visual Magic Canvas -->
             <canvas id="particle-canvas" class="absolute top-0 left-0 w-full h-full pointer-events-none z-50 rounded-xl"></canvas>
 
             <!-- Top Left: Open Songbook Button -->
@@ -561,61 +570,75 @@
         <!-- ============================== -->
         <!-- RIGHT PANEL: TOME SCRIBE       -->
         <!-- ============================== -->
-        <div id="scribe-panel" class="gw2-panel flex-col w-full xl:w-[600px] 2xl:w-[650px] rounded-xl p-4">
-
+        <div id="scribe-panel" class="gw2-panel flex-col w-full xl:w-[600px] 2xl:w-[650px] rounded-xl p-4 relative overflow-hidden">
+            
             <!-- Toggleable Scribe Header -->
             <div class="w-full flex justify-between items-end mb-4 px-2">
                 <div>
-                    <h2 class="gw2-title text-3xl mb-1 text-left">Tome Scribe</h2>
-                    <h3 class="text-[#d4af37] font-['Cinzel'] text-sm tracking-widest font-bold m-0">Convert arcane MIDI magic</h3>
+                    <h2 class="gw2-title text-3xl mb-1 text-left flex items-center gap-3">
+                        Tome Scribe
+                        <span class="bg-[#3a0e0e] text-[#ff5555] text-[0.55rem] px-2 py-0.5 rounded border border-[#ff5555] uppercase tracking-widest animate-pulse shadow-[0_0_10px_rgba(255,85,85,0.5)]">Maintenance</span>
+                    </h2>
+                    <h3 class="text-[#ff5555] font-['Cinzel'] text-sm tracking-widest font-bold m-0 opacity-80">Arcane Wards Unstable</h3>
                 </div>
-
-                <div class="flex items-center gap-2 mb-1">
-                    <!-- Auto Scroll Toggle (Idea 3) -->
+                
+                <div class="flex items-center gap-2 mb-1 opacity-40 pointer-events-none grayscale">
+                    <!-- Auto Scroll Toggle -->
                     <div class="flex items-center gap-1 bg-black/40 border border-[#5a4b3c] px-2 py-1 rounded shadow-inner" title="Auto-Scroll Transcriptions">
-                        <button id="btn-autoscroll" class="font-bold text-[0.65rem] tracking-widest text-[#8c7355] hover:text-[#d4af37] transition-colors outline-none uppercase">Scroll: OFF</button>
-                        <input type="range" id="scroll-speed" min="0.2" max="2" step="0.1" value="0.5" class="w-12 accent-[#d4af37] cursor-pointer">
+                        <button id="btn-autoscroll" class="font-bold text-[0.65rem] tracking-widest text-[#8c7355] transition-colors outline-none uppercase" disabled>Scroll: OFF</button>
+                        <input type="range" id="scroll-speed" min="0.2" max="2" step="0.1" value="0.5" class="w-12 accent-[#d4af37] cursor-not-allowed" disabled>
                     </div>
 
-                    <select id="bprSelect" class="gw2-select px-2 py-1 rounded font-bold text-xs tracking-widest text-center shadow-lg border border-[#5a4b3c] outline-none cursor-pointer" title="Bars Per Row">
+                    <select id="bprSelect" class="gw2-select px-2 py-1 rounded font-bold text-xs tracking-widest text-center shadow-lg border border-[#5a4b3c] outline-none cursor-not-allowed" title="Bars Per Row" disabled>
                         <option value="4">4 BPR</option>
-                        <option value="3">3 BPR</option>
-                        <option value="2">2 BPR</option>
-                        <option value="1">1 BPR</option>
                     </select>
                 </div>
             </div>
-
+            
             <div class="flex justify-center items-center w-full mb-4">
-                <label for="midiFileInput" class="gw2-button px-8 py-2 rounded font-bold text-sm tracking-widest cursor-pointer text-center shadow-lg flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>
-                    Upload MIDI
-                </label>
-                <input type="file" id="midiFileInput" accept=".mid,.midi" class="hidden">
+                <!-- Disabled Maintenance Button -->
+                <div class="gw2-button px-8 py-2 rounded font-bold text-sm tracking-widest text-center shadow-[0_0_15px_rgba(255,85,85,0.2)] flex items-center gap-2 cursor-not-allowed border-[#ff5555] text-[#ffbaba]" style="background: linear-gradient(to bottom, #4a1515, #1a0505);">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#ff5555]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    Scribe Engine Offline
+                </div>
+                <input type="file" id="midiFileInput" accept=".mid,.midi" class="hidden" disabled>
             </div>
 
-            <div class="flex flex-wrap justify-center items-stretch gap-2 w-full mb-4">
-                <button id="copyTabBtn" class="gw2-button px-3 py-1.5 rounded text-center shadow-lg flex flex-col items-center justify-center gap-1 border-[#5a4b3c] flex-1">
+            <div class="flex flex-wrap justify-center items-stretch gap-2 w-full mb-4 opacity-40 pointer-events-none grayscale">
+                <button id="copyTabBtn" class="gw2-button px-3 py-1.5 rounded text-center shadow-lg flex flex-col items-center justify-center gap-1 border-[#5a4b3c] flex-1" disabled>
                     <div class="flex items-center gap-1 font-bold text-[0.65rem] tracking-widest whitespace-nowrap"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>Copy Tab</div>
                     <span class="text-[0.55rem] text-[#e6d8c3]/60 font-serif tracking-normal normal-case">Format by Powerina</span>
                 </button>
-                <button id="downloadSpreadsheetBtn" class="gw2-button px-3 py-1.5 rounded text-center shadow-lg flex flex-col items-center justify-center gap-1 border-[#5a4b3c] flex-1">
+                <button id="downloadSpreadsheetBtn" class="gw2-button px-3 py-1.5 rounded text-center shadow-lg flex flex-col items-center justify-center gap-1 border-[#5a4b3c] flex-1" disabled>
                     <div class="flex items-center gap-1 font-bold text-[0.65rem] tracking-widest whitespace-nowrap"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>Spreadsheet</div>
                     <span class="text-[0.55rem] text-[#e6d8c3]/60 font-serif tracking-normal normal-case">Export by Jenpai</span>
                 </button>
-                <button id="exportImageBtn" class="gw2-button px-3 py-1.5 rounded text-center shadow-lg flex flex-col items-center justify-center gap-1 border-[#5a4b3c] flex-1">
+                <button id="exportImageBtn" class="gw2-button px-3 py-1.5 rounded text-center shadow-lg flex flex-col items-center justify-center gap-1 border-[#5a4b3c] flex-1" disabled>
                     <div class="flex items-center gap-1 font-bold text-[0.65rem] tracking-widest whitespace-nowrap"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z" /></svg>Export Image</div>
                     <span class="text-[0.55rem] text-[#e6d8c3]/60 font-serif tracking-normal normal-case">Spell Page PNG</span>
                 </button>
             </div>
 
-            <div id="scribe-sys-message" class="text-[#d4af37] font-['Cinzel'] h-5 mb-2 opacity-0 transition-opacity duration-500 text-xs tracking-wider font-bold text-center">
-                Awaiting input...
+            <div id="scribe-sys-message" class="text-[#ff5555] font-['Cinzel'] h-5 mb-2 opacity-80 text-xs tracking-wider font-bold text-center">
+                The Scribe is currently resting...
             </div>
 
-            <div class="editor-container relative z-20 flex-1 min-h-[400px]">
-                <div id="textareaB"></div>
-                <div id="textareaA" contenteditable="true" spellcheck="false">Your converted tabs will appear here. You can edit them freely!</div>
+            <!-- Scribe Editor Area (Locked Down) -->
+            <div class="editor-container relative flex-1 min-h-[400px]">
+                
+                <!-- Magic Lockdown Overlay -->
+                <div class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/70 rounded-lg border border-[#ff5555] backdrop-blur-[2px] shadow-[inset_0_0_30px_rgba(255,85,85,0.2)]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-[#ff5555] mb-4 opacity-80 drop-shadow-[0_0_8px_rgba(255,85,85,0.8)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    <span class="text-[#ff5555] font-['Cinzel'] font-bold text-2xl tracking-widest text-center px-4 mb-3" style="text-shadow: 0 0 10px rgba(255,85,85,0.8);">UNDER MAINTENANCE</span>
+                    <span class="text-[#e6d8c3] font-serif text-[1.1rem] italic text-center px-8 opacity-90 leading-snug">
+                        Our magic weavers are currently repairing the transcription engine.<br>The Scribe will return once the arcane bugs are squashed.
+                    </span>
+                </div>
+
+                <div id="textareaB" class="editor-layer editor-back opacity-50" aria-hidden="true"></div>
+                <textarea id="textareaA" spellcheck="false" class="editor-layer editor-front opacity-50 cursor-not-allowed" disabled></textarea>
             </div>
         </div>
 
@@ -654,18 +677,20 @@
         const songbookUrlInput = document.getElementById('songbook-url');
         const btnLoadSongbook = document.getElementById('btn-load-songbook');
         const songbookFrame = document.getElementById('songbook-frame');
-
+        
         const btnLoadTomeDark = document.getElementById('btn-load-tome-dark');
         const btnToggleCustom = document.getElementById('btn-toggle-custom');
         const docInputArea = document.getElementById('doc-input-area');
-        const customNotesArea = document.getElementById('custom-notes-area');
-
+        const customNotesContainer = document.getElementById('custom-notes-container');
+        const customTextareaA = document.getElementById('customTextareaA');
+        const customTextareaB = document.getElementById('customTextareaB');
+        
         const btnToggleScribe = document.getElementById('btn-toggle-scribe');
         const scribePanel = document.getElementById('scribe-panel');
 
         const metronomeToggle = document.getElementById('metronome-toggle');
         const bpmInput = document.getElementById('metronome-bpm');
-
+        
         const btnEditBinds = document.getElementById('btn-edit-binds');
         const btnOctDown = document.getElementById('btn-oct-down');
         const btnOctUp = document.getElementById('btn-oct-up');
@@ -686,7 +711,7 @@
             }
             const cachedNotes = localStorage.getItem('tyrianCustomNotes');
             if (cachedNotes) {
-                customNotesArea.value = cachedNotes;
+                customTextareaA.value = cachedNotes;
             }
         } catch(e) {}
 
@@ -702,7 +727,7 @@
         btnToggleSongbook.addEventListener('click', () => {
             isSongbookOpen = !isSongbookOpen;
             if (isSongbookOpen) {
-                songbookPanel.classList.add('is-open');
+                songbookPanel.classList.add('is-open'); 
                 songbookPanel.classList.remove('hidden');
                 btnToggleSongbook.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg> <span class="hidden sm:inline">Close Songbook</span><span class="inline sm:hidden">Close</span>';
                 if (!songbookFrame.src || songbookFrame.src === window.location.href || songbookFrame.src === 'about:blank') {
@@ -729,9 +754,9 @@
         function loadSongbookUrl() {
             let url = songbookUrlInput.value.trim();
             if (!url) return;
-
+            
             try { localStorage.setItem('tyrianSongbookUrl', url); } catch (e) {}
-
+            
             showMessage("Loading Tome...");
 
             if (url.includes('docs.google.com') && url.includes('/edit')) {
@@ -749,11 +774,11 @@
             btnLoadTomeDark.classList.remove('border-[#5a4b3c]');
             btnToggleCustom.classList.remove('border-[#d4af37]');
             btnToggleCustom.classList.add('border-[#5a4b3c]');
-
+            
             docInputArea.classList.remove('hidden');
-            customNotesArea.classList.add('hidden');
+            customNotesContainer.classList.add('hidden');
             songbookFrame.classList.remove('hidden');
-
+            
             songbookUrlInput.value = 'https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview';
             loadSongbookUrl();
         });
@@ -764,15 +789,10 @@
             btnToggleCustom.classList.remove('border-[#5a4b3c]');
             btnLoadTomeDark.classList.remove('border-[#d4af37]');
             btnLoadTomeDark.classList.add('border-[#5a4b3c]');
-
+            
             docInputArea.classList.add('hidden');
             songbookFrame.classList.add('hidden');
-            customNotesArea.classList.remove('hidden');
-        });
-
-        // Real-time saving of custom notes to local cache
-        customNotesArea.addEventListener('input', (e) => {
-            try { localStorage.setItem('tyrianCustomNotes', e.target.value); } catch(err) {}
+            customNotesContainer.classList.remove('hidden');
         });
 
         btnToggleView.addEventListener('click', () => {
@@ -794,7 +814,7 @@
         });
 
         // ==========================================
-        // 2.5 VISUAL MAGIC PARTICLE ENGINE (IDEA 1)
+        // 2.5 VISUAL MAGIC PARTICLE ENGINE
         // ==========================================
         const particleCanvas = document.getElementById('particle-canvas');
         const pCtx = particleCanvas.getContext('2d');
@@ -810,18 +830,18 @@
         function spawnParticles(elementId, instrument) {
             const el = document.getElementById(elementId);
             if (!el) return;
-
+            
             const rect = el.getBoundingClientRect();
             const canvasRect = particleCanvas.getBoundingClientRect();
-
+            
             const x = rect.left - canvasRect.left + rect.width / 2;
-            const y = rect.top - canvasRect.top + 20;
-
-            let color = '#d4af37';
-            if (instrument === 'crystal') color = '#aaddff';
-            else if (instrument === 'brass') color = '#ffaa55';
-            else if (instrument === 'flute') color = '#bbffaa';
-            else if (instrument.startsWith('sf2_')) color = '#ffccff';
+            const y = rect.top - canvasRect.top + 20; 
+            
+            let color = '#d4af37'; 
+            if (instrument === 'crystal') color = '#aaddff'; 
+            else if (instrument === 'brass') color = '#ffaa55'; 
+            else if (instrument === 'flute') color = '#bbffaa'; 
+            else if (instrument.startsWith('sf2_')) color = '#ffccff'; 
 
             for (let i = 0; i < 6; i++) {
                 particles.push({
@@ -844,12 +864,12 @@
                 p.x += p.vx;
                 p.y += p.vy;
                 p.life -= p.decay;
-
+                
                 if (p.life <= 0) {
                     particles.splice(i, 1);
                     continue;
                 }
-
+                
                 pCtx.globalAlpha = p.life;
                 pCtx.fillStyle = p.color;
                 pCtx.beginPath();
@@ -924,7 +944,7 @@
             { octave: 3, dot: 'bottom', keys: [ { offset: 0, solfege: 'DO', bindLabel: ',', code: 'Comma', num: 1, type: 'white' }, { offset: 1, bindLabel: 'L', code: 'KeyL', type: 'black' }, { offset: 2, solfege: 'RE', bindLabel: '.', code: 'Period', num: 2, type: 'white' }, { offset: 3, bindLabel: ';', code: 'Semicolon', type: 'black' }, { offset: 4, solfege: 'MI', bindLabel: '/', code: 'Slash', num: 3, type: 'white' }, { offset: 5, solfege: 'FA', bindLabel: 'O', code: 'KeyO', num: 4, type: 'white', gap: true }, { offset: 6, bindLabel: '0', code: 'Digit0', type: 'black' }, { offset: 7, solfege: 'SOL', bindLabel: 'P', code: 'KeyP', num: 5, type: 'white' }, { offset: 8, bindLabel: '-', code: 'Minus', type: 'black' }, { offset: 9, solfege: 'LA', bindLabel: '[', code: 'BracketLeft', num: 6, type: 'white' }, { offset: 10, bindLabel: '=', code: 'Equal', type: 'black' }, { offset: 11, solfege: 'SI', bindLabel: ']', code: 'BracketRight', num: 7, type: 'white' } ]}
         ];
         const heartopiaBindsMap = {};
-
+        
         // Restore fully featured SF2 Storage Cache
         let sf2Data = { buffer: null, smplOffset: 0, smplSize: 0, presets: [], bufferCache: {} };
 
@@ -981,7 +1001,7 @@
             const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
             const instrumentMode = synthSelect.value;
 
-            // Trigger Particle Magic (Idea 1)
+            // Trigger Particle Magic
             spawnParticles(elementId, instrumentMode);
 
             // Restored full SF2 vs Synth logic check
@@ -1210,7 +1230,7 @@
             if (isRemappingMode) startRebind(e, 'octaveDown', null, lblOctDown);
             else {
                 updateOctave(-1);
-                btnOctDown.classList.add('active');
+                btnOctDown.classList.add('active'); 
                 setTimeout(() => btnOctDown.classList.remove('active'), 100);
             }
         });
@@ -1219,7 +1239,7 @@
             if (isRemappingMode) startRebind(e, 'octaveDown', null, lblOctDown);
             else {
                 updateOctave(-1);
-                btnOctDown.classList.add('active');
+                btnOctDown.classList.add('active'); 
                 setTimeout(() => btnOctDown.classList.remove('active'), 100);
             }
         });
@@ -1228,7 +1248,7 @@
             if (isRemappingMode) startRebind(e, 'octaveUp', null, lblOctUp);
             else {
                 updateOctave(1);
-                btnOctUp.classList.add('active');
+                btnOctUp.classList.add('active'); 
                 setTimeout(() => btnOctUp.classList.remove('active'), 100);
             }
         });
@@ -1237,7 +1257,7 @@
             if (isRemappingMode) startRebind(e, 'octaveUp', null, lblOctUp);
             else {
                 updateOctave(1);
-                btnOctUp.classList.add('active');
+                btnOctUp.classList.add('active'); 
                 setTimeout(() => btnOctUp.classList.remove('active'), 100);
             }
         });
@@ -1247,7 +1267,7 @@
                 e.preventDefault();
             }
 
-            if (e.target.tagName === 'INPUT') return;
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
             if (e.repeat) return;
 
             if (currentViewMode === 'gw2') {
@@ -1264,7 +1284,7 @@
                     }
                     saveBinds(); showMessage("Bound!"); activeRebind = null; return;
                 }
-
+                
                 let idx = bindings.notes.indexOf(e.code);
                 let isNoteBound = (idx !== -1);
 
@@ -1282,7 +1302,7 @@
                     }
                 }
 
-                // Conflict priority: Note play takes priority over octave shifting.
+                // Conflict priority: Note play takes priority over octave shifting. 
                 if (isNoteBound) {
                     if (idx !== -1) playNote(notes[idx].offset, currentOctave, `gw2-key-${idx}`);
                     else if (fallbackIdx !== -1) playNote(notes[fallbackIdx].offset, currentOctave, `gw2-key-${fallbackIdx}`);
@@ -1304,7 +1324,7 @@
                 e.preventDefault();
             }
 
-            if (e.target.tagName === 'INPUT') return;
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
             if (currentViewMode === 'gw2') {
                 let idx = bindings.notes.indexOf(e.code);
 
@@ -1628,8 +1648,8 @@
             return { unit: barUnit, perBar: ticksPerBar };
         }
 
-        const nextTimeSig = (timesignatures, index, currTick) => (timesignatures[index].ticks <= currTick);
-        const nextTempo = (tempos, index, currTick) => (tempos[index].ticks <= currTick);
+        const nextTimeSig = (timesignatures, index, currTick) => (timesignatures[index] && timesignatures[index].ticks <= currTick);
+        const nextTempo = (tempos, index, currTick) => (tempos[index] && tempos[index].ticks <= currTick);
 
         const getOctaveBrackets = (octave, min, max) => {
             let middleOctave = min + Math.floor((max - min) / 2);
@@ -1707,11 +1727,15 @@
             let gw2 = ''; const tempos = midi.header.tempos;
             const keyToNum = { C: 1, D: 2, E: 3, F: 4, G: 5, A: 6, B: 7 };
 
+            // CORE FIX: Prevent crash if MIDI file lacks a time signature definition
+            const timeSignatures = (midi.header.timeSignatures && midi.header.timeSignatures.length > 0) 
+                ? midi.header.timeSignatures 
+                : [{ ticks: 0, timeSignature: [4, 4] }];
+
             midi.tracks = midi.tracks.reduce((sum, val) => { if (val.notes && val.notes.length > 0) sum.push(val); return sum; }, []);
 
             const tracks = midi.tracks.map(track => {
-                // CORE FIX: Prevent crash if MIDI file lacks a time signature definition
-                let currTimeSig = midi.header.timeSignatures.length > 0 ? midi.header.timeSignatures[0].timeSignature : [4, 4];
+                let currTimeSig = timeSignatures[0].timeSignature;
                 let timeSigIndex = 1; let tempoIndex = 1;
                 let units = timeSigUnits(currTimeSig, ppq);
                 let ticksPerBar = units.perBar; let barUnit = units.unit;
@@ -1742,15 +1766,15 @@
                     }
                     while (currTick <= note.ticks) {
                         currTick += ticksPerBar;
-                        if (multipleSignatures && midi.header.timeSignatures[timeSigIndex] && nextTimeSig(midi.header.timeSignatures, timeSigIndex, currTick)) {
-                            units = timeSigUnits(midi.header.timeSignatures[timeSigIndex].timeSignature, ppq);
-                            currTimeSig = midi.header.timeSignatures[timeSigIndex]; timeSigIndex++;
+                        if (multipleSignatures && timeSignatures[timeSigIndex] && nextTimeSig(timeSignatures, timeSigIndex, currTick)) {
+                            units = timeSigUnits(timeSignatures[timeSigIndex].timeSignature, ppq);
+                            currTimeSig = timeSignatures[timeSigIndex]; timeSigIndex++;
                             ticksPerBar = units.perBar; barUnit = units.unit;
                             bars.push({ notes: [], tick: currTick, ticks: ticksPerBar, unit: barUnit, timeSignature: currTimeSig });
                         } else bars.push({ notes: [], tick: currTick, ticks: ticksPerBar, unit: barUnit });
                     }
                     const barIndex = bars.findIndex(x => note.ticks >= x.tick && note.ticks < (x.tick + x.ticks));
-                    bars[barIndex].notes.push(note);
+                    if (bars[barIndex]) bars[barIndex].notes.push(note);
                     if (note.octave > maxOctave) maxOctave = note.octave;
                     if (note.octave < minOctave) minOctave = note.octave;
                 })
@@ -1772,11 +1796,11 @@
                             note.octave = note.octave + nTransposed.octaveDiff;
                             key = nTransposed.note;
                             if (!isNaN(key)) key = parseInt(key);
-
+                            
                             const nextNote = bar.notes[index + 1];
                             let startOffset = 0;
                             if (currentOctave === -1) currentOctave = note.octave;
-
+                            
                             if (index === 0) {
                                 prevTick = note.ticks;
                                 if (key === 1 && currentOctave < note.octave) { key = 8; startOffset = -1; }
@@ -1848,22 +1872,22 @@
             let sep4th = "    "; let sep8th = "  "; let sep16th = " ";
             let sepMeasure = "\n";
             let rest8thOptional = ""; let rest16thOptional = ""; let sep8thOptional = ""; let sep16thOptional = "";
-            let lessMeasureBrackets = false;
-
+            let lessMeasureBrackets = false; 
+            
             let lastTick = midi.durationTicks + 1;
             let ticksPerQuarter = midi.header.ppq;
             let measures = {};
 
             // CORE FIX: Prevent crash if MIDI file lacks a time signature definition
-            if (midi.header.timeSignatures.length === 0) {
-                midi.header.timeSignatures.push({ ticks: 0, timeSignature: [4, 4] });
-            }
+            const timeSignatures = (midi.header.timeSignatures && midi.header.timeSignatures.length > 0) 
+                ? midi.header.timeSignatures 
+                : [{ ticks: 0, timeSignature: [4, 4] }];
 
-            midi.header.timeSignatures.forEach((timeSig, timeSigIndex) => {
+            timeSignatures.forEach((timeSig, timeSigIndex) => {
                 let beatsPerMeasure = timeSig.timeSignature[0];
                 let ticksPerBeat = (4 / timeSig.timeSignature[1]) * ticksPerQuarter;
                 let ticksPerMeasure = timeSig.timeSignature[0] * ticksPerBeat;
-                let nextTimeSigStartingTick = (midi.header.timeSignatures[timeSigIndex+1] == null) ? lastTick : midi.header.timeSignatures[timeSigIndex+1].ticks;
+                let nextTimeSigStartingTick = (timeSignatures[timeSigIndex+1] == null) ? lastTick : timeSignatures[timeSigIndex+1].ticks;
                 let thisTimeSigTicksDuration = nextTimeSigStartingTick - timeSig.ticks;
                 let measuresOfThisTimeSig = Math.ceil(thisTimeSigTicksDuration/ticksPerMeasure);
 
@@ -1900,7 +1924,7 @@
                 trackName = trackName ? trackName.slice(0, -1) : "Track";
 
                 track.notes.forEach((note, noteIndex) => {
-                    note.pitchKey = note.pitch.replace(/\d/g, '');
+                    note.pitchKey = note.pitch.replace(/\d/g, ''); 
 
                     let noteMeasure = getRealMeasureFromTick(note.ticks);
                     if (typeof noteMeasure === 'string') return;
@@ -2077,11 +2101,16 @@
         }
 
         // --- Core UI Processing Logic ---
-        bprSelect.addEventListener('change', () => {
+        bprSelect.addEventListener('change', async () => {
             settings.barsPerRow = parseInt(bprSelect.value);
             if (globalMidiFile) {
                 showScribeMessage(`Formatting to ${settings.barsPerRow} BPR...`);
-                processMidiFile();
+                try {
+                    await processMidiFile();
+                } catch (e) {
+                    console.error(e);
+                    showScribeMessage(`Error formatting MIDI file.`);
+                }
             }
         });
 
@@ -2115,26 +2144,20 @@
 
         async function processMidiFile() {
             if (!globalMidiFile) return;
-            try {
-                const arrayBuffer = await globalMidiFile.arrayBuffer();
+            const arrayBuffer = await globalMidiFile.arrayBuffer();
 
-                const tracks = await parseFilePowerina(arrayBuffer);
-                let tabNotes = globalMidiFile.name + "\n\n";
-                tracks.forEach(track => {
-                    tabNotes += "--- " + track.name + " ---\n";
-                    let trackStr = "";
-                    track.bars.forEach(bar => { trackStr += bar.text; });
-                    trackStr = trackStr.replace(/·\|/g, "|");
-                    tabNotes += trackStr + "\n\n";
-                });
-                textareaA.innerText = '';
-                textareaA.innerText = tabNotes;
-
-                textareaA.dispatchEvent(new Event('input', { bubbles: true }));
-            } catch (e) {
-                showScribeMessage(`Error parsing MIDI file. Check console.`);
-                console.error(e);
-            }
+            const tracks = await parseFilePowerina(arrayBuffer);
+            let tabNotes = globalMidiFile.name + "\n\n";
+            tracks.forEach(track => {
+                tabNotes += "--- " + track.name + " ---\n";
+                let trackStr = "";
+                track.bars.forEach(bar => { trackStr += bar.text; });
+                trackStr = trackStr.replace(/·\|/g, "|");
+                tabNotes += trackStr + "\n\n";
+            });
+            
+            textareaA.value = tabNotes; 
+            textareaA.dispatchEvent(new Event('input', { bubbles: true }));
         }
 
         midiInput.addEventListener("change", async (e) => {
@@ -2154,11 +2177,11 @@
                 console.error("Critical MIDI upload error:", err);
                 showScribeMessage("Failed to process MIDI file. Check console.");
             } finally {
-                e.target.value = ''; // Safely clears the input so the same file can be selected again
+                e.target.value = ''; 
             }
         });
 
-        // --- Highlighter Logic ---
+        // --- Dual-Layer Highlighter Framework ---
         function escapeHtml(unsafe) {
             return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
@@ -2168,58 +2191,100 @@
             safeText = safeText.replace(/\((.*?)\)/g, `<span class="highlight-red">($1)</span>`);
             safeText = safeText.replace(/\[(.*?)\]/g, `<span class="highlight-blue">[$1]</span>`);
             safeText = safeText.replace(/\|/g, `<span class="highlight-pipe">|</span>`);
+            // Add a trailing space to fix weird wrapping issues with empty trailing newlines
+            if (safeText.endsWith('\n')) safeText += '<br/>';
             return safeText;
         }
 
-        function syncText() { textareaB.innerHTML = applyHighlighting(textareaA.innerText); }
-        const syncScroll = (source, target) => { target.scrollTop = source.scrollTop; target.scrollLeft = source.scrollLeft; };
+        function setupHighlighter(frontEl, backEl, cacheKey) {
+            function sync() {
+                const text = frontEl.value; 
+                backEl.innerHTML = applyHighlighting(text);
+                if (cacheKey) {
+                    try { localStorage.setItem(cacheKey, text); } catch(err) {}
+                }
+            }
 
-        textareaA.addEventListener('scroll', () => syncScroll(textareaA, textareaB));
-        textareaB.addEventListener('scroll', () => syncScroll(textareaB, textareaA));
+            const syncScroll = () => {
+                backEl.scrollTop = frontEl.scrollTop;
+                backEl.scrollLeft = frontEl.scrollLeft;
+            };
 
-        const resizeObserver = new ResizeObserver(() => {
-            setTimeout(() => { if (textareaA && textareaB) { textareaB.style.width = `${textareaA.offsetWidth}px`; textareaB.style.height = `${textareaA.offsetHeight}px`; } }, 0);
-        });
-        resizeObserver.observe(textareaA);
-        textareaA.addEventListener("input", syncText);
+            frontEl.addEventListener('scroll', syncScroll);
+            backEl.addEventListener('scroll', syncScroll);
 
+            const resizeObserver = new ResizeObserver(() => {
+                setTimeout(() => {
+                    if (frontEl && backEl) {
+                        backEl.style.width = `${frontEl.offsetWidth}px`;
+                        backEl.style.height = `${frontEl.offsetHeight}px`;
+                    }
+                }, 0);
+            });
+            resizeObserver.observe(frontEl);
+
+            frontEl.addEventListener("input", sync);
+            sync(); // Initial paint
+            return sync;
+        }
+
+        // Initialize both highlighters
+        setupHighlighter(document.getElementById("textareaA"), document.getElementById("textareaB"), null);
+        setupHighlighter(document.getElementById("customTextareaA"), document.getElementById("customTextareaB"), 'tyrianCustomNotes');
+
+
+        // --- Utilities ---
         document.getElementById("copyTabBtn").addEventListener("click", () => {
-            const content = textareaA.innerText.trim();
+            const content = document.getElementById("textareaA").value.trim();
             if (!content) return showScribeMessage("Nothing to copy!");
+            
+            // Generate invisible clipboard container
             const textArea = document.createElement("textarea");
-            textArea.value = content; document.body.appendChild(textArea); textArea.select();
-            try { document.execCommand('copy'); showScribeMessage("Tabs copied to clipboard!"); }
-            catch (ex) { showScribeMessage("Failed to copy tabs."); }
+            textArea.value = content; 
+            textArea.style.position = "fixed";
+            textArea.style.top = "-9999px";
+            textArea.style.left = "-9999px";
+            textArea.style.opacity = "0";
+            
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try { 
+                document.execCommand('copy'); 
+                showScribeMessage("Tabs copied to clipboard!"); 
+            } catch (ex) { 
+                showScribeMessage("Failed to copy tabs."); 
+            }
             document.body.removeChild(textArea);
         });
 
         document.getElementById("exportImageBtn").addEventListener("click", () => {
-            const text = textareaA.innerText.trim();
+            const text = document.getElementById("textareaA").value.trim();
             if (!text) return showScribeMessage("There is nothing to export.");
             showScribeMessage("Inking Spell Page...");
-
+            
             let canvas = document.createElement('canvas'); let ctx = canvas.getContext('2d');
             let lines = text.split('\n'); ctx.font = "bold 16px monospace";
             let maxLineObj = lines.reduce((a, b) => a.length > b.length ? a : b, "");
             let textWidth = ctx.measureText(maxLineObj).width;
-
-            canvas.width = Math.max(800, textWidth + 100); canvas.height = lines.length * 24 + 160;
+            
+            canvas.width = Math.max(800, textWidth + 100); canvas.height = lines.length * 24 + 160; 
             let grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
             grad.addColorStop(0, '#2c2420'); grad.addColorStop(1, '#181514');
             ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.strokeStyle = '#8c7355'; ctx.lineWidth = 4; ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
-
+            
             ctx.fillStyle = '#d4af37'; ctx.font = "bold 26px serif"; ctx.textAlign = "center";
             ctx.fillText("Tome of Melodies: Transcribed Spell Page", canvas.width / 2, 50);
-
+            
             ctx.textAlign = "left"; ctx.font = "bold 16px monospace"; ctx.fillStyle = '#e6d8c3';
             let y = 100;
             for (let line of lines) {
-                if (line.startsWith('---')) { ctx.fillStyle = '#d4af37'; ctx.fillText(line, 50, y); ctx.fillStyle = '#e6d8c3'; }
+                if (line.startsWith('---')) { ctx.fillStyle = '#d4af37'; ctx.fillText(line, 50, y); ctx.fillStyle = '#e6d8c3'; } 
                 else { ctx.fillText(line, 50, y); }
                 y += 24;
             }
-
+            
             let link = document.createElement('a');
             link.download = `${originalFileName.replace(/\.(mid|midi)$/i, '')}_SpellPage.png`;
             link.href = canvas.toDataURL('image/png'); link.click();
@@ -2229,7 +2294,7 @@
         document.getElementById("downloadSpreadsheetBtn").addEventListener("click", async () => {
             if (!globalMidiFile) return showScribeMessage("There is nothing to download.");
             showScribeMessage("Generating Spreadsheet...");
-
+            
             let content = "";
             try {
                 const arrayBuffer = await globalMidiFile.arrayBuffer();
@@ -2254,7 +2319,7 @@
 
                 let isHeader = false;
                 let baseName = "";
-
+                
                 if (line.startsWith("--- ") && line.endsWith(" ---")) {
                     isHeader = true;
                     baseName = line.replace(/-/g, '').trim().slice(0, 31);
@@ -2267,8 +2332,8 @@
                     const count = (sheetCounts[baseName] || 0) + 1;
                     sheetCounts[baseName] = count;
                     currentSheetKey = count === 1 ? baseName : `${baseName} ${count}`;
-                    sheets[currentSheetKey] = [[baseName]];
-                }
+                    sheets[currentSheetKey] = [[baseName]]; 
+                } 
                 else if (currentSheetKey && line !== "") {
                     // Uses exact Jenpai separation logic (4 spaces)
                     const row = rawLine.split(/ {4}/g).map(cell => cell.trim());
