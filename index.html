@@ -629,8 +629,24 @@
     <!-- JAVASCRIPT MODULES             -->
     <!-- ============================== -->
     <script type="module">
-        import { Midi } from "https://cdn.skypack.dev/@tonejs/midi";
-        import * as XLSX from "https://cdn.sheetjs.com/xlsx-latest/package/xlsx.mjs";
+        // ==========================================
+        // 0. LAZY-LOAD CDN LIBRARIES (non-blocking)
+        // ==========================================
+        // These are loaded lazily so the piano always renders even if CDNs are down.
+        let MidiLib = null;
+        let XLSXLib = null;
+
+        const midiReady = import("https://cdn.skypack.dev/@tonejs/midi").then(m => {
+            MidiLib = m;
+        }).catch(err => {
+            console.warn("Failed to load @tonejs/midi — MIDI import will be unavailable:", err);
+        });
+
+        const xlsxReady = import("https://cdn.sheetjs.com/xlsx-latest/package/xlsx.mjs").then(m => {
+            XLSXLib = m;
+        }).catch(err => {
+            console.warn("Failed to load SheetJS — spreadsheet export will be unavailable:", err);
+        });
 
         // ==========================================
         // 1. GLOBAL PIANO STATE & ELEMENTS
@@ -1710,7 +1726,11 @@
         }
 
         const parseFile = async (arrayBuffer) => {
-            let midi = new Midi(arrayBuffer);
+            if (!MidiLib) {
+                showScribeMessage("MIDI library failed to load. Try refreshing the page.");
+                return [];
+            }
+            let midi = new MidiLib.Midi(arrayBuffer);
             const ppq = midi.header.ppq; const quarter = ppq;
             const multipleSignatures = midi.header.timeSignatures.length > 1;
             let gw2 = ''; const tempos = midi.header.tempos;
@@ -1867,6 +1887,12 @@
 
         async function processMidiFile() {
             if (!globalMidiFile) return;
+            // Ensure MIDI library is loaded before processing
+            await midiReady;
+            if (!MidiLib) {
+                showScribeMessage("MIDI library unavailable. Refresh the page to retry.");
+                return;
+            }
             try {
                 const arrayBuffer = await globalMidiFile.arrayBuffer();
 
@@ -2029,6 +2055,13 @@
             const content = document.getElementById("textareaA").innerText.trim();
             if (!content) return showScribeMessage("There is nothing to download.");
 
+            // Ensure XLSX library is loaded
+            await xlsxReady;
+            if (!XLSXLib) {
+                showScribeMessage("Spreadsheet library failed to load. Try refreshing.");
+                return;
+            }
+
             showScribeMessage("Generating Spreadsheet...");
             const lines = content.split("\n");
             const sheets = {}; const sheetCounts = {};
@@ -2121,12 +2154,12 @@
                 }
             }
 
-            const wb = XLSX.utils.book_new();
+            const wb = XLSXLib.utils.book_new();
             for (const [sheetName, data] of Object.entries(sheets)) {
-                const ws = XLSX.utils.aoa_to_sheet(data);
-                XLSX.utils.book_append_sheet(wb, ws, sheetName);
+                const ws = XLSXLib.utils.aoa_to_sheet(data);
+                XLSXLib.utils.book_append_sheet(wb, ws, sheetName);
             }
-            XLSX.writeFile(wb, `${baseFileName}.xlsx`);
+            XLSXLib.writeFile(wb, `${baseFileName}.xlsx`);
             showScribeMessage("Spreadsheet successfully exported!");
         });
 
