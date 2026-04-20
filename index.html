@@ -2,113 +2,1177 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b0814">
     <title>Sarya's Music Thingy</title>
 
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="saryamusic2.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
+        /* ========================================== */
+        /* DESIGN TOKENS                             */
+        /* ========================================== */
         :root {
-            --gw2-red-dark: #3a0e0e;
-            --gw2-red: #6a1f1f;
-            --gw2-gold: #d4af37;
-            --gw2-gold-dark: #8c7355;
-            --gw2-bg: #1a1818;
-            --gw2-parchment: #e6d8c3;
+            /* Surfaces — deep midnight with a warm undertone */
+            --bg-base: #0b0814;
+            --bg-deep: #07050e;
+            --bg-elevated: #16111f;
+
+            --surface-1: rgba(26, 20, 38, 0.55);
+            --surface-2: rgba(38, 30, 54, 0.72);
+            --surface-raised: rgba(52, 42, 70, 0.9);
+
+            /* Strokes */
+            --stroke-soft: rgba(255, 255, 255, 0.06);
+            --stroke-mid: rgba(255, 220, 180, 0.14);
+            --stroke-strong: rgba(255, 200, 140, 0.32);
+            --stroke-accent: rgba(255, 140, 80, 0.45);
+
+            /* Text */
+            --text-primary: #f5efe4;
+            --text-secondary: #b4a696;
+            --text-muted: #76695c;
+            --text-ember: #ffbc6b;
+            --text-coral: #ff8fa8;
+
+            /* Ember palette */
+            --ember: #ff8b3d;
+            --ember-hot: #ff6b35;
+            --ember-warm: #ffb563;
+            --gold: #ffd98a;
+            --coral: #ff5c8a;
+            --rose: #e4447a;
+            --plum: #6b2f5c;
+            --teal: #4ac8c5;
+
+            /* Gradients */
+            --grad-ember: linear-gradient(135deg, #ff6b35 0%, #ff8b3d 40%, #ffbc6b 100%);
+            --grad-ember-soft: linear-gradient(135deg, rgba(255,107,53,0.9) 0%, rgba(255,188,107,0.8) 100%);
+            --grad-hero: linear-gradient(92deg, #ffd98a 0%, #ffb563 35%, #ff6b35 65%, #e4447a 100%);
+            --grad-coral: linear-gradient(135deg, #ff5c8a 0%, #e4447a 100%);
+
+            /* Shadows */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.35);
+            --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.6), 0 4px 14px rgba(0, 0, 0, 0.45);
+            --shadow-ember: 0 0 40px rgba(255, 140, 80, 0.18);
+            --shadow-ember-strong: 0 0 30px rgba(255, 140, 80, 0.5), 0 0 60px rgba(255, 100, 60, 0.25);
+
+            /* Motion */
+            --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+            /* Radii */
+            --r-sm: 8px;
+            --r-md: 12px;
+            --r-lg: 18px;
+            --r-xl: 24px;
+            --r-full: 999px;
+        }
+
+        /* ========================================== */
+        /* RESETS & BASE                             */
+        /* ========================================== */
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            font-family: 'Outfit', system-ui, sans-serif;
+            font-weight: 400;
+            font-size: 15px;
+            line-height: 1.5;
+            letter-spacing: -0.005em;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
-            background-color: var(--gw2-bg);
-            background-image:
-                radial-gradient(circle at 50% 50%, #3a2e2a 0%, #1a1818 100%),
-                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" opacity="0.03"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4"/></filter><rect width="200" height="200" filter="url(%23n)"/></svg>');
-            font-family: 'Cormorant Garamond', serif;
-            color: var(--gw2-parchment);
-            margin: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            position: relative;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            user-select: none;
-            padding: 2rem 1rem;
-            box-sizing: border-box;
+        }
+
+        /* ========================================== */
+        /* ATMOSPHERE: Animated mesh + grain overlay */
+        /* ========================================== */
+        .bg-mesh {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background:
+                radial-gradient(ellipse 80% 50% at 20% 0%, rgba(255, 107, 53, 0.18), transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 10%, rgba(228, 68, 122, 0.14), transparent 55%),
+                radial-gradient(ellipse 70% 60% at 50% 100%, rgba(74, 200, 197, 0.08), transparent 60%),
+                radial-gradient(ellipse 50% 40% at 85% 80%, rgba(255, 188, 107, 0.08), transparent 60%),
+                var(--bg-base);
+            animation: meshDrift 22s ease-in-out infinite alternate;
+        }
+        @keyframes meshDrift {
+            0%   { background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0 0; filter: hue-rotate(0deg); }
+            100% { background-position: 8% 4%, -6% 5%, 4% -3%, -4% 2%, 0 0; filter: hue-rotate(6deg); }
+        }
+
+        .bg-noise {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.035;
+            mix-blend-mode: overlay;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0"/></filter><rect width="240" height="240" filter="url(%23n)"/></svg>');
+        }
+
+        /* ========================================== */
+        /* TYPOGRAPHY                                */
+        /* ========================================== */
+        .font-display {
+            font-family: 'Fraunces', serif;
+            font-optical-sizing: auto;
+            font-variation-settings: "SOFT" 50, "WONK" 0;
+            letter-spacing: -0.02em;
+        }
+        .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+        .eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* ========================================== */
+        /* GLASS SURFACES                            */
+        /* ========================================== */
+        .glass {
+            background: var(--surface-1);
+            border: 1px solid var(--stroke-soft);
+            backdrop-filter: blur(18px) saturate(140%);
+            -webkit-backdrop-filter: blur(18px) saturate(140%);
+            box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+        .glass-strong {
+            background: var(--surface-2);
+            border: 1px solid var(--stroke-mid);
+            backdrop-filter: blur(24px) saturate(160%);
+            -webkit-backdrop-filter: blur(24px) saturate(160%);
+            box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        /* ========================================== */
+        /* BUTTONS                                   */
+        /* ========================================== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: var(--r-md);
+            border: 1px solid var(--stroke-soft);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            cursor: pointer;
+            transition: transform 0.15s var(--ease-spring), background 0.2s var(--ease-smooth), border-color 0.2s var(--ease-smooth), box-shadow 0.25s var(--ease-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: var(--stroke-mid);
+            transform: translateY(-1px);
+        }
+        .btn:active { transform: translateY(0) scale(0.98); }
+        .btn:focus-visible {
+            outline: 2px solid var(--ember-warm);
+            outline-offset: 2px;
+        }
+
+        .btn-primary {
+            background: var(--grad-ember);
+            color: #1a0a00;
+            border: none;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm), var(--shadow-ember);
+        }
+        .btn-primary:hover {
+            box-shadow: var(--shadow-md), var(--shadow-ember-strong);
+            filter: brightness(1.06);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--stroke-soft);
+        }
+        .btn-ghost:hover { background: rgba(255, 255, 255, 0.04); }
+
+        .btn-icon {
+            width: 40px; height: 40px;
+            padding: 0;
+            border-radius: var(--r-md);
+        }
+
+        /* Active / pressed state for toggles (used by JS) */
+        .btn.active,
+        .btn-primary.active,
+        .btn-record.active {
+            background: var(--grad-coral);
+            color: #fff;
+            border-color: var(--coral);
+            box-shadow: 0 0 20px rgba(255, 92, 138, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-playing {
+            background: linear-gradient(135deg, #4ac8c5, #8ef0a0) !important;
+            color: #052024 !important;
+            border-color: #4ac8c5 !important;
+            box-shadow: 0 0 22px rgba(74, 200, 197, 0.4) !important;
+        }
+
+        /* ========================================== */
+        /* SELECT & INPUT                            */
+        /* ========================================== */
+        .input, select.input, input[type="text"].input, input[type="number"].input {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+            color: var(--text-primary);
+            padding: 9px 14px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .input:focus, select.input:focus { border-color: var(--stroke-strong); background: rgba(0, 0, 0, 0.35); }
+        .input::placeholder { color: var(--text-muted); }
+        select.input {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8"><path fill="none" stroke="%23ffbc6b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M1 1.5L6 6.5L11 1.5"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+        select.input option, select.input optgroup {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+        }
+
+        /* Custom range slider */
+        input[type="range"].slider {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            background: var(--stroke-soft);
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+        input[type="range"].slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px; height: 16px;
+            background: var(--grad-ember);
+            border: 2px solid var(--bg-base);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 140, 80, 0.4);
+            transition: transform 0.15s var(--ease-spring);
+        }
+        input[type="range"].slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        input[type="range"].slider::-moz-range-thumb {
+            width: 14px; height: 14px;
+            background: #ff8b3d;
+            border: 2px solid var(--bg-base);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Custom checkbox */
+        input[type="checkbox"].check {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px; height: 18px;
+            border: 1.5px solid var(--stroke-mid);
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s var(--ease-smooth);
+            flex-shrink: 0;
+        }
+        input[type="checkbox"].check:checked {
+            background: var(--grad-ember);
+            border-color: var(--ember-warm);
+        }
+        input[type="checkbox"].check:checked::after {
+            content: '';
+            position: absolute;
+            left: 4px; top: 1px;
+            width: 5px; height: 10px;
+            border: solid #1a0a00;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* ========================================== */
+        /* LAYOUT                                    */
+        /* ========================================== */
+        .app-shell {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 100vh;
+            width: 100%;
+            max-width: 100%; /* Unleashed to use full screen width */
+            margin: 0 auto;
+            padding: 20px 32px 60px;
+            gap: 20px;
             overflow-x: hidden;
         }
 
-        .gw2-panel {
-            background: linear-gradient(135deg, #2c2420, #181514);
-            border: 2px solid #5a4b3c;
-            box-shadow: 0 0 30px rgba(0,0,0,0.9), inset 0 0 20px rgba(0,0,0,0.8);
-            position: relative;
+        /* Top navigation bar */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 12px 20px;
+            border-radius: var(--r-lg);
+            flex-wrap: wrap;
         }
 
-        .gw2-panel::before {
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .brand-mark {
+            width: 38px; height: 38px;
+            border-radius: var(--r-md);
+            background: var(--grad-ember);
+            box-shadow: var(--shadow-ember);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .brand-mark::before {
             content: '';
             position: absolute;
-            top: 6px; left: 6px; right: 6px; bottom: 6px;
-            border: 1px solid var(--gw2-gold-dark);
+            inset: 2px;
+            border-radius: calc(var(--r-md) - 2px);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent 40%);
             pointer-events: none;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .brand-mark svg { position: relative; z-index: 1; }
+        .brand-title {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            letter-spacing: -0.015em;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+        .brand-title em {
+            font-style: italic;
+            background: var(--grad-hero);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 500;
+        }
+        .brand-sub {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+            margin-top: 2px;
         }
 
-        .gw2-title {
-            font-family: 'Cinzel', serif;
-            color: var(--gw2-gold);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.9), 0 0 15px rgba(212,175,55,0.4);
-            letter-spacing: 3px;
-        }
+        .nav-actions { display: flex; gap: 8px; align-items: center; }
 
-        .gw2-button {
-            background: linear-gradient(to bottom, var(--gw2-red), var(--gw2-red-dark));
-            border: 1px solid #a83a3a;
-            color: var(--gw2-parchment);
-            font-family: 'Cinzel', serif;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.2);
-            transition: all 0.15s ease;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        /* View switch pill */
+        .view-switch {
+            display: inline-flex;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-full);
+            padding: 4px;
+            position: relative;
+        }
+        .view-switch button {
+            position: relative;
+            z-index: 1;
+            padding: 6px 16px;
+            border-radius: var(--r-full);
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
             cursor: pointer;
+            transition: color 0.2s;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.01em;
+        }
+        .view-switch button.is-active {
+            color: #1a0a00;
+        }
+        .view-switch .switch-indicator {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: calc(50% - 4px);
+            height: calc(100% - 8px);
+            background: var(--grad-ember);
+            border-radius: var(--r-full);
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.45s var(--ease-spring);
+            z-index: 0;
+        }
+        .view-switch[data-view="heartopia"] .switch-indicator {
+            transform: translateX(100%);
         }
 
-        .gw2-button:hover {
-            background: linear-gradient(to bottom, #8a2a2a, #4a1515);
-            border-color: var(--gw2-gold-dark);
-            transform: translateY(-1px);
+        /* ========================================== */
+        /* MAIN STAGE (3-Column Push Layout)         */
+        /* ========================================== */
+       .stage {
+            flex: 1;
+            display: flex;
+            flex-direction: row; /* Places items side-by-side */
+            align-items: stretch;
+            justify-content: center;
+            position: relative;
+            width: 100%;
         }
 
-        .gw2-button:active, .gw2-button.active {
-            transform: translateY(2px) scale(0.98);
-            background: linear-gradient(to bottom, #fff3e0, #ffb347);
-            color: #5a1e00;
-            border-color: var(--gw2-gold);
-            box-shadow: inset -1px -1px 3px rgba(255,255,255,0.5),
-                        inset 2px 4px 8px rgba(0,0,0,0.3),
-                        0 0 15px #ff8c00;
+        #center-panel {
+            flex: 1 1 auto;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 28px 24px;
+            border-radius: var(--r-xl);
+            position: relative;
+
+            /* Adds horizontal scroll ONLY if squeezed too tight */
+            overflow-x: auto;
+            overflow-y: hidden;
+            transition: margin 0.4s ease;
         }
 
-        .gw2-select {
-            background: linear-gradient(to bottom, #2c2420, #181514);
-            border: 1px solid #5a4b3c;
-            color: var(--gw2-gold);
-            font-family: 'Cinzel', serif;
-            max-width: 280px;
-            text-overflow: ellipsis;
+        /* Custom scrollbar for the center panel when pushed on smaller screens */
+        #center-panel::-webkit-scrollbar { height: 10px; }
+        #center-panel::-webkit-scrollbar-track { background: transparent; }
+        #center-panel::-webkit-scrollbar-thumb { background: rgba(255, 180, 120, 0.15); border-radius: 5px; }
+
+        /* Header inside stage */
+        .stage-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+            margin-top: 8px;
+            position: relative;
+            z-index: 2;
+        }
+        .stage-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2.2rem, 6vw, 3.6rem);
+            font-weight: 600;
+            line-height: 1.15; /* Increased from 0.95 to stop cropping */
+            padding-bottom: 0.1em; /* Gives the descenders room to breathe */
+            letter-spacing: -0.03em;
+            margin: 0;
+            background: var(--grad-hero);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-variation-settings: "SOFT" 100, "WONK" 1;
+        }
+        .stage-title em { font-style: italic; font-weight: 500; }
+        .stage-tagline {
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 0.95rem;
+            font-family: 'Fraunces', serif;
+            font-weight: 400;
         }
 
-        .gw2-select option, .gw2-select optgroup {
-            background: #181514;
-            color: var(--gw2-parchment);
-            font-family: 'Cormorant Garamond', serif;
+        /* ========================================== */
+        /* CONTROL DOCK                              */
+        /* ========================================== */
+        .dock {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px;
+            border-radius: var(--r-lg);
+            width: 100%;
+            max-width: 1100px;
+            position: relative;
+            z-index: 2;
+        }
+        .dock-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+            justify-content: center;
+            gap: 8px;
         }
 
-        /* --- Scribe & Custom Editor Styles --- */
+        /* Every control in the dock is a "dock-item" pill with identical height. */
+        .dock-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            height: 40px;
+            padding: 0 14px;
+            background: rgba(0, 0, 0, 0.28);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem;
+            line-height: 1;
+            white-space: nowrap;
+            transition: border-color 0.2s var(--ease-smooth), background 0.2s var(--ease-smooth);
+        }
+        .dock-item--grow {
+            flex: 0 1 auto;
+            max-width: 220px;
+            min-width: 140px;
+        }
+        .dock-item--btn {
+            cursor: pointer;
+            font-weight: 500;
+            letter-spacing: 0.005em;
+        }
+        .dock-item--btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--stroke-mid);
+        }
+        .dock-item--btn:active { transform: translateY(1px); }
+        .dock-item--btn:focus-visible {
+            outline: 2px solid var(--ember-warm);
+            outline-offset: 2px;
+        }
+        .dock-item--btn[disabled] {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .dock-item--toggle { cursor: pointer; }
+        .dock-item--toggle:hover { border-color: var(--stroke-mid); }
+
+        .dock-item--rec { min-width: 108px; }
+        .dock-item--rec.active {
+            background: var(--grad-coral);
+            color: #fff;
+            border-color: var(--coral);
+            box-shadow: 0 0 20px rgba(255, 92, 138, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .dock-item--status {
+            background: transparent;
+            border-color: transparent;
+            padding: 0 6px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.76rem;
+            font-style: italic;
+            letter-spacing: 0.02em;
+        }
+
+        .dock-label {
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            font-weight: 500;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        .dock-label--dim {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .dock-icon { color: var(--text-secondary); flex-shrink: 0; }
+
+        /* Instrument select */
+        .dock-select {
+            flex: 1;
+            min-width: 0;
+            height: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 0 24px 0 0;
+            margin: 0;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path fill="none" stroke="%23ffbc6b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M1 1.3L5 5L9 1.3"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right center;
+        }
+        .dock-select option, .dock-select optgroup {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+        }
+
+        .dock-num {
+            width: 46px;
+            height: 26px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--stroke-soft);
+            border-radius: 6px;
+            color: var(--text-ember);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            font-weight: 500;
+            text-align: center;
+            outline: none;
+            padding: 0;
+        }
+        .dock-num:focus { border-color: var(--stroke-strong); }
+        .dock-num::-webkit-outer-spin-button,
+        .dock-num::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .dock-num { -moz-appearance: textfield; }
+
+        .dock-divider {
+            width: 1px;
+            align-self: center;
+            height: 22px;
+            background: var(--stroke-soft);
+            margin: 0 2px;
+            flex-shrink: 0;
+        }
+        .dock-spacer { flex: 0 1 20px; min-width: 0; }
+
+        /* Indicator dots */
+        .dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        .dot.active.midi-dot {
+            background: var(--teal);
+            box-shadow: 0 0 8px var(--teal);
+            animation: dotPulse 2.2s ease-in-out infinite;
+        }
+        .dot.active.rec-dot {
+            background: #ff3355;
+            box-shadow: 0 0 10px #ff3355;
+            animation: dotPulse 1.1s ease-in-out infinite;
+        }
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.7; }
+        }
+
+        /* ========================================== */
+        /* OCTAVE CONTROLS + DISPLAY                 */
+        /* ========================================== */
+        .octave-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px;
+            position: relative;
+            z-index: 2;
+        }
+        .octave-display {
+            padding: 10px 22px;
+            border-radius: var(--r-md);
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--stroke-mid);
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-ember);
+            letter-spacing: 0.01em;
+            min-width: 140px;
+            text-align: center;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ========================================== */
+        /* PIANO STAGE (GW2 VIEW)                    */
+        /* ========================================== */
+        .piano-stage {
+            position: relative;
+            width: 100%;
+            max-width: 960px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+        }
+
+        #gw2-view { display: flex; flex-direction: column; align-items: center; width: 100%; }
+
+        .piano-container {
+            display: flex;
+            gap: 6px;
+            padding: 22px 22px 26px;
+            border-radius: var(--r-xl);
+            background:
+                linear-gradient(180deg, rgba(12, 8, 20, 0.9), rgba(6, 4, 12, 0.95)),
+                radial-gradient(ellipse at top, rgba(255, 140, 80, 0.12), transparent 70%);
+            border: 1px solid var(--stroke-mid);
+            box-shadow:
+                var(--shadow-lg),
+                inset 0 2px 12px rgba(0, 0, 0, 0.6),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+            position: relative;
+        }
+        .piano-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 200, 140, 0.4), transparent);
+            border-radius: var(--r-xl) var(--r-xl) 0 0;
+        }
+
+        .piano-key {
+            width: 72px;
+            height: 260px;
+            background: linear-gradient(to bottom, #f6f2ea 0%, #f0ebe0 45%, #e4dccc 100%);
+            border: 1px solid #d6ccb8;
+            border-radius: 3px 3px 10px 10px;
+            box-shadow:
+                inset 0 -14px 20px -10px rgba(180, 160, 130, 0.35),
+                inset 2px 0 2px rgba(255, 255, 255, 0.3),
+                inset -2px 0 2px rgba(0, 0, 0, 0.05),
+                0 3px 0 #a89878,
+                0 6px 12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.08s var(--ease-spring), box-shadow 0.08s;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 18px;
+            touch-action: none;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .piano-key::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 8%; right: 8%; height: 55%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.7), transparent);
+            border-radius: 2px;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .piano-key.active {
+            transform: translateY(3px);
+            background: linear-gradient(to bottom, #ffe3b0 0%, #ffb563 50%, #ff8b3d 100%);
+            box-shadow:
+                inset 0 -10px 20px -8px rgba(255, 80, 30, 0.4),
+                inset 0 2px 6px rgba(255, 255, 255, 0.3),
+                0 1px 0 #c85b2a,
+                0 3px 10px rgba(255, 107, 53, 0.5),
+                0 0 30px rgba(255, 140, 80, 0.5);
+            border-color: #d08843;
+        }
+
+        .black-key {
+            width: 46px;
+            height: 160px;
+            background: linear-gradient(to bottom, #2a2332 0%, #1a1424 60%, #0d0814 100%);
+            border: 1px solid #0a0510;
+            right: -2px;
+            transform: translateX(50%);
+            border-radius: 2px 2px 8px 8px;
+            box-shadow:
+                inset 0 -8px 12px -4px rgba(255, 255, 255, 0.05),
+                inset 0 2px 2px rgba(255, 255, 255, 0.15),
+                0 2px 0 #000,
+                0 4px 10px rgba(0, 0, 0, 0.8);
+        }
+        .black-key::before {
+            background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+            opacity: 0.8;
+        }
+
+        .black-key.active {
+            transform: translateX(50%) translateY(3px);
+            background: linear-gradient(to bottom, #ff8b3d 0%, #e4447a 60%, #6b2f5c 100%);
+            box-shadow:
+                inset 0 2px 4px rgba(255, 255, 255, 0.3),
+                inset 0 -6px 10px rgba(0, 0, 0, 0.3),
+                0 1px 0 #4a1030,
+                0 3px 12px rgba(255, 92, 138, 0.6),
+                0 0 24px rgba(255, 107, 53, 0.5);
+            border-color: #8a2050;
+        }
+
+        .key-note {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 1.4rem;
+            color: #4a3828;
+            letter-spacing: -0.02em;
+            line-height: 1;
+        }
+        .key-bind {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            font-size: 0.7rem;
+            color: #8a7a62;
+            margin-top: 6px;
+            letter-spacing: 0.02em;
+        }
+        .piano-key.active .key-note, .piano-key.active .key-bind { color: #3a1a00; }
+        .piano-key.black-key.active .key-note, .piano-key.black-key.active .key-bind { color: #fff1e0; }
+
+        .black-key .key-note { color: #ffbc6b; font-size: 1.15rem; font-weight: 500; }
+        .black-key .key-bind { color: #8a7a90; }
+
+        /* ========================================== */
+        /* HEARTOPIA VIEW                            */
+        /* ========================================== */
+        #htp-view {
+            background:
+                linear-gradient(180deg, rgba(12, 8, 20, 0.85), rgba(8, 5, 14, 0.95));
+            border: 1px solid var(--stroke-mid);
+            border-radius: var(--r-xl);
+            padding: 28px 20px 40px;
+            position: relative;
+            overflow-x: auto;
+            box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        .htp-white {
+            width: 54px;
+            height: 72px;
+            background: linear-gradient(to bottom, #fbf8f0, #ece4d2);
+            border: 1px solid #d0c6b2;
+            border-radius: 14px;
+            box-shadow:
+                0 5px 0 #a89878,
+                0 8px 14px rgba(0, 0, 0, 0.4),
+                inset 0 2px 3px rgba(255, 255, 255, 0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 8px;
+            position: relative;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            transition: transform 0.08s var(--ease-spring), box-shadow 0.08s;
+            touch-action: none;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .htp-white:active, .htp-white.active {
+            transform: translateY(4px);
+            background: linear-gradient(to bottom, #ffe3b0, #ffb563);
+            box-shadow:
+                0 1px 0 #c85b2a,
+                0 3px 10px rgba(255, 107, 53, 0.55),
+                0 0 25px rgba(255, 140, 80, 0.45),
+                inset 0 2px 3px rgba(255, 255, 255, 0.4);
+        }
+
+        .htp-white-num {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 1.3rem;
+            color: #2a1810;
+            line-height: 1;
+        }
+        .htp-white-sol {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem;
+            color: #7a6752;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            margin-top: 3px;
+        }
+
+        .htp-bind-tag {
+            position: absolute;
+            bottom: -14px;
+            background: linear-gradient(135deg, #3a2d48, #241a30);
+            color: var(--text-ember);
+            padding: 3px 9px;
+            border-radius: var(--r-full);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.66rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            box-shadow: 0 3px 0 rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--stroke-mid);
+            transition: all 0.08s var(--ease-spring);
+        }
+        .htp-white:active .htp-bind-tag, .htp-white.active .htp-bind-tag {
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5); transform: translateY(2px);
+        }
+
+        .htp-black {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, #2a2232, #140a1c);
+            border: 1px solid #0a0510;
+            border-radius: 50%;
+            box-shadow:
+                0 4px 0 rgba(0, 0, 0, 0.6),
+                0 5px 10px rgba(0, 0, 0, 0.6),
+                inset 0 2px 3px rgba(255, 255, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-ember);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            position: absolute;
+            top: -16px;
+            right: -22px;
+            z-index: 10;
+            cursor: pointer;
+            transition: all 0.08s var(--ease-spring);
+            touch-action: none;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .htp-black:active, .htp-black.active {
+            transform: translateY(3px);
+            background: linear-gradient(135deg, #ff8b3d, #e4447a);
+            box-shadow:
+                0 1px 0 rgba(0, 0, 0, 0.5),
+                0 3px 10px rgba(255, 92, 138, 0.55),
+                0 0 20px rgba(255, 140, 80, 0.5);
+            color: #fff;
+            border-color: #c04070;
+        }
+
+        /* ========================================== */
+        /* SYSTEM MESSAGE (transient toast)          */
+        /* ========================================== */
+        #sys-message {
+            min-height: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--text-ember);
+            opacity: 0;
+            transition: opacity 0.5s;
+            letter-spacing: 0.01em;
+            text-align: center;
+        }
+
+        /* ========================================== */
+        /* BOTTOM HINTS                              */
+        /* ========================================== */
+        .hints {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            font-style: italic;
+            text-align: center;
+            font-family: 'Fraunces', serif;
+            max-width: 520px;
+            z-index: 2;
+        }
+        .hints b { color: var(--text-ember); font-weight: 600; font-style: normal; }
+
+        /* ========================================== */
+        /* PARTICLE CANVAS                           */
+        /* ========================================== */
+        #particle-canvas {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            border-radius: var(--r-xl);
+        }
+
+        /* Key-press ripple */
+        @keyframes rippleBurst {
+            0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0.85; }
+            100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+        }
+        .key-ripple {
+            position: absolute;
+            top: 45%; left: 50%;
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 188, 107, 0.7), rgba(255, 107, 53, 0) 65%);
+            pointer-events: none;
+            animation: rippleBurst 0.6s var(--ease-out) forwards;
+            z-index: 5;
+        }
+        .black-key .key-ripple {
+            background: radial-gradient(circle, rgba(255, 130, 170, 0.7), rgba(228, 68, 122, 0) 65%);
+        }
+
+        /* ========================================== */
+        /* SIDE DRAWERS (Songbook / Scribe)          */
+        /* Push-Based Layout logic                   */
+        /* ========================================== */
+       /* Side Panels Push Layout */
+        #songbook-panel, #scribe-panel {
+            position: relative;
+            height: auto;
+            max-height: calc(100vh - 120px);
+
+            /* Start fully collapsed and invisible */
+            flex: 0 0 0px;
+            width: 0px;
+            max-width: 0px;
+            padding: 0;
+            margin: 0;
+            opacity: 0;
+            border-width: 0;
+            visibility: hidden;
+
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            background: rgba(16, 12, 24, 0.85);
+            backdrop-filter: blur(28px) saturate(160%);
+            -webkit-backdrop-filter: blur(28px) saturate(160%);
+            border: 0px solid var(--stroke-mid);
+            border-radius: var(--r-xl);
+            overflow-x: hidden;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+
+            transition: flex 0.4s var(--ease-spring), width 0.4s var(--ease-spring), max-width 0.4s var(--ease-spring), opacity 0.3s ease, padding 0.4s var(--ease-spring), margin 0.4s var(--ease-spring), border-width 0.4s;
+        }
+
+        /* Active Open State - MUCH WIDER */
+        #songbook-panel.is-open, #scribe-panel.is-open {
+            flex: 1 1 600px;
+            width: 100%;
+            max-width: 700px; /* Greatly expanded width */
+            padding: 24px;
+            opacity: 1;
+            border-width: 1px;
+            visibility: visible;
+        }
+
+        #songbook-panel.is-open { margin-right: 20px; }
+        #scribe-panel.is-open { margin-left: 20px; }
+
+        /* Override the legacy JS .hidden class so it doesn't break our smooth CSS transitions. */
+        #songbook-panel.hidden, #scribe-panel.hidden {
+            display: flex !important;
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--stroke-soft);
+        }
+        .drawer-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        .drawer-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-style: italic;
+            font-family: 'Fraunces', serif;
+            margin-top: 2px;
+        }
+
+        /* Tab pill navigation */
+        .tab-pills {
+            display: flex;
+            gap: 4px;
+            padding: 4px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--r-full);
+            border: 1px solid var(--stroke-soft);
+        }
+        .tab-pills button {
+            flex: 1;
+            padding: 7px 14px;
+            border-radius: var(--r-full);
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s var(--ease-spring);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .tab-pills button.is-active {
+            background: var(--grad-ember);
+            color: #1a0a00;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Songbook iframe */
+        #songbook-frame {
+            width: 100%;
+            flex: 1;
+            min-height: 400px;
+            background: #f0e8d6;
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+        }
+
+        /* ========================================== */
+        /* SCRIBE EDITOR                             */
+        /* ========================================== */
         .editor-container {
             position: relative;
             width: 100%;
-            height: 400px;
-            max-width: 100%;
+            flex: 1;
+            min-height: 400px;
         }
 
         .editor-layer {
@@ -116,518 +1180,602 @@
             height: 100%;
             position: absolute;
             top: 0; left: 0;
-            padding: 1.5rem;
+            padding: 16px;
             margin: 0;
-            font-family: monospace;
-            font-size: 1rem;
-            line-height: 1.6rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            line-height: 1.55rem;
             white-space: pre-wrap;
             word-wrap: break-word;
             overflow: auto;
-            border-radius: 0.5rem;
+            border-radius: var(--r-md);
             box-sizing: border-box;
             text-align: left;
         }
 
         .editor-front {
             color: transparent;
-            caret-color: var(--gw2-gold);
+            caret-color: var(--ember-warm);
             z-index: 10;
             resize: none;
             outline: none;
-            border: 2px solid transparent;
+            border: 1px solid transparent;
             background: transparent;
         }
+        .editor-front:focus { border-color: var(--stroke-mid); }
 
         .editor-back {
-            background-color: rgba(0, 0, 0, 0.4);
-            color: var(--gw2-parchment);
-            border: 1px solid #5a4b3c;
-            box-shadow: inset 0 5px 15px rgba(0,0,0,0.9);
+            background: rgba(0, 0, 0, 0.35);
+            color: var(--text-primary);
+            border: 1px solid var(--stroke-soft);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
             z-index: 1;
             pointer-events: none;
         }
-
-        /* Hide scrollbar on the background layer to prevent visual doubling */
         .editor-back::-webkit-scrollbar { display: none; }
         .editor-back { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .highlight-red { color: #ff5555; font-weight: bold; text-shadow: 0 0 5px rgba(255,0,0,0.5); }
-        .highlight-blue { color: #6fa8dc; font-weight: bold; text-shadow: 0 0 5px rgba(100,150,255,0.5); }
-        .highlight-pipe { color: var(--gw2-gold); opacity: 0.6; font-weight: bold; }
+        .highlight-red { color: var(--coral); font-weight: 600; text-shadow: 0 0 6px rgba(255, 92, 138, 0.35); }
+        .highlight-blue { color: var(--teal); font-weight: 600; text-shadow: 0 0 6px rgba(74, 200, 197, 0.35); }
+        .highlight-pipe { color: var(--ember-warm); opacity: 0.55; font-weight: 600; }
 
-        /* --- Animation Styles for Side Panels --- */
-        #songbook-panel, #scribe-panel {
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: 0;
-            opacity: 0;
-            overflow: hidden;
-            display: flex;
-            pointer-events: none;
-        }
-
-        #songbook-panel {
-            margin-right: 0;
-            transform: translateX(-50px);
-        }
-
-        #scribe-panel {
-            margin-left: 0;
-            transform: translateX(50px);
-        }
-
-        #songbook-panel.is-open {
-            max-width: 600px;
-            opacity: 1;
-            margin-right: 1.5rem;
-            transform: translateX(0);
-            pointer-events: auto;
-        }
-
-        #scribe-panel.is-open {
-            max-width: 650px;
-            opacity: 1;
-            margin-left: 1.5rem;
-            transform: translateX(0);
-            pointer-events: auto;
-        }
-
-        @media (max-width: 1350px) {
-            #songbook-panel, #scribe-panel {
-                transform: translateY(50px);
-                max-height: 0;
-                max-width: 100%;
-            }
-            #songbook-panel.is-open {
-                max-height: 1000px;
-                margin-right: 0;
-                margin-bottom: 1.5rem;
-                transform: translateY(0);
-            }
-            #scribe-panel.is-open {
-                max-height: 1200px;
-                margin-left: 0;
-                margin-top: 1.5rem;
-                transform: translateY(0);
-            }
-        }
-
-        /* --- GW2 PIANO STYLES --- */
-        .piano-container {
-            display: flex;
-            gap: 4px;
-            padding: 10px;
-            background: #0a0808;
-            border: 2px solid #3a2e2a;
-            border-radius: 4px;
-            box-shadow: inset 0 5px 15px rgba(0,0,0,0.9);
-        }
-
-        .piano-key {
-            width: 70px;
-            height: 240px;
-            background: linear-gradient(to bottom, #d9d0c1, #a39581);
-            border: 1px solid #4a3e31;
-            border-radius: 2px 2px 8px 8px;
-            box-shadow: inset -2px -2px 5px rgba(255,255,255,0.3),
-                        inset 2px 2px 5px rgba(0,0,0,0.1),
-                        3px 5px 10px rgba(0,0,0,0.7);
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.05s, box-shadow 0.05s;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
+        /* ========================================== */
+        /* HELP OVERLAY                              */
+        /* ========================================== */
+        #help-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(7, 5, 14, 0.72);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 200;
+            display: none;
             align-items: center;
-            padding-bottom: 20px;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            transition: opacity 0.25s ease;
         }
-
-        @media (max-width: 640px) {
-            .piano-key { width: 40px; height: 180px; }
-            .key-note { font-size: 1rem !important; }
-            .key-bind { font-size: 0.7rem !important; }
-            .black-key { width: 26px; height: 110px; }
-            .black-key .key-note { font-size: 0.8rem !important; }
-            .black-key .key-bind { font-size: 0.55rem !important; padding: 0 2px; }
+        #help-overlay.is-open {
+            display: flex;
+            opacity: 1;
         }
-
-        .piano-key::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 10%; right: 10%; height: 60%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
-            border-radius: 2px;
-            pointer-events: none;
-        }
-
-        .piano-key.active {
-            transform: translateY(4px) scale(0.98);
-            background: linear-gradient(to bottom, #fff3e0, #ffb347);
-            box-shadow: inset -1px -1px 3px rgba(255,255,255,0.5),
-                        inset 2px 4px 8px rgba(0,0,0,0.3),
-                        0 0 20px #ff8c00;
-            border-color: var(--gw2-gold);
-        }
-
-        .black-key {
-            width: 44px;
-            height: 140px;
-            background: linear-gradient(to bottom, #2a2420, #0a0808);
-            border-color: #1a1512;
-            right: -2px;
-            transform: translateX(50%);
-        }
-
-        .black-key::before {
-            background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent);
-        }
-
-        .black-key.active {
-            transform: translateX(50%) translateY(4px) scale(0.98);
-            background: linear-gradient(to bottom, #5a1515, #8a2a2a);
-            box-shadow: inset -1px -1px 3px rgba(255,255,255,0.2),
-                        inset 2px 4px 8px rgba(0,0,0,0.6),
-                        0 0 15px #ff0000;
-            border-color: var(--gw2-red);
-        }
-
-        .key-note {
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: #2c2420;
-            text-shadow: 1px 1px 0px rgba(255,255,255,0.4);
-        }
-
-        .key-bind {
-            font-family: 'Cormorant Garamond', serif;
-            font-weight: 600;
-            font-size: 1rem;
-            color: #5a4b3c;
-            margin-top: 5px;
-        }
-
-        .piano-key.active .key-note, .piano-key.active .key-bind {
-            color: #5a1e00;
-        }
-
-        .piano-key.black-key.active .key-note, .piano-key.black-key.active .key-bind {
-            color: #ffe0b2;
-        }
-
-        .black-key .key-note {
-            color: #d4af37;
-            text-shadow: 1px 1px 2px black;
-            font-size: 1.2rem;
-        }
-
-        .black-key .key-bind {
-            color: #a39581;
-        }
-
-        /* --- HEARTOPIA PIANO STYLES --- */
-        #htp-view {
-            background: linear-gradient(to bottom, #221c18, #110e0c);
-        }
-
-        .htp-white {
-            width: 46px;
-            height: 60px;
-            background: #fdfdfd;
-            border-radius: 12px;
-            box-shadow: 0 4px 0 #b0b0b0, 0 5px 8px rgba(0,0,0,0.3);
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-            padding-top: 6px;
+        .help-card {
+            max-width: 760px;
+            width: 100%;
+            max-height: 88vh;
+            overflow-y: auto;
+            padding: 32px;
+            border-radius: var(--r-xl);
+            background: var(--bg-elevated);
+            border: 1px solid var(--stroke-mid);
+            box-shadow: var(--shadow-lg), 0 0 80px rgba(255, 140, 80, 0.12);
             position: relative;
-            cursor: pointer;
-            font-family: sans-serif;
-            transition: all 0.05s;
+            transform: scale(0.95);
+            transition: transform 0.3s var(--ease-spring);
+        }
+        #help-overlay.is-open .help-card { transform: scale(1); }
+
+        .help-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+        @media (max-width: 600px) { .help-grid { grid-template-columns: 1fr; } }
+
+        .help-section-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-ember);
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--stroke-soft);
+            font-weight: 600;
+        }
+        .help-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 0.88rem;
+            color: var(--text-primary);
+        }
+        .kbd {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 26px;
+            height: 26px;
+            padding: 0 8px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--stroke-mid);
+            border-bottom: 2px solid var(--stroke-strong);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-ember);
+            font-weight: 600;
+            letter-spacing: 0.03em;
         }
 
-        .htp-white:active, .htp-white.active {
-            transform: translateY(4px);
-            box-shadow: 0 0px 0 #b0b0b0, 0 2px 3px rgba(0,0,0,0.3);
-            background: #e8f0fe;
+        /* ========================================== */
+        /* SCROLLBARS                                */
+        /* ========================================== */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 180, 120, 0.15); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 180, 120, 0.3); }
+
+        /* ========================================== */
+        /* FOCUS STATES                              */
+        /* ========================================== */
+        .piano-key:focus, .htp-white:focus, .htp-black:focus { outline: none; }
+        .piano-key:focus-visible, .htp-white:focus-visible, .htp-black:focus-visible {
+            outline: 2px solid var(--ember-warm);
+            outline-offset: 3px;
         }
 
-        .htp-white-num {
-            font-weight: bold; font-size: 1.15rem; color: #222; line-height: 1;
+        /* ========================================== */
+        /* RESPONSIVE                                */
+        /* ========================================== */
+        @media (max-width: 1200px) {
+            .app-shell { padding: 12px 12px 40px; gap: 14px; }
+            .topbar { padding: 10px 14px; }
+            .brand-title { font-size: 1rem; }
+            .brand-mark { width: 34px; height: 34px; }
+            .dock { padding: 8px; gap: 6px; }
+            .piano-container { padding: 14px; gap: 3px; }
+            .piano-key { width: 48px; height: 200px; }
+            .piano-key .key-note { font-size: 1.1rem; }
+            .black-key { width: 32px; height: 125px; }
+            .black-key .key-note { font-size: 0.95rem; }
+            .htp-white { width: 44px; height: 64px; }
+            .htp-white-num { font-size: 1.1rem; }
+            .htp-black { width: 30px; height: 30px; font-size: 0.68rem; top: -14px; right: -18px; }
+            #help-overlay .help-card { padding: 20px; }
+            .view-switch button { padding: 5px 12px; font-size: 0.72rem; }
+
+            /* Panels flow naturally underneath the piano on vertical screens */
+            .stage { flex-direction: column; align-items: center; }
+            #center-panel { width: 100%; margin: 0 0 16px 0; order: 1; }
+
+            #songbook-panel.is-open, #scribe-panel.is-open {
+                width: 100%;
+                max-width: 100%;
+                flex: none;
+                margin: 0 0 16px 0;
+                order: 2;
+                min-height: 600px;
+            }
+            #scribe-panel.is-open { order: 3; margin: 0; }
+        }
+        @media (max-width: 540px) {
+            .piano-key { width: 40px; height: 170px; }
+            .piano-key .key-note { font-size: 0.95rem; }
+            .piano-key .key-bind { font-size: 0.6rem; }
+            .black-key { width: 28px; height: 105px; }
+            .black-key .key-note { font-size: 0.8rem; }
+            .black-key .key-bind { font-size: 0.55rem; }
+            .stage-title { font-size: 2rem; }
         }
 
-        .htp-white-sol {
-            font-size: 0.55rem; color: #666; font-weight: bold; letter-spacing: 0.5px; margin-top: 2px;
-        }
+        /* Hide legacy classes that the HTML may still reference via JS injection but we don't need */
+        .gw2-panel, .gw2-title, .gw2-button, .gw2-select { /* sanitized by utility classes below */ }
 
-        .htp-bind-tag {
-            position: absolute; bottom: -12px;
-            background: #8e8e8e; color: white; padding: 2px 6px; border-radius: 6px;
-            font-size: 0.65rem; box-shadow: 0 2px 0 #555; font-weight: bold;
-            transition: all 0.05s;
-        }
-
-        .htp-white:active .htp-bind-tag, .htp-white.active .htp-bind-tag {
-            box-shadow: 0 0px 0 #555; transform: translateY(2px);
-        }
-
-        .htp-black {
-            width: 32px; height: 32px;
-            background: #333; border-radius: 50%;
-            box-shadow: 0 3px 0 #111, 0 4px 6px rgba(0,0,0,0.5);
-            display: flex; align-items: center; justify-content: center;
-            color: #eee; font-size: 0.75rem; font-weight: bold; font-family: sans-serif;
-            position: absolute; top: -14px; right: -20px; z-index: 10; cursor: pointer;
-            transition: all 0.05s;
-        }
-
-        .htp-black:active, .htp-black.active {
-            transform: translateY(3px);
-            box-shadow: 0 0 0 #111, 0 2px 3px rgba(0,0,0,0.5);
-            background: #555;
-        }
-
-        .status-text {
-            color: #a39581;
-            font-style: italic;
-            text-shadow: 1px 1px 2px black;
-        }
-
-        /* WebKit Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #5a4b3c;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #d4af37;
+        /* ========================================== */
+        /* REDUCED MOTION                            */
+        /* ========================================== */
+        @media (prefers-reduced-motion: reduce) {
+            .bg-mesh { animation: none; }
+            .dot.active { animation: none !important; }
+            .key-ripple { display: none; }
+            * { transition: none !important; animation: none !important; }
         }
     </style>
 </head>
 <body>
 
-    <div class="flex flex-col xl:flex-row w-full max-w-[2200px] mx-auto items-stretch justify-center mt-12 sm:mt-0">
-        
-        <!-- ============================== -->
-        <!-- LEFT PANEL: SONGBOOK           -->
-        <!-- ============================== -->
-        <div id="songbook-panel" class="gw2-panel hidden flex-col w-full xl:w-[500px] 2xl:w-[600px] rounded-xl p-4">
-            <h2 class="gw2-title text-2xl mb-4 text-center">Tome Viewer</h2>
-            
-            <!-- Quick Load Tomes & Toggles -->
-            <div class="flex flex-wrap justify-center gap-3 mb-5">
-                <button id="btn-load-tome-dark" class="gw2-button px-4 py-2 rounded font-bold text-xs tracking-widest border border-[#d4af37] flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+<div class="bg-mesh"></div>
+<div class="bg-noise"></div>
+
+<!-- App Shell wrapper -->
+<div class="app-shell">
+
+    <!-- ======================================== -->
+    <!-- TOPBAR                                   -->
+    <!-- ======================================== -->
+    <nav class="topbar glass">
+        <div class="brand">
+            <div class="brand-mark" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18V5l12-2v13"/>
+                    <circle cx="6" cy="18" r="3"/>
+                    <circle cx="18" cy="16" r="3"/>
+                </svg>
+            </div>
+            <div>
+                <div class="brand-title">Sarya's <em>Music Thingy</em></div>
+                <div class="brand-sub">For exclusive use of everyone.</div>
+            </div>
+        </div>
+
+        <div class="view-switch" id="view-switch" data-view="gw2">
+            <div class="switch-indicator"></div>
+            <button id="view-btn-gw2" class="is-active" type="button">Guild Wars 2</button>
+            <button id="view-btn-htp" type="button">Heartopia</button>
+        </div>
+        <!-- Legacy hidden button that script still toggles; we control the real state via the pill above -->
+        <button id="btn-toggle-view" type="button" style="display:none;">Switch</button>
+
+        <div class="nav-actions">
+            <button id="btn-toggle-songbook" class="btn btn-ghost" type="button" aria-label="Toggle Songbook">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                <span>Songbook</span>
+            </button>
+            <button id="btn-toggle-scribe" class="btn btn-ghost" type="button" aria-label="Toggle Scribe">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                <span>Scribe</span>
+            </button>
+            <button id="btn-help" class="btn btn-icon btn-ghost" type="button" aria-label="Keyboard shortcuts">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ======================================== -->
+    <!-- STAGE: PIANO                             -->
+    <!-- ======================================== -->
+    <main class="stage">
+
+        <!-- ============================================ -->
+        <!-- LEFT DRAWER: SONGBOOK (Moved inside Stage)   -->
+        <!-- ============================================ -->
+        <aside id="songbook-panel" class="hidden" aria-label="Songbook">
+            <div class="drawer-header">
+                <div>
+                    <h2 class="drawer-title">Tome Viewer</h2>
+                    <p class="drawer-subtitle">Your songbook of melodies.</p>
+                </div>
+                <button id="btn-close-songbook" class="btn btn-icon btn-ghost" aria-label="Close Songbook" type="button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+
+            <div class="tab-pills">
+                <button id="btn-load-tome-dark" class="is-active" type="button">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                     Tome of Melodies
                 </button>
-                <button id="btn-toggle-custom" class="gw2-button px-4 py-2 rounded font-bold text-xs tracking-widest border border-[#5a4b3c] flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                <button id="btn-toggle-custom" type="button">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                     Custom Notes
                 </button>
             </div>
 
-            <!-- Google Doc Input Area -->
-            <div id="doc-input-area" class="flex flex-col justify-center items-center gap-1 mb-4 w-full max-w-md mx-auto">
-                <div class="flex justify-center gap-2 w-full mb-1">
-                    <input type="text" id="songbook-url" class="gw2-select flex-1 px-3 py-1.5 rounded text-sm outline-none placeholder-[#8c7355]" placeholder="Paste Google Doc link here..." value="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview">
-                    <button id="btn-load-songbook" class="gw2-button px-4 py-1.5 rounded font-bold text-sm tracking-widest">Load</button>
+            <div id="doc-input-area" style="display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="songbook-url" class="input" style="flex:1;" placeholder="Paste Google Doc link…" value="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview">
+                    <button id="btn-load-songbook" class="btn btn-primary" type="button">Load</button>
                 </div>
-                <div class="text-center status-text text-sm w-full">
-                    Load a <b class="text-[#d4af37]">Public Google Doc</b> link above.
-                </div>
+                <p style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin:0;">Load a <span style="color:var(--text-ember);">public Google Doc</span> URL.</p>
             </div>
 
-            <!-- Standard Iframe -->
-            <iframe id="songbook-frame" class="w-full flex-1 bg-[#e6d8c3] rounded border border-[#5a4b3c] min-h-[500px] xl:min-h-0" src="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview" title="Songbook"></iframe>
-            
-            <!-- Custom Notes Area (Mirrors Scribe dual-layer text system precisely) -->
-            <div id="custom-notes-container" class="editor-container hidden flex-1 min-h-[500px] xl:min-h-0 w-full mt-2">
+            <iframe id="songbook-frame" title="Songbook" src="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview"></iframe>
+
+            <div id="custom-notes-container" class="editor-container" style="display:none; min-height:400px;">
                 <div id="customTextareaB" class="editor-layer editor-back" aria-hidden="true"></div>
-                <div id="customTextareaA" contenteditable="true" spellcheck="false" class="editor-layer editor-front"></div>
+                <textarea id="customTextareaA" spellcheck="false" class="editor-layer editor-front"></textarea>
             </div>
-        </div>
+        </aside>
 
-        <!-- ============================== -->
-        <!-- CENTER PANEL: PIANO            -->
-        <!-- ============================== -->
-        <div id="center-panel" class="gw2-panel p-6 sm:p-10 rounded-xl flex flex-col items-center flex-1 w-full max-w-[1000px] z-20 overflow-hidden">
+        <!-- ============================================ -->
+        <!-- CENTER PANEL (Piano & Controls)              -->
+        <!-- ============================================ -->
+        <section id="center-panel" class="glass">
+            <canvas id="particle-canvas"></canvas>
 
-            <!-- Visual Magic Canvas -->
-            <canvas id="particle-canvas" class="absolute top-0 left-0 w-full h-full pointer-events-none z-50 rounded-xl"></canvas>
+            <header class="stage-header">
+                <h1 class="stage-title">Sarya's <em>Music Thingy</em></h1>
+                <p class="stage-tagline">An instrument for Tyrians and everyone else.</p>
+            </header>
 
-            <!-- Top Left: Open Songbook Button -->
-            <button id="btn-toggle-songbook" class="gw2-button absolute top-4 left-4 sm:top-6 sm:left-6 px-3 py-1.5 sm:px-4 sm:py-2 rounded font-bold text-xs sm:text-sm tracking-widest text-center shadow-lg border border-[#5a4b3c] flex items-center gap-1 sm:gap-2 no-underline z-50">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                <span class="hidden sm:inline">Open Songbook</span>
-                <span class="inline sm:hidden">Songs</span>
-            </button>
+            <!-- Control dock: row 1 = sound, row 2 = performance + recording -->
+            <div class="dock glass-strong">
 
-            <!-- Top Right: Open Scribe Button -->
-            <button id="btn-toggle-scribe" class="gw2-button absolute top-4 right-4 sm:top-6 sm:right-6 px-3 py-1.5 sm:px-4 sm:py-2 rounded font-bold text-xs sm:text-sm tracking-widest text-center shadow-lg border border-[#5a4b3c] flex items-center gap-1 sm:gap-2 no-underline z-50">
-                <span class="hidden sm:inline">Open Scribe</span>
-                <span class="inline sm:hidden">Scribe</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-            </button>
+                <!-- Row 1: SOUND -->
+                <div class="dock-row">
+                    <div class="dock-item dock-item--grow" title="Instrument">
+                        <span class="dock-label">Instrument</span>
+                        <select id="synth-select" class="dock-select">
+                            <optgroup label="Default Magic Instruments">
+                                <option value="lute">Lute</option>
+                                <option value="brass">Brass</option>
+                                <option value="flute">Flute</option>
+                                <option value="crystal">Crystal</option>
+                            </optgroup>
+                        </select>
+                    </div>
 
-            <!-- Header Section -->
-            <div class="text-center mb-6 mt-10 sm:mt-0 relative z-40">
-                <img src="saryamusic2.png" alt="Sarya's Music Thingy" class="mx-auto h-48 sm:h-64 mb-4 object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]" onerror="this.style.display='none'">
+                    <div class="dock-item" title="Master volume">
+                        <svg class="dock-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                        <input type="range" id="master-volume" class="slider" min="0" max="1" step="0.01" value="0.8" style="width:110px;">
+                    </div>
 
-                <h1 class="gw2-title text-4xl sm:text-5xl mb-2">Sarya's Music Thingy</h1>
-                <p class="status-text text-lg mb-6">For exclusive use of everyone.</p>
+                    <label for="sf2-upload" class="dock-item dock-item--btn" title="Load a custom SoundFont (.sf2)">
+                        <svg class="dock-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <span class="dock-label">Load SF2</span>
+                    </label>
+                    <input type="file" id="sf2-upload" accept=".sf2" style="display:none;">
+                    <button id="btn-unload-sf2" class="dock-item dock-item--btn" style="display:none;" type="button">Unload SF2</button>
 
-                <!-- Primary View Toggles -->
-                <div class="flex justify-center w-full">
-                    <button id="btn-toggle-view" class="gw2-button px-6 py-2 rounded font-bold text-sm tracking-widest text-center shadow-lg border border-[#d4af37] text-[#d4af37]">
-                        Switch to Heartopia View
+                    <div class="dock-item" id="midi-status" title="Web MIDI controller">
+                        <div id="midi-dot" class="dot midi-dot"></div>
+                        <span class="dock-label" id="midi-label">MIDI: —</span>
+                    </div>
+                </div>
+
+                <!-- Row 2: PERFORMANCE + RECORDING -->
+                <div class="dock-row">
+                    <label class="dock-item dock-item--toggle" title="Metronome">
+                        <input type="checkbox" id="metronome-toggle" class="check">
+                        <span class="dock-label">Metronome</span>
+                    </label>
+
+                    <div class="dock-item" title="Beats per minute">
+                        <input type="number" id="metronome-bpm" value="120" min="20" max="300" class="dock-num">
+                        <span class="dock-label dock-label--dim">BPM</span>
+                    </div>
+
+                    <label class="dock-item dock-item--toggle" title="Hold notes longer (sustain pedal)">
+                        <input type="checkbox" id="sustain-toggle" class="check">
+                        <span class="dock-label">Sustain</span>
+                    </label>
+
+                    <div class="dock-divider"></div>
+
+                    <button id="btn-record" class="dock-item dock-item--btn dock-item--rec" type="button" title="Record (R)">
+                        <div id="rec-dot" class="dot rec-dot"></div>
+                        <span id="rec-label" class="dock-label">Record</span>
+                    </button>
+                    <button id="btn-play-recording" class="dock-item dock-item--btn" type="button" title="Play recording (Space)" disabled>
+                        <svg class="dock-icon" width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        <span id="play-label" class="dock-label">Play</span>
+                    </button>
+                    <label class="dock-item dock-item--toggle" title="Loop playback">
+                        <input type="checkbox" id="loop-toggle" class="check">
+                        <span class="dock-label">Loop</span>
+                    </label>
+
+                    <div class="dock-spacer"></div>
+
+                    <div class="dock-item dock-item--status" aria-live="polite">
+                        <span id="rec-status">idle</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System message -->
+            <div id="sys-message">Instrument attuned.</div>
+
+            <!-- GW2 VIEW -->
+            <div id="gw2-view">
+                <div class="octave-bar">
+                    <button id="btn-oct-down" class="btn" type="button">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                        <span class="font-mono" id="lbl-oct-down" style="font-size:0.75rem;">[ Q ]</span>
+                        <span>Oct −</span>
+                    </button>
+                    <div class="octave-display" id="octave-display">Octave: Mid</div>
+                    <button id="btn-oct-up" class="btn" type="button">
+                        <span>Oct +</span>
+                        <span class="font-mono" id="lbl-oct-up" style="font-size:0.75rem;">[ E ]</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                     </button>
                 </div>
-            </div>
 
-            <!-- Unified Audio Dashboard -->
-            <div class="bg-black/30 border border-[#3a2e2a] rounded-xl p-5 w-full max-w-4xl mb-6 flex flex-col gap-5 shadow-inner relative z-40">
-                <div class="flex flex-wrap justify-center items-center gap-4 w-full">
-                    <select id="synth-select" class="gw2-select flex-1 min-w-[200px] max-w-[280px] px-4 py-2 rounded font-bold text-sm tracking-widest cursor-pointer text-center outline-none focus:border-[#d4af37] shadow-md">
-                        <optgroup label="Default Magic Instruments">
-                            <option value="lute">Instrument: Lute</option>
-                            <option value="brass">Instrument: Brass</option>
-                            <option value="flute">Instrument: Flute</option>
-                            <option value="crystal">Instrument: Crystal</option>
-                        </optgroup>
-                    </select>
-                    <label for="sf2-upload" class="gw2-button px-4 py-2 rounded font-bold text-sm tracking-widest cursor-pointer text-center whitespace-nowrap shadow-md">
-                        Load Custom SF2
-                    </label>
-                    <input type="file" id="sf2-upload" accept=".sf2" class="hidden">
-                    <button id="btn-unload-sf2" class="gw2-button px-4 py-2 rounded font-bold text-sm tracking-widest text-center hidden whitespace-nowrap shadow-md">
-                        Unload SF2
-                    </button>
+                <div class="piano-stage">
+                    <div class="piano-container" id="piano"></div>
                 </div>
 
-                <div class="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 w-full">
-                    <div class="flex items-center gap-3 bg-black/40 border border-[#5a4b3c] px-3 py-1.5 rounded-lg shadow-inner" title="Master Volume">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#8c7355]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
-                        <input type="range" id="master-volume" min="0" max="1" step="0.01" value="0.8" class="w-24 accent-[#d4af37] cursor-pointer">
-                    </div>
-
-                    <div class="flex items-center gap-3 bg-black/40 border border-[#5a4b3c] px-3 py-1.5 rounded-lg shadow-inner">
-                        <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors" title="Toggle Metronome">
-                            <input type="checkbox" id="metronome-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer">
-                            <span class="text-sm font-bold tracking-wider">Metronome</span>
-                        </label>
-                        <div class="h-4 w-px bg-[#5a4b3c]"></div>
-                        <input type="number" id="metronome-bpm" value="120" min="20" max="300" class="bg-transparent text-[#d4af37] w-12 text-center outline-none font-bold" title="Beats Per Minute">
-                        <span class="status-text text-xs">BPM</span>
-                    </div>
-
-                    <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors bg-black/40 border border-[#5a4b3c] px-3 py-1.5 rounded-lg shadow-inner" title="Simulates a sustain pedal for a reverberating effect">
-                        <input type="checkbox" id="sustain-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer">
-                        <span class="text-sm font-bold tracking-wider">Extend Notes (Sustain)</span>
-                    </label>
-                </div>
-            </div>
-
-            <div id="sys-message" class="text-[#d4af37] font-['Cinzel'] h-6 mb-4 opacity-0 transition-opacity duration-500 text-sm tracking-wider relative z-40">
-                Instrument Attuned.
-            </div>
-
-            <!-- VIEW 1: GW2 PIANO (1 Octave) -->
-            <div id="gw2-view" class="flex flex-col items-center w-full relative z-40">
-                <div class="flex flex-col sm:flex-row justify-center w-full gap-3 items-center mb-6">
-                    <button id="btn-oct-down" class="gw2-button w-full sm:w-auto px-5 py-2 rounded font-bold text-sm tracking-widest text-center shadow-md"><span id="lbl-oct-down">[ Q ]</span> Octave -</button>
-                    <div class="bg-black/50 border-2 border-[#5a4b3c] px-6 py-2 rounded-lg text-center w-full sm:w-auto min-w-[160px] shadow-inner">
-                        <span class="text-[#d4af37] font-['Cinzel'] font-bold text-xl drop-shadow-md" id="octave-display">Octave: Mid</span>
-                    </div>
-                    <button id="btn-oct-up" class="gw2-button w-full sm:w-auto px-5 py-2 rounded font-bold text-sm tracking-widest text-center shadow-md"><span id="lbl-oct-up">[ E ]</span> Octave +</button>
-                </div>
-                <div class="piano-container mb-6" id="piano"></div>
-                <div class="flex flex-wrap justify-center items-center w-full gap-6">
-                    <button id="btn-edit-binds" class="gw2-button px-6 py-2 rounded font-bold text-sm tracking-widest text-center border border-[#5a4b3c] shadow-md transition-all">Edit Binds: OFF</button>
-                    <label class="flex items-center gap-2 cursor-pointer status-text hover:text-[#d4af37] transition-colors">
-                        <input type="checkbox" id="octave-toggle" class="w-4 h-4 accent-[#6a1f1f] cursor-pointer" checked>
+                <div style="display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:16px; margin-top:4px;">
+                    <button id="btn-edit-binds" class="btn" type="button">Edit Binds: OFF</button>
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:var(--text-secondary); font-size:0.85rem;">
+                        <input type="checkbox" id="octave-toggle" class="check" checked>
                         <span>Restrict Octaves (Low / Mid / High)</span>
                     </label>
                 </div>
-                <div class="mt-6 text-center status-text text-sm max-w-md" id="helper-text">
-                    Use keys to play notes. Toggle <b class="text-[#d4af37]">Edit Binds</b> to change mapping. Click or touch keys to interact.
-                </div>
+
+                <p class="hints" id="helper-text">
+                    Play with your keyboard, click, or touch. Toggle <b>Edit Binds</b> to remap any key. Drag across keys to glide.
+                </p>
             </div>
 
-            <!-- VIEW 2: HEARTOPIA (3 Octaves) -->
-            <div id="htp-view" class="hidden flex-col items-center w-full max-w-5xl px-4 py-8 rounded-2xl border-2 border-[#5a4b3c] shadow-inner overflow-x-auto relative z-40">
-                <div id="heartopia-container" class="flex flex-col gap-8 min-w-[700px] py-4 px-8"></div>
-                <div class="mt-6 text-center status-text text-sm max-w-md">
-                    Binds perfectly map to standard QWERTY rows to replicate the Heartopia layout exactly.
-                </div>
+            <!-- HEARTOPIA VIEW -->
+            <div id="htp-view" style="display:none; flex-direction:column; align-items:center; width:100%; max-width:900px;">
+                <div id="heartopia-container" style="display:flex; flex-direction:column; gap:32px; padding:16px 20px; min-width:700px;"></div>
+                <p class="hints" style="margin-top:20px;">
+                    Keybinds map to standard <b>QWERTY</b> rows to match the Heartopia layout exactly.
+                </p>
             </div>
-        </div>
+        </section>
 
-        <!-- ============================== -->
-        <!-- RIGHT PANEL: TOME SCRIBE       -->
-        <!-- ============================== -->
-        <div id="scribe-panel" class="gw2-panel flex-col w-full xl:w-[600px] 2xl:w-[650px] rounded-xl p-4">
-            
-            <!-- Toggleable Scribe Header -->
-            <div class="w-full flex justify-between items-end mb-4 px-2">
+        <!-- ============================================ -->
+        <!-- RIGHT DRAWER: SCRIBE (Moved inside Stage)    -->
+        <!-- ============================================ -->
+        <aside id="scribe-panel" class="hidden" aria-label="Tome Scribe">
+            <div class="drawer-header">
                 <div>
-                    <h2 class="gw2-title text-3xl mb-1 text-left">Tome Scribe</h2>
-                    <h3 class="text-[#d4af37] font-['Cinzel'] text-sm tracking-widest font-bold m-0">Convert arcane MIDI magic</h3>
+                    <h2 class="drawer-title">Tome Scribe</h2>
+                    <p class="drawer-subtitle">Convert arcane MIDI magic.</p>
                 </div>
-                
-                <div class="flex items-center gap-2 mb-1">
-                    <select id="bprSelect" class="gw2-select px-2 py-1 rounded font-bold text-xs tracking-widest text-center shadow-lg border border-[#5a4b3c] outline-none cursor-pointer" title="Bars Per Row">
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <select id="bprSelect" class="input" style="padding:6px 10px; font-size:0.78rem;" title="Bars per row">
                         <option value="4">4 BPR</option>
                         <option value="3">3 BPR</option>
                         <option value="2">2 BPR</option>
                         <option value="1">1 BPR</option>
                     </select>
+                    <button id="btn-close-scribe" class="btn btn-icon btn-ghost" aria-label="Close Scribe" type="button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
                 </div>
             </div>
-            
-            <div class="flex justify-center items-center w-full mb-4">
-                <label for="midiFileInput" class="gw2-button px-8 py-2 rounded font-bold text-sm tracking-widest cursor-pointer text-center shadow-lg flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>
-                    Upload MIDI
-                </label>
-                <input type="file" id="midiFileInput" accept=".mid,.midi" class="hidden">
+
+            <label for="midiFileInput" class="btn btn-primary" style="width:100%; padding:14px;" title="Upload a MIDI file">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload MIDI File
+            </label>
+            <input type="file" id="midiFileInput" accept=".mid,.midi" style="display:none;">
+
+            <div style="display:flex; gap:8px;">
+                <button id="copyTabBtn" class="btn" type="button" style="flex:1; flex-direction:column; padding:10px; gap:2px;">
+                    <span style="display:flex; align-items:center; gap:6px; font-size:0.75rem; font-weight:600;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Copy Tab
+                    </span>
+                    <span style="font-size:0.62rem; color:var(--text-muted);">by Powerina</span>
+                </button>
+                <button id="downloadSpreadsheetBtn" class="btn" type="button" style="flex:1; flex-direction:column; padding:10px; gap:2px;">
+                    <span style="display:flex; align-items:center; gap:6px; font-size:0.75rem; font-weight:600;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Spreadsheet
+                    </span>
+                    <span style="font-size:0.62rem; color:var(--text-muted);">by Jenpai</span>
+                </button>
+                <button id="exportImageBtn" class="btn" type="button" style="flex:1; flex-direction:column; padding:10px; gap:2px;">
+                    <span style="display:flex; align-items:center; gap:6px; font-size:0.75rem; font-weight:600;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        Image
+                    </span>
+                    <span style="font-size:0.62rem; color:var(--text-muted);">Spell Page PNG</span>
+                </button>
             </div>
 
-            <div class="flex flex-wrap justify-center items-stretch gap-2 w-full mb-4">
-                <button id="copyTabBtn" class="gw2-button px-3 py-1.5 rounded text-center shadow-lg flex flex-col items-center justify-center gap-1 border-[#5a4b3c] flex-1">
-                    <div class="flex items-center gap-1 font-bold text-[0.65rem] tracking-widest whitespace-nowrap"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>Copy Tab</div>
-                    <span class="text-[0.55rem] text-[#e6d8c3]/60 font-serif tracking-normal normal-case">Format by Powerina</span>
-                </button>
-                <button id="downloadSpreadsheetBtn" class="gw2-button px-3 py-1.5 rounded text-center shadow-lg flex flex-col items-center justify-center gap-1 border-[#5a4b3c] flex-1">
-                    <div class="flex items-center gap-1 font-bold text-[0.65rem] tracking-widest whitespace-nowrap"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>Spreadsheet</div>
-                    <span class="text-[0.55rem] text-[#e6d8c3]/60 font-serif tracking-normal normal-case">Export by Jenpai</span>
-                </button>
-                <button id="exportImageBtn" class="gw2-button px-3 py-1.5 rounded text-center shadow-lg flex flex-col items-center justify-center gap-1 border-[#5a4b3c] flex-1">
-                    <div class="flex items-center gap-1 font-bold text-[0.65rem] tracking-widest whitespace-nowrap"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z" /></svg>Export Image</div>
-                    <span class="text-[0.55rem] text-[#e6d8c3]/60 font-serif tracking-normal normal-case">Spell Page PNG</span>
-                </button>
+            <div id="scribe-sys-message" style="min-height:1.25rem; font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:var(--text-ember); text-align:center; opacity:0; transition:opacity 0.5s;">
+                Awaiting input…
             </div>
 
-            <div id="scribe-sys-message" class="text-[#d4af37] font-['Cinzel'] h-5 mb-2 opacity-0 transition-opacity duration-500 text-xs tracking-wider font-bold text-center">
-                Awaiting input...
-            </div>
-
-            <!-- Scribe Editor Area -->
-            <div class="editor-container relative z-20 flex-1 min-h-[400px]">
+            <div class="editor-container">
                 <div id="textareaB" class="editor-layer editor-back" aria-hidden="true"></div>
-                <div id="textareaA" contenteditable="true" spellcheck="false" class="editor-layer editor-front"></div>
+                <textarea id="textareaA" spellcheck="false" class="editor-layer editor-front"></textarea>
+            </div>
+        </aside>
+
+    </main>
+</div>
+
+<!-- ============================================ -->
+<!-- HELP OVERLAY                                 -->
+<!-- ============================================ -->
+<div id="help-overlay" role="dialog" aria-labelledby="help-title" aria-modal="true">
+    <div class="help-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px;">
+            <div>
+                <h2 id="help-title" style="font-family:'Fraunces', serif; font-size:1.8rem; font-weight:600; letter-spacing:-0.02em; margin:0 0 4px;">
+                    Scroll of <em style="background:var(--grad-hero); -webkit-background-clip:text; background-clip:text; color:transparent;">Binds</em>
+                </h2>
+                <p style="color:var(--text-secondary); font-family:'Fraunces', serif; font-style:italic; margin:0;">All the hidden runes, laid bare.</p>
+            </div>
+            <button id="btn-close-help" class="btn btn-icon btn-ghost" aria-label="Close help" type="button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+
+        <div class="help-grid">
+            <div>
+                <div class="help-section-title">Guild Wars 2 View</div>
+                <div class="help-item"><span class="kbd">1</span>–<span class="kbd">8</span> White keys</div>
+                <div class="help-item"><span class="kbd">F1</span>–<span class="kbd">F6</span> Black keys (sharps)</div>
+                <div class="help-item"><span class="kbd">Q</span> Octave down</div>
+                <div class="help-item"><span class="kbd">E</span> Octave up</div>
+                <p style="color:var(--text-muted); font-style:italic; font-size:0.78rem; margin-top:12px;">Click <span style="color:var(--text-ember);">Edit Binds</span> to remap any key.</p>
+            </div>
+            <div>
+                <div class="help-section-title">Heartopia View</div>
+                <div class="help-item"><span class="kbd">Q</span><span class="kbd">W</span><span class="kbd">E</span>… Top octave</div>
+                <div class="help-item"><span class="kbd">Z</span><span class="kbd">X</span><span class="kbd">C</span>… Middle octave</div>
+                <div class="help-item" style="color:var(--text-secondary); font-size:0.8rem;">Black keys: row digits &amp; <span class="kbd">S</span><span class="kbd">D</span><span class="kbd">G</span><span class="kbd">H</span><span class="kbd">J</span></div>
+            </div>
+            <div>
+                <div class="help-section-title">Performance</div>
+                <div class="help-item"><span class="kbd">R</span> Toggle recording</div>
+                <div class="help-item"><span class="kbd">Space</span> Play / stop recording</div>
+                <div class="help-item"><span class="kbd">?</span> Toggle this overlay</div>
+                <div class="help-item"><span class="kbd">Esc</span> Close overlay or drawer</div>
+            </div>
+            <div>
+                <div class="help-section-title">Touch &amp; MIDI</div>
+                <div class="help-item" style="font-size:0.85rem;">Drag across keys to <span style="color:var(--text-ember);">glide</span></div>
+                <div class="help-item" style="font-size:0.85rem;">Multi-touch for chords on mobile</div>
+                <div class="help-item" style="font-size:0.85rem;">Plug a <span style="color:var(--text-ember);">MIDI controller</span> — it just works</div>
             </div>
         </div>
 
-    </div> <!-- End Flex Wrapper -->
+        <div style="margin-top:24px; padding-top:16px; border-top:1px solid var(--stroke-soft); text-align:center; color:var(--text-muted); font-style:italic; font-family:'Fraunces', serif; font-size:0.82rem;">
+            Crafted with ember and ink. For exclusive use of everyone.
+        </div>
+    </div>
+</div>
 
-    <!-- ============================== -->
-    <!-- JAVASCRIPT MODULES             -->
-    <!-- ============================== -->
+    <script>
+        // Small adapter layer between the new UI shell and the module script below.
+        // The module still does all the heavy lifting; this just reflects state
+        // in the redesigned controls.
+        (function() {
+            document.addEventListener('DOMContentLoaded', () => {
+                // -- View-switch pill → legacy toggle-view button
+                const pill = document.getElementById('view-switch');
+                const btnGW2 = document.getElementById('view-btn-gw2');
+                const btnHTP = document.getElementById('view-btn-htp');
+                const legacy = document.getElementById('btn-toggle-view');
+                if (!pill || !btnGW2 || !btnHTP || !legacy) return;
+
+                function reflectView(mode) {
+                    pill.dataset.view = mode;
+                    btnGW2.classList.toggle('is-active', mode === 'gw2');
+                    btnHTP.classList.toggle('is-active', mode === 'heartopia');
+                }
+
+                btnGW2.addEventListener('click', () => {
+                    if (pill.dataset.view !== 'gw2') { legacy.click(); reflectView('gw2'); }
+                });
+                btnHTP.addEventListener('click', () => {
+                    if (pill.dataset.view !== 'heartopia') { legacy.click(); reflectView('heartopia'); }
+                });
+
+                // -- Drawer close buttons
+                const closeSong = document.getElementById('btn-close-songbook');
+                const toggleSong = document.getElementById('btn-toggle-songbook');
+                if (closeSong && toggleSong) closeSong.addEventListener('click', () => toggleSong.click());
+
+                const closeScribe = document.getElementById('btn-close-scribe');
+                const toggleScribe = document.getElementById('btn-toggle-scribe');
+                if (closeScribe && toggleScribe) closeScribe.addEventListener('click', () => toggleScribe.click());
+
+                // The HTP view in the original flips between display:none and flex via
+                // classList 'hidden' and 'flex'. Our CSS doesn't define those, so we
+                // manually observe class changes and mirror them to inline style.
+                const gw2View = document.getElementById('gw2-view');
+                const htpView = document.getElementById('htp-view');
+                if (gw2View && htpView) {
+                    const observer = new MutationObserver(() => {
+                        gw2View.style.display = gw2View.classList.contains('hidden') ? 'none' : 'flex';
+                        if (htpView.classList.contains('hidden')) {
+                            htpView.style.display = 'none';
+                        } else if (htpView.classList.contains('flex')) {
+                            htpView.style.display = 'flex';
+                        }
+                    });
+                    observer.observe(gw2View, { attributes: true, attributeFilter: ['class'] });
+                    observer.observe(htpView, { attributes: true, attributeFilter: ['class'] });
+                }
+            });
+        })();
+    </script>
+
     <script type="module">
         // ==========================================
         // 0. LAZY-LOAD CDN LIBRARIES (non-blocking)
@@ -636,7 +1784,8 @@
         let MidiLib = null;
         let XLSXLib = null;
 
-        const midiReady = import("https://cdn.skypack.dev/@tonejs/midi").then(m => {
+        // Switched from Skypack to jsDelivr for improved reliability with class instantiations
+        const midiReady = import("https://cdn.jsdelivr.net/npm/@tonejs/midi@2.0.28/+esm").then(m => {
             MidiLib = m;
         }).catch(err => {
             console.warn("Failed to load @tonejs/midi — MIDI import will be unavailable:", err);
@@ -674,20 +1823,20 @@
         const songbookUrlInput = document.getElementById('songbook-url');
         const btnLoadSongbook = document.getElementById('btn-load-songbook');
         const songbookFrame = document.getElementById('songbook-frame');
-        
+
         const btnLoadTomeDark = document.getElementById('btn-load-tome-dark');
         const btnToggleCustom = document.getElementById('btn-toggle-custom');
         const docInputArea = document.getElementById('doc-input-area');
         const customNotesContainer = document.getElementById('custom-notes-container');
         const customTextareaA = document.getElementById('customTextareaA');
         const customTextareaB = document.getElementById('customTextareaB');
-        
+
         const btnToggleScribe = document.getElementById('btn-toggle-scribe');
         const scribePanel = document.getElementById('scribe-panel');
 
         const metronomeToggle = document.getElementById('metronome-toggle');
         const bpmInput = document.getElementById('metronome-bpm');
-        
+
         const btnEditBinds = document.getElementById('btn-edit-binds');
         const btnOctDown = document.getElementById('btn-oct-down');
         const btnOctUp = document.getElementById('btn-oct-up');
@@ -708,9 +1857,9 @@
             }
             const cachedNotes = localStorage.getItem('tyrianCustomNotes');
             if (cachedNotes) {
-                customTextareaA.innerText = cachedNotes;
+                customTextareaA.value = cachedNotes;
             } else {
-                customTextareaA.innerText = "Write or paste your own tabs here...\n\nChanges are automatically saved!";
+                customTextareaA.value = "Write or paste your own tabs here...\n\nChanges are automatically saved!";
             }
         } catch(e) {}
 
@@ -722,7 +1871,7 @@
 
         function showScribeMessage(msg) {
             const sm = document.getElementById('scribe-sys-message');
-            sm.textContent = msg; 
+            sm.textContent = msg;
             sm.style.opacity = 1;
             setTimeout(() => sm.style.opacity = 0, 4000);
         }
@@ -733,7 +1882,7 @@
         btnToggleSongbook.addEventListener('click', () => {
             isSongbookOpen = !isSongbookOpen;
             if (isSongbookOpen) {
-                songbookPanel.classList.add('is-open'); 
+                songbookPanel.classList.add('is-open');
                 songbookPanel.classList.remove('hidden');
                 btnToggleSongbook.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg> <span class="hidden sm:inline">Close Songbook</span><span class="inline sm:hidden">Close</span>';
                 if (!songbookFrame.src || songbookFrame.src === window.location.href || songbookFrame.src === 'about:blank') {
@@ -741,7 +1890,7 @@
                 }
             } else {
                 songbookPanel.classList.remove('is-open');
-                setTimeout(() => songbookPanel.classList.add('hidden'), 600); 
+                setTimeout(() => songbookPanel.classList.add('hidden'), 450);
                 btnToggleSongbook.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg> <span class="hidden sm:inline">Open Songbook</span><span class="inline sm:hidden">Songs</span>';
             }
         });
@@ -750,9 +1899,11 @@
             isScribeOpen = !isScribeOpen;
             if (isScribeOpen) {
                 scribePanel.classList.add('is-open');
+                scribePanel.classList.remove('hidden');
                 btnToggleScribe.innerHTML = '<span class="hidden sm:inline">Close Scribe</span><span class="inline sm:hidden">Close</span> <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>';
             } else {
                 scribePanel.classList.remove('is-open');
+                setTimeout(() => scribePanel.classList.add('hidden'), 450);
                 btnToggleScribe.innerHTML = '<span class="hidden sm:inline">Open Scribe</span><span class="inline sm:hidden">Scribe</span> <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>';
             }
         });
@@ -760,9 +1911,9 @@
         function loadSongbookUrl() {
             let url = songbookUrlInput.value.trim();
             if (!url) return;
-            
+
             try { localStorage.setItem('tyrianSongbookUrl', url); } catch (e) {}
-            
+
             showMessage("Loading Tome...");
 
             if (url.includes('docs.google.com') && url.includes('/edit')) {
@@ -780,11 +1931,11 @@
             btnLoadTomeDark.classList.remove('border-[#5a4b3c]');
             btnToggleCustom.classList.remove('border-[#d4af37]');
             btnToggleCustom.classList.add('border-[#5a4b3c]');
-            
+
             docInputArea.classList.remove('hidden');
             customNotesContainer.classList.add('hidden');
             songbookFrame.classList.remove('hidden');
-            
+
             songbookUrlInput.value = 'https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview';
             loadSongbookUrl();
         });
@@ -795,7 +1946,7 @@
             btnToggleCustom.classList.remove('border-[#5a4b3c]');
             btnLoadTomeDark.classList.remove('border-[#d4af37]');
             btnLoadTomeDark.classList.add('border-[#5a4b3c]');
-            
+
             docInputArea.classList.add('hidden');
             songbookFrame.classList.add('hidden');
             customNotesContainer.classList.remove('hidden');
@@ -825,29 +1976,49 @@
         const particleCanvas = document.getElementById('particle-canvas');
         const pCtx = particleCanvas.getContext('2d');
         let particles = [];
+        let particleRafId = null; // null when the animation loop is idle
 
         function resizeParticleCanvas() {
-            particleCanvas.width = particleCanvas.offsetWidth;
-            particleCanvas.height = particleCanvas.offsetHeight;
+            // Match backing-store to device pixel ratio for crisp particles on HiDPI
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            particleCanvas.width = particleCanvas.offsetWidth * dpr;
+            particleCanvas.height = particleCanvas.offsetHeight * dpr;
+            pCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
-        window.addEventListener('resize', resizeParticleCanvas);
-        setTimeout(resizeParticleCanvas, 500);
+        // ResizeObserver is precise; setTimeout was a race. Keep window resize as backup.
+        if (window.ResizeObserver) {
+            new ResizeObserver(resizeParticleCanvas).observe(particleCanvas);
+        } else {
+            window.addEventListener('resize', resizeParticleCanvas);
+            setTimeout(resizeParticleCanvas, 500);
+        }
 
-        function spawnParticles(elementId, instrument) {
+        // Each of the 12 semitones gets its own hue — so playing a scale paints a rainbow
+        const NOTE_HUES = [15, 32, 48, 75, 105, 135, 175, 205, 235, 265, 295, 340];
+
+        function spawnParticles(elementId, instrument, offset) {
+            if (prefersReducedMotion) return;
             const el = document.getElementById(elementId);
             if (!el) return;
-            
+
             const rect = el.getBoundingClientRect();
             const canvasRect = particleCanvas.getBoundingClientRect();
-            
+
             const x = rect.left - canvasRect.left + rect.width / 2;
-            const y = rect.top - canvasRect.top + 20; 
-            
-            let color = '#d4af37'; 
-            if (instrument === 'crystal') color = '#aaddff'; 
-            else if (instrument === 'brass') color = '#ffaa55'; 
-            else if (instrument === 'flute') color = '#bbffaa'; 
-            else if (instrument.startsWith('sf2_')) color = '#ffccff'; 
+            const y = rect.top - canvasRect.top + 20;
+
+            // Instrument sets the base palette
+            let baseColor = '#d4af37';
+            if (instrument === 'crystal') baseColor = '#aaddff';
+            else if (instrument === 'brass') baseColor = '#ffaa55';
+            else if (instrument === 'flute') baseColor = '#bbffaa';
+            else if (instrument && instrument.startsWith('sf2_')) baseColor = '#ffccff';
+
+            // Each note-offset nudges the hue so consecutive notes paint a visible pattern
+            const hueShift = (typeof offset === 'number') ? NOTE_HUES[((offset % 12) + 12) % 12] : null;
+            const color = hueShift !== null
+                ? `hsl(${hueShift}, 85%, 72%)`
+                : baseColor;
 
             for (let i = 0; i < 6; i++) {
                 particles.push({
@@ -861,6 +2032,11 @@
                     size: Math.random() * 2 + 1
                 });
             }
+
+            // Start the animation loop on demand — it sleeps when idle
+            if (particleRafId === null) {
+                particleRafId = requestAnimationFrame(animateParticles);
+            }
         }
 
         function animateParticles() {
@@ -870,12 +2046,12 @@
                 p.x += p.vx;
                 p.y += p.vy;
                 p.life -= p.decay;
-                
+
                 if (p.life <= 0) {
                     particles.splice(i, 1);
                     continue;
                 }
-                
+
                 pCtx.globalAlpha = p.life;
                 pCtx.fillStyle = p.color;
                 pCtx.beginPath();
@@ -883,9 +2059,14 @@
                 pCtx.fill();
             }
             pCtx.globalAlpha = 1.0;
-            requestAnimationFrame(animateParticles);
+
+            // Idle-out when no particles remain — saves CPU when you're not playing
+            if (particles.length > 0) {
+                particleRafId = requestAnimationFrame(animateParticles);
+            } else {
+                particleRafId = null;
+            }
         }
-        animateParticles();
 
 
         // ==========================================
@@ -950,7 +2131,7 @@
             { octave: 3, dot: 'bottom', keys: [ { offset: 0, solfege: 'DO', bindLabel: ',', code: 'Comma', num: 1, type: 'white' }, { offset: 1, bindLabel: 'L', code: 'KeyL', type: 'black' }, { offset: 2, solfege: 'RE', bindLabel: '.', code: 'Period', num: 2, type: 'white' }, { offset: 3, bindLabel: ';', code: 'Semicolon', type: 'black' }, { offset: 4, solfege: 'MI', bindLabel: '/', code: 'Slash', num: 3, type: 'white' }, { offset: 5, solfege: 'FA', bindLabel: 'O', code: 'KeyO', num: 4, type: 'white', gap: true }, { offset: 6, bindLabel: '0', code: 'Digit0', type: 'black' }, { offset: 7, solfege: 'SOL', bindLabel: 'P', code: 'KeyP', num: 5, type: 'white' }, { offset: 8, bindLabel: '-', code: 'Minus', type: 'black' }, { offset: 9, solfege: 'LA', bindLabel: '[', code: 'BracketLeft', num: 6, type: 'white' }, { offset: 10, bindLabel: '=', code: 'Equal', type: 'black' }, { offset: 11, solfege: 'SI', bindLabel: ']', code: 'BracketRight', num: 7, type: 'white' } ]}
         ];
         const heartopiaBindsMap = {};
-        
+
         // Restore fully featured SF2 Storage Cache
         let sf2Data = { buffer: null, smplOffset: 0, smplSize: 0, presets: [], bufferCache: {} };
 
@@ -1008,7 +2189,7 @@
             const instrumentMode = synthSelect.value;
 
             // Trigger Particle Magic
-            spawnParticles(elementId, instrumentMode);
+            spawnParticles(elementId, instrumentMode, offset);
 
             // Restored full SF2 vs Synth logic check
             if (instrumentMode.startsWith('sf2_')) {
@@ -1183,19 +2364,84 @@
 
         const pianoContainer = document.getElementById('piano');
         const htpContainer = document.getElementById('heartopia-container');
+
+        // Note-name helper for ARIA labels
+        const octaveNameMap = (oct) => oct === 4 ? 'Mid' : (oct < 4 ? 'Low' : 'High');
+
+        // Reduced-motion helper
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Fire a quick ripple on key press (purely cosmetic)
+        function spawnRipple(keyEl) {
+            if (prefersReducedMotion) return;
+            const r = document.createElement('div');
+            r.className = 'key-ripple';
+            keyEl.appendChild(r);
+            setTimeout(() => r.remove(), 560);
+        }
+
+        // --- Pointer tracking: maps a pointerId to the key it's currently pressing ---
+        // This lets us glide across keys on mousedrag/touchmove, support multi-touch
+        // chords, and catch pointer-releases that happen off-element.
+        const pointerKeyMap = new Map();
+
+        function keyInfoFromEl(el) {
+            if (!el || !el.dataset) return null;
+            if (el.dataset.view === 'gw2') {
+                const idx = parseInt(el.dataset.idx, 10);
+                return { mode: 'gw2', idx, offset: notes[idx].offset, octave: currentOctave, elementId: el.id };
+            }
+            if (el.dataset.view === 'htp') {
+                return {
+                    mode: 'htp',
+                    offset: parseInt(el.dataset.offset, 10),
+                    octave: parseInt(el.dataset.octave, 10),
+                    elementId: el.id
+                };
+            }
+            return null;
+        }
+
+        function findPianoKeyFromPoint(x, y) {
+            const targets = document.elementsFromPoint(x, y);
+            for (const t of targets) {
+                if (t.dataset && (t.dataset.view === 'gw2' || t.dataset.view === 'htp')) return t;
+            }
+            return null;
+        }
+
+        function releasePointer(pointerId) {
+            const tracked = pointerKeyMap.get(pointerId);
+            if (!tracked) return;
+            stopNote(tracked.elementId);
+            pointerKeyMap.delete(pointerId);
+        }
+
         let currentWrapper = null;
         notes.forEach((note, index) => {
             const keyEl = document.createElement('div');
             const elementId = `gw2-key-${index}`;
             keyEl.id = elementId;
             keyEl.className = `piano-key ${note.isBlack ? 'black-key absolute top-0 z-10' : 'relative'}`;
+            keyEl.dataset.view = 'gw2';
+            keyEl.dataset.idx = index;
+            keyEl.setAttribute('role', 'button');
+            keyEl.setAttribute('tabindex', '-1');
+            keyEl.setAttribute('aria-label', `Play ${note.name}${note.isBlack ? ' sharp' : ''}`);
             keyEl.innerHTML = `<div class="key-note">${note.name}</div><div class="key-bind" data-index="${index}">${getFormattedBindString(bindings.notes[index], currentOctave)}</div>`;
-            const interact = (e) => { if(isRemappingMode) startRebind(e, 'note', index, keyEl.querySelector('.key-bind')); else playNote(note.offset, currentOctave, elementId); };
-            keyEl.addEventListener('mousedown', interact);
-            keyEl.addEventListener('touchstart', (e) => { e.preventDefault(); interact(e); });
-            keyEl.addEventListener('mouseup', () => stopNote(elementId));
-            keyEl.addEventListener('mouseleave', () => stopNote(elementId));
-            keyEl.addEventListener('touchend', (e) => { e.preventDefault(); stopNote(elementId); });
+
+            keyEl.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                if (isRemappingMode) {
+                    startRebind(e, 'note', index, keyEl.querySelector('.key-bind'));
+                    return;
+                }
+                if (pointerKeyMap.has(e.pointerId)) releasePointer(e.pointerId);
+                pointerKeyMap.set(e.pointerId, { elementId, mode: 'gw2' });
+                spawnRipple(keyEl);
+                playNote(note.offset, currentOctave, elementId);
+            });
+
             if (!note.isBlack) {
                 currentWrapper = document.createElement('div');
                 currentWrapper.className = 'relative flex-none';
@@ -1211,32 +2457,78 @@
             row.keys.forEach(key => {
                 const elementId = `htp-key-${row.octave}-${key.offset}`;
                 heartopiaBindsMap[key.code] = { octave: row.octave, offset: key.offset, elementId };
+
+                const buildHandlers = (el) => {
+                    el.dataset.view = 'htp';
+                    el.dataset.offset = key.offset;
+                    el.dataset.octave = row.octave;
+                    el.setAttribute('role', 'button');
+                    el.setAttribute('tabindex', '-1');
+                    el.setAttribute('aria-label', `Play ${notes[key.offset].name}${notes[key.offset].isBlack ? ' sharp' : ''} octave ${row.octave}`);
+                    el.addEventListener('pointerdown', (e) => {
+                        e.preventDefault();
+                        if (pointerKeyMap.has(e.pointerId)) releasePointer(e.pointerId);
+                        pointerKeyMap.set(e.pointerId, { elementId, mode: 'htp' });
+                        spawnRipple(el);
+                        playNote(key.offset, row.octave, elementId);
+                    });
+                };
+
                 if (key.type === 'white') {
                     const wrap = document.createElement('div');
                     wrap.className = `relative flex-none ${key.gap ? 'ml-8' : ''}`;
                     wrap.innerHTML = `<div id="${elementId}" class="htp-white"><div class="htp-white-num">${key.num}</div><div class="htp-white-sol">${key.solfege}</div><div class="htp-bind-tag">${key.bindLabel}</div></div>`;
-                    const el = wrap.querySelector('.htp-white');
-                    el.addEventListener('mousedown', () => playNote(key.offset, row.octave, elementId));
-                    el.addEventListener('mouseup', () => stopNote(elementId));
+                    buildHandlers(wrap.querySelector('.htp-white'));
                     rowEl.appendChild(wrap);
                     lastWhite = wrap;
                 } else {
                     const black = document.createElement('div');
                     black.id = elementId; black.className = 'htp-black'; black.textContent = key.bindLabel;
-                    black.addEventListener('mousedown', () => playNote(key.offset, row.octave, elementId));
-                    black.addEventListener('mouseup', () => stopNote(elementId));
+                    buildHandlers(black);
                     if (lastWhite) lastWhite.appendChild(black);
                 }
             });
             htpContainer.appendChild(rowEl);
         });
 
+        // --- Global pointer handlers: glide, release outside key, safety net ---
+        window.addEventListener('pointermove', (e) => {
+            const tracked = pointerKeyMap.get(e.pointerId);
+            if (!tracked) return;
+            const keyEl = findPianoKeyFromPoint(e.clientX, e.clientY);
+            if (!keyEl) return; // finger/mouse is off-piano — hold current note
+            if (keyEl.id === tracked.elementId) return; // same key, do nothing
+
+            // Different key under pointer → glide to it
+            const info = keyInfoFromEl(keyEl);
+            if (!info) return;
+            // View-mode guard: only glide within the active piano view
+            if (currentViewMode === 'gw2' && info.mode !== 'gw2') return;
+            if (currentViewMode === 'heartopia' && info.mode !== 'htp') return;
+
+            stopNote(tracked.elementId);
+            pointerKeyMap.set(e.pointerId, { elementId: info.elementId, mode: info.mode });
+            spawnRipple(keyEl);
+            playNote(info.offset, info.octave, info.elementId);
+        });
+
+        window.addEventListener('pointerup', (e) => releasePointer(e.pointerId));
+        window.addEventListener('pointercancel', (e) => releasePointer(e.pointerId));
+
+        // --- Safety: release every held note when focus is lost or tab hidden ---
+        function releaseAllNotes() {
+            for (const id of Object.keys(activeNodes)) stopNote(id);
+            pointerKeyMap.clear();
+        }
+        window.addEventListener('blur', releaseAllNotes);
+        document.addEventListener('visibilitychange', () => { if (document.hidden) releaseAllNotes(); });
+
         // --- CORE FIX: RESTORED OCTAVE REBIND LISTENERS ---
         btnOctDown.addEventListener('mousedown', (e) => {
             if (isRemappingMode) startRebind(e, 'octaveDown', null, lblOctDown);
             else {
                 updateOctave(-1);
-                btnOctDown.classList.add('active'); 
+                btnOctDown.classList.add('active');
                 setTimeout(() => btnOctDown.classList.remove('active'), 100);
             }
         });
@@ -1245,7 +2537,7 @@
             if (isRemappingMode) startRebind(e, 'octaveDown', null, lblOctDown);
             else {
                 updateOctave(-1);
-                btnOctDown.classList.add('active'); 
+                btnOctDown.classList.add('active');
                 setTimeout(() => btnOctDown.classList.remove('active'), 100);
             }
         });
@@ -1254,7 +2546,7 @@
             if (isRemappingMode) startRebind(e, 'octaveUp', null, lblOctUp);
             else {
                 updateOctave(1);
-                btnOctUp.classList.add('active'); 
+                btnOctUp.classList.add('active');
                 setTimeout(() => btnOctUp.classList.remove('active'), 100);
             }
         });
@@ -1263,7 +2555,7 @@
             if (isRemappingMode) startRebind(e, 'octaveUp', null, lblOctUp);
             else {
                 updateOctave(1);
-                btnOctUp.classList.add('active'); 
+                btnOctUp.classList.add('active');
                 setTimeout(() => btnOctUp.classList.remove('active'), 100);
             }
         });
@@ -1290,7 +2582,7 @@
                     }
                     saveBinds(); showMessage("Bound!"); activeRebind = null; return;
                 }
-                
+
                 let idx = bindings.notes.indexOf(e.code);
                 let isNoteBound = (idx !== -1);
 
@@ -1308,7 +2600,7 @@
                     }
                 }
 
-                // Conflict priority: Note play takes priority over octave shifting. 
+                // Conflict priority: Note play takes priority over octave shifting.
                 if (isNoteBound) {
                     if (idx !== -1) playNote(notes[idx].offset, currentOctave, `gw2-key-${idx}`);
                     else if (fallbackIdx !== -1) playNote(notes[fallbackIdx].offset, currentOctave, `gw2-key-${fallbackIdx}`);
@@ -1623,8 +2915,282 @@
         });
 
         // ==========================================
-        // 4. TOME SCRIBE LOGIC (Original Exact Version)
+        // 3.75 WEB MIDI INPUT — plug a real controller, play through the synth
         // ==========================================
+        const midiDot = document.getElementById('midi-dot');
+        const midiLabel = document.getElementById('midi-label');
+
+        // Map a MIDI note number to a lookup key we can use with activeNodes / particles.
+        // MIDI gives us absolute notes; we translate to (offset, octave) and synthesize a
+        // unique elementId so multiple MIDI notes can ring at once.
+        function midiNoteOn(midiNote, velocity) {
+            const octave = Math.floor(midiNote / 12) - 1;
+            const offset = midiNote % 12;
+            const elementId = `midi-note-${midiNote}`;
+            if (activeNodes[elementId]) return;
+            playNote(offset, octave, elementId);
+            // Also light up the on-screen key if visible in the current view
+            lightCorrespondingKey(offset, octave, true);
+            if (isRecording) recordEvent('down', offset, octave, elementId);
+        }
+
+        function midiNoteOff(midiNote) {
+            const octave = Math.floor(midiNote / 12) - 1;
+            const offset = midiNote % 12;
+            const elementId = `midi-note-${midiNote}`;
+            stopNote(elementId);
+            lightCorrespondingKey(offset, octave, false);
+            if (isRecording) recordEvent('up', offset, octave, elementId);
+        }
+
+        function lightCorrespondingKey(offset, octave, on) {
+            // GW2 view: only when at matching octave and offset < 13
+            if (currentViewMode === 'gw2' && octave === currentOctave && offset < notes.length) {
+                const el = document.getElementById(`gw2-key-${offset}`);
+                if (el) el.classList.toggle('active', on);
+            }
+            // Heartopia view: match by octave+offset
+            const htpEl = document.getElementById(`htp-key-${octave}-${offset}`);
+            if (htpEl) htpEl.classList.toggle('active', on);
+        }
+
+        function handleMidiMessage(e) {
+            const [status, note, velocity] = e.data;
+            const cmd = status & 0xf0;
+            if (cmd === 0x90 && velocity > 0) midiNoteOn(note, velocity);
+            else if (cmd === 0x80 || (cmd === 0x90 && velocity === 0)) midiNoteOff(note);
+            else if (cmd === 0xb0 && note === 64) isSustainEnabled = velocity >= 64; // CC64 = sustain pedal
+        }
+
+        function updateMidiIndicator(names) {
+            if (!names || names.length === 0) {
+                midiDot.classList.remove('active');
+                midiLabel.textContent = 'MIDI: —';
+                midiLabel.classList.remove('text-[#d4af37]');
+                midiLabel.classList.add('status-text');
+            } else {
+                midiDot.classList.add('active');
+                const first = names[0].length > 18 ? names[0].slice(0, 18) + '…' : names[0];
+                midiLabel.textContent = names.length === 1 ? first : `${first} +${names.length - 1}`;
+                midiLabel.classList.add('text-[#d4af37]');
+                midiLabel.classList.remove('status-text');
+            }
+        }
+
+        function attachMidiListeners(access) {
+            const names = [];
+            for (const input of access.inputs.values()) {
+                input.onmidimessage = handleMidiMessage;
+                names.push(input.name || 'MIDI device');
+            }
+            updateMidiIndicator(names);
+        }
+
+        if (navigator.requestMIDIAccess) {
+            navigator.requestMIDIAccess({ sysex: false }).then(access => {
+                attachMidiListeners(access);
+                access.onstatechange = () => attachMidiListeners(access);
+            }).catch(() => {
+                midiLabel.textContent = 'MIDI: denied';
+            });
+        } else {
+            midiLabel.textContent = 'MIDI: n/a';
+        }
+
+        // ==========================================
+        // 3.8 RECORDING & PLAYBACK
+        // ==========================================
+        const btnRecord = document.getElementById('btn-record');
+        const btnPlayRecording = document.getElementById('btn-play-recording');
+        const recLabel = document.getElementById('rec-label');
+        const recDot = document.getElementById('rec-dot');
+        const recStatus = document.getElementById('rec-status');
+        const loopToggle = document.getElementById('loop-toggle');
+        const playLabel = document.getElementById('play-label');
+
+        let isRecording = false;
+        let isPlayingBack = false;
+        let recordStartTime = 0;
+        let recordedEvents = []; // {t, type, offset, octave, elementId}
+        let playbackTimers = [];
+
+        // Try to restore the last recording — survives refresh
+        try {
+            const saved = localStorage.getItem('tyrianRecording');
+            if (saved) {
+                recordedEvents = JSON.parse(saved);
+                if (recordedEvents.length > 0) {
+                    btnPlayRecording.disabled = false;
+                    btnPlayRecording.style.opacity = '1';
+                    recStatus.textContent = `${recordedEvents.filter(e => e.type === 'down').length} notes saved`;
+                }
+            }
+        } catch(e) {}
+
+        function recordEvent(type, offset, octave, elementId) {
+            if (!isRecording) return;
+            recordedEvents.push({
+                t: performance.now() - recordStartTime,
+                type, offset, octave, elementId
+            });
+        }
+
+        function startRecording() {
+            stopPlayback();
+            recordedEvents = [];
+            recordStartTime = performance.now();
+            isRecording = true;
+            btnRecord.classList.add('active');
+            recDot.classList.add('active');
+            recLabel.textContent = 'Stop';
+            recStatus.textContent = 'Recording…';
+            btnPlayRecording.disabled = true;
+            btnPlayRecording.style.opacity = '0.5';
+            showMessage('Recording performance…');
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            btnRecord.classList.remove('active');
+            recDot.classList.remove('active');
+            recLabel.textContent = 'Record';
+            const noteCount = recordedEvents.filter(e => e.type === 'down').length;
+            recStatus.textContent = noteCount > 0 ? `${noteCount} notes captured` : 'Empty';
+            if (noteCount > 0) {
+                btnPlayRecording.disabled = false;
+                btnPlayRecording.style.opacity = '1';
+                try { localStorage.setItem('tyrianRecording', JSON.stringify(recordedEvents)); } catch(e) {}
+                showMessage(`Captured ${noteCount} notes.`);
+            }
+        }
+
+        function playRecording() {
+            if (recordedEvents.length === 0) return;
+            if (isRecording) stopRecording();
+            stopPlayback();
+            isPlayingBack = true;
+            btnPlayRecording.classList.add('btn-playing');
+            playLabel.textContent = 'Stop';
+            recStatus.textContent = 'Playing back…';
+
+            initAudio();
+            const startAt = performance.now();
+            recordedEvents.forEach(ev => {
+                const timer = setTimeout(() => {
+                    if (!isPlayingBack) return;
+                    if (ev.type === 'down') {
+                        // Use a synthetic element id so playback doesn't collide with live input
+                        playNote(ev.offset, ev.octave, 'pb-' + ev.elementId);
+                        lightCorrespondingKey(ev.offset, ev.octave, true);
+                    } else {
+                        stopNote('pb-' + ev.elementId);
+                        lightCorrespondingKey(ev.offset, ev.octave, false);
+                    }
+                }, ev.t);
+                playbackTimers.push(timer);
+            });
+
+            // Schedule end-of-playback handler
+            const totalDuration = recordedEvents[recordedEvents.length - 1].t + 200;
+            playbackTimers.push(setTimeout(() => {
+                if (loopToggle.checked && isPlayingBack) {
+                    playRecording(); // loop
+                } else {
+                    stopPlayback();
+                }
+            }, totalDuration));
+        }
+
+        function stopPlayback() {
+            isPlayingBack = false;
+            playbackTimers.forEach(t => clearTimeout(t));
+            playbackTimers = [];
+            // Release any playback-owned notes still ringing
+            for (const id of Object.keys(activeNodes)) {
+                if (id.startsWith('pb-')) stopNote(id);
+            }
+            // Clear any highlight-visuals
+            document.querySelectorAll('.piano-key.active, .htp-white.active, .htp-black.active').forEach(el => {
+                // only clear ones not currently held by live pointer/keyboard
+                if (!activeNodes[el.id]) el.classList.remove('active');
+            });
+            btnPlayRecording.classList.remove('btn-playing');
+            playLabel.textContent = 'Play';
+            if (!isRecording && recordedEvents.length > 0) {
+                const noteCount = recordedEvents.filter(e => e.type === 'down').length;
+                recStatus.textContent = `${noteCount} notes saved`;
+            }
+        }
+
+        btnRecord.addEventListener('click', () => {
+            if (isRecording) stopRecording();
+            else startRecording();
+        });
+        btnPlayRecording.addEventListener('click', () => {
+            if (isPlayingBack) stopPlayback();
+            else playRecording();
+        });
+
+        // Hook the recorder into the existing playNote/stopNote so keyboard and touch are captured.
+        // We wrap the originals — monkey-patch style — to avoid touching the core audio code.
+        const _origPlayNote = playNote;
+        const _origStopNote = stopNote;
+        playNote = function(offset, octave, elementId) {
+            _origPlayNote(offset, octave, elementId);
+            if (isRecording && !elementId.startsWith('pb-')) {
+                recordEvent('down', offset, octave, elementId);
+            }
+        };
+        stopNote = function(elementId) {
+            // Find what note this elementId represented at record-time (we stored offset+octave at down)
+            if (isRecording && !elementId.startsWith('pb-')) {
+                const lastDown = [...recordedEvents].reverse().find(
+                    e => e.type === 'down' && e.elementId === elementId
+                );
+                if (lastDown) recordEvent('up', lastDown.offset, lastDown.octave, elementId);
+            }
+            _origStopNote(elementId);
+        };
+
+        // ==========================================
+        // 3.9 HELP OVERLAY
+        // ==========================================
+        const helpOverlay = document.getElementById('help-overlay');
+        const btnHelp = document.getElementById('btn-help');
+        const btnCloseHelp = document.getElementById('btn-close-help');
+
+        function openHelp() { helpOverlay.classList.add('is-open'); }
+        function closeHelp() { helpOverlay.classList.remove('is-open'); }
+
+        btnHelp.addEventListener('click', openHelp);
+        btnCloseHelp.addEventListener('click', closeHelp);
+        helpOverlay.addEventListener('click', (e) => { if (e.target === helpOverlay) closeHelp(); });
+
+        // Global hotkeys — fire outside text inputs and when no rebind is happening
+        window.addEventListener('keydown', (e) => {
+            if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (activeRebind) return;
+
+            if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
+                e.preventDefault();
+                if (helpOverlay.classList.contains('is-open')) closeHelp();
+                else openHelp();
+            } else if (e.key === 'Escape') {
+                if (helpOverlay.classList.contains('is-open')) { closeHelp(); return; }
+                if (isSongbookOpen) { btnToggleSongbook.click(); return; }
+                if (isScribeOpen) { btnToggleScribe.click(); return; }
+            } else if (e.code === 'KeyR' && !bindings.notes.includes('KeyR')) {
+                // Only trigger record if R isn't bound to a note in GW2 view
+                if (currentViewMode === 'gw2') {
+                    e.preventDefault();
+                    btnRecord.click();
+                }
+            } else if (e.code === 'Space' && !bindings.notes.includes('Space')) {
+                e.preventDefault();
+                btnPlayRecording.click();
+            }
+        });
+
         let originalFileName = "converted";
         let globalMidiFile = null;
 
@@ -1727,8 +3293,7 @@
 
         const parseFile = async (arrayBuffer) => {
             if (!MidiLib) {
-                showScribeMessage("MIDI library failed to load. Try refreshing the page.");
-                return [];
+                throw new Error("MIDI library failed to load. Try refreshing the page.");
             }
             let midi = new MidiLib.Midi(arrayBuffer);
             const ppq = midi.header.ppq; const quarter = ppq;
@@ -1804,11 +3369,11 @@
                             note.octave = note.octave + nTransposed.octaveDiff;
                             key = nTransposed.note;
                             if (!isNaN(key)) key = parseInt(key);
-                            
+
                             const nextNote = bar.notes[index + 1];
                             let startOffset = 0;
                             if (currentOctave === -1) currentOctave = note.octave;
-                            
+
                             if (index === 0) {
                                 prevTick = note.ticks;
                                 if (key === 1 && currentOctave < note.octave) { key = 8; startOffset = -1; }
@@ -1880,38 +3445,34 @@
                     await processMidiFile();
                 } catch (e) {
                     console.error(e);
-                    showScribeMessage(`Error formatting MIDI file.`);
+                    showScribeMessage(e.message || `Error formatting MIDI file.`);
                 }
             }
         });
 
         async function processMidiFile() {
             if (!globalMidiFile) return;
+
             // Ensure MIDI library is loaded before processing
             await midiReady;
             if (!MidiLib) {
-                showScribeMessage("MIDI library unavailable. Refresh the page to retry.");
-                return;
+                throw new Error("MIDI library unavailable. Refresh the page to retry.");
             }
-            try {
-                const arrayBuffer = await globalMidiFile.arrayBuffer();
 
-                const tracks = await parseFile(arrayBuffer);
-                let tabNotes = globalMidiFile.name + "\n\n";
-                tracks.forEach(track => {
-                    tabNotes += "--- " + track.name + " ---\n";
-                    let trackStr = "";
-                    track.bars.forEach(bar => { trackStr += bar.text; });
-                    trackStr = trackStr.replace(/·\|/g, "|");
-                    tabNotes += trackStr + "\n\n";
-                });
-                
-                textareaA.innerText = tabNotes; 
-                textareaA.dispatchEvent(new Event('input', { bubbles: true }));
-            } catch (e) { 
-                showScribeMessage(`Error parsing MIDI file. Check console.`); 
-                console.error(e);
-            }
+            const arrayBuffer = await globalMidiFile.arrayBuffer();
+            const tracks = await parseFile(arrayBuffer);
+
+            let tabNotes = globalMidiFile.name + "\n\n";
+            tracks.forEach(track => {
+                tabNotes += "--- " + track.name + " ---\n";
+                let trackStr = "";
+                track.bars.forEach(bar => { trackStr += bar.text; });
+                trackStr = trackStr.replace(/·\|/g, "|");
+                tabNotes += trackStr + "\n\n";
+            });
+
+            textareaA.value = tabNotes;
+            textareaA.dispatchEvent(new Event('input', { bubbles: true }));
         }
 
         midiInput.addEventListener("change", async (e) => {
@@ -1929,9 +3490,9 @@
                 showScribeMessage(`Scribe complete. Notation generated successfully.`);
             } catch (err) {
                 console.error("Critical MIDI upload error:", err);
-                showScribeMessage("Failed to process MIDI file. Check console.");
+                showScribeMessage(err.message || "Failed to process MIDI file. Check console.");
             } finally {
-                e.target.value = ''; 
+                e.target.value = '';
             }
         });
 
@@ -1952,7 +3513,7 @@
 
         function setupHighlighter(frontEl, backEl, cacheKey) {
             function sync() {
-                const text = frontEl.innerText; 
+                const text = frontEl.value; // Now securely pulling value from standard textarea
                 backEl.innerHTML = applyHighlighting(text);
                 if (cacheKey) {
                     try { localStorage.setItem(cacheKey, text); } catch(err) {}
@@ -1989,28 +3550,28 @@
 
         // --- Utilities ---
         document.getElementById("copyTabBtn").addEventListener("click", () => {
-            const content = document.getElementById("textareaA").innerText.trim();
+            const content = document.getElementById("textareaA").value.trim();
             if (!content) {
                 showScribeMessage("Nothing to copy!");
                 return;
             }
-            
+
             // Generate invisible clipboard container safely
             const textArea = document.createElement("textarea");
-            textArea.value = content; 
+            textArea.value = content;
             textArea.style.position = "fixed";
             textArea.style.top = "-9999px";
             textArea.style.left = "-9999px";
             textArea.style.opacity = "0";
-            
+
             document.body.appendChild(textArea);
             textArea.select();
-            
-            try { 
-                document.execCommand('copy'); 
-                showScribeMessage("Tabs copied to clipboard!"); 
-            } catch (ex) { 
-                showScribeMessage("Failed to copy tabs."); 
+
+            try {
+                document.execCommand('copy');
+                showScribeMessage("Tabs copied to clipboard!");
+            } catch (ex) {
+                showScribeMessage("Failed to copy tabs.");
             } finally {
                 if (document.body.contains(textArea)) {
                     document.body.removeChild(textArea);
@@ -2019,32 +3580,32 @@
         });
 
         document.getElementById("exportImageBtn").addEventListener("click", () => {
-            const text = document.getElementById("textareaA").innerText.trim();
+            const text = document.getElementById("textareaA").value.trim();
             if (!text) return showScribeMessage("There is nothing to export.");
             showScribeMessage("Inking Spell Page...");
-            
+
             let canvas = document.createElement('canvas'); let ctx = canvas.getContext('2d');
             let lines = text.split('\n'); ctx.font = "bold 16px monospace";
             let maxLineObj = lines.reduce((a, b) => a.length > b.length ? a : b, "");
             let textWidth = ctx.measureText(maxLineObj).width;
-            
-            canvas.width = Math.max(800, textWidth + 100); canvas.height = lines.length * 24 + 160; 
+
+            canvas.width = Math.max(800, textWidth + 100); canvas.height = lines.length * 24 + 160;
             let grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
             grad.addColorStop(0, '#2c2420'); grad.addColorStop(1, '#181514');
             ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.strokeStyle = '#8c7355'; ctx.lineWidth = 4; ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
-            
+
             ctx.fillStyle = '#d4af37'; ctx.font = "bold 26px serif"; ctx.textAlign = "center";
             ctx.fillText("Tome of Melodies: Transcribed Spell Page", canvas.width / 2, 50);
-            
+
             ctx.textAlign = "left"; ctx.font = "bold 16px monospace"; ctx.fillStyle = '#e6d8c3';
             let y = 100;
             for (let line of lines) {
-                if (line.startsWith('---')) { ctx.fillStyle = '#d4af37'; ctx.fillText(line, 50, y); ctx.fillStyle = '#e6d8c3'; } 
+                if (line.startsWith('---')) { ctx.fillStyle = '#d4af37'; ctx.fillText(line, 50, y); ctx.fillStyle = '#e6d8c3'; }
                 else { ctx.fillText(line, 50, y); }
                 y += 24;
             }
-            
+
             let link = document.createElement('a');
             link.download = `${originalFileName.replace(/\.(mid|midi)$/i, '')}_SpellPage.png`;
             link.href = canvas.toDataURL('image/png'); link.click();
@@ -2052,7 +3613,7 @@
 
         // --- SPREADSHEET EXPORTER ---
         document.getElementById("downloadSpreadsheetBtn").addEventListener("click", async () => {
-            const content = document.getElementById("textareaA").innerText.trim();
+            const content = document.getElementById("textareaA").value.trim();
             if (!content) return showScribeMessage("There is nothing to download.");
 
             // Ensure XLSX library is loaded
@@ -2078,7 +3639,7 @@
 
                 let isHeader = false;
                 let baseName = "";
-                
+
                 if (line.startsWith("--- ") && line.endsWith(" ---")) {
                     isHeader = true;
                     baseName = line.replace(/-/g, '').trim().slice(0, 31);
@@ -2091,29 +3652,29 @@
                     const count = (sheetCounts[baseName] || 0) + 1;
                     sheetCounts[baseName] = count;
                     currentSheetKey = count === 1 ? baseName : `${baseName} ${count}`;
-                    sheets[currentSheetKey] = [[baseName]]; 
+                    sheets[currentSheetKey] = [[baseName]];
                     activeBracket = null;
-                } 
+                }
                 else if (currentSheetKey && line !== "") {
                     if (line.includes('|')) {
                         const measures = line.split('|').map(m => m.trim()).filter(m => m !== '');
                         for (let measureStr of measures) {
                             let tokens = measureStr.split(/\s+/).filter(t => t !== '');
                             if (tokens.length === 0) continue;
-                            
+
                             let cells = [];
                             let baseSize = Math.floor(tokens.length / 4);
                             let remainder = tokens.length % 4;
                             let startIndex = 0;
                             for (let i = 0; i < 4; i++) {
                                 let size = baseSize + (i < remainder ? 1 : 0);
-                                if (size === 0) cells.push(''); 
+                                if (size === 0) cells.push('');
                                 else {
                                     cells.push(tokens.slice(startIndex, startIndex + size).join(' '));
                                     startIndex += size;
                                 }
                             }
-                            
+
                             let balancedCells = [];
                             for (let i = 0; i < 4; i++) {
                                 let cell = cells[i];
@@ -2123,24 +3684,24 @@
                                 }
                                 let cellTokens = cell.split(' ');
                                 let outCellTokens = [];
-                                
+
                                 for (let token of cellTokens) {
                                     if (token === '') continue;
                                     let isTokenRest = /^[━\-·.]+$/.test(token);
                                     let outToken = "";
-                                    
+
                                     if (activeBracket && !isTokenRest && !['(', '[', '{', '<'].includes(token[0])) {
                                         outToken += activeBracket;
                                     }
-                                    
+
                                     for (let char of token) {
                                         if (['(', '[', '{', '<'].includes(char)) activeBracket = char;
                                         else if ([')', ']', '}', '>'].includes(char)) activeBracket = null;
                                         outToken += char;
                                     }
-                                    
+
                                     if (activeBracket && !isTokenRest) outToken += matchClose[activeBracket];
-                                    
+
                                     outCellTokens.push(outToken);
                                 }
                                 balancedCells.push(outCellTokens.join(' '));
@@ -2164,5 +3725,7 @@
         });
 
     </script>
+
+
 </body>
 </html>
