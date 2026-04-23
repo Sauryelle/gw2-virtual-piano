@@ -1368,6 +1368,310 @@
         /* ========================================== */
         /* REDUCED MOTION                            */
         /* ========================================== */
+        /* ORCHESTRA — parts/instruments inside Scribe */
+        /* ========================================== */
+        /* A visual break between the Scribe panel's sections (upload / parts / notation). */
+        .scribe-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            font-family: 'Fraunces', serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-ember);
+            margin-top: 4px;
+            padding: 6px 0 6px;
+            border-bottom: 1px solid var(--stroke-soft);
+            flex-shrink: 0;
+        }
+        .scribe-section-header > span:first-child { letter-spacing: 0.01em; }
+
+        /* The filename confirmation right under the upload button. */
+        .orch-filename {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.76rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: -2px 0 0;
+            flex-shrink: 0;
+        }
+        .orch-filename.has-file { color: var(--text-ember); font-style: normal; }
+
+        /* "No MIDI loaded" placeholder that swaps in for the track list. */
+        .orch-empty {
+            padding: 22px 16px;
+            text-align: center;
+            color: var(--text-muted);
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            font-size: 0.86rem;
+            border: 1px dashed var(--stroke-soft);
+            border-radius: var(--r-md);
+            flex-shrink: 0;
+        }
+
+        /* Vertical list of track rows — scrolls internally if the MIDI has many tracks. */
+        .orch-tracks-wrap {
+            max-height: 240px;
+            overflow-y: auto;
+            padding-right: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .orch-tracks-wrap::-webkit-scrollbar { width: 6px; }
+        .orch-tracks-wrap::-webkit-scrollbar-track { background: transparent; }
+        .orch-tracks-wrap::-webkit-scrollbar-thumb { background: rgba(255, 180, 120, 0.18); border-radius: 3px; }
+
+        /* One row per MIDI track: [num · name/channel/notes · instrument dropdown · mute]. */
+        .orch-track {
+            display: grid;
+            grid-template-columns: auto 1fr minmax(140px, 180px) auto;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            background: rgba(0, 0, 0, 0.28);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+            transition: border-color 0.2s var(--ease-smooth), opacity 0.2s;
+        }
+        .orch-track:hover { border-color: var(--stroke-mid); }
+        .orch-track.is-muted { opacity: 0.4; }
+        .orch-track.is-active { border-color: var(--stroke-accent); box-shadow: 0 0 14px rgba(255, 140, 80, 0.15); }
+
+        .orch-track-num {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-ember);
+            min-width: 20px;
+            text-align: center;
+        }
+        .orch-track-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .orch-track-name {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .orch-track-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.64rem;
+            color: var(--text-muted);
+            letter-spacing: 0.04em;
+        }
+        .orch-track-inst {
+            width: 100%;
+            padding: 6px 28px 6px 10px !important;
+            font-size: 0.76rem !important;
+        }
+        .orch-track-mute {
+            width: 30px; height: 30px;
+            padding: 0;
+            border-radius: var(--r-md);
+            background: transparent;
+            border: 1px solid var(--stroke-soft);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s var(--ease-smooth);
+        }
+        .orch-track-mute:hover { border-color: var(--stroke-mid); color: var(--text-primary); }
+        .orch-track-mute.is-muted {
+            background: rgba(228, 68, 122, 0.15);
+            border-color: var(--coral);
+            color: var(--coral);
+        }
+
+        /* Playback transport: Play · Stop · progress bar · time · tempo. */
+        .orch-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+        .orch-progress {
+            flex: 1;
+            min-width: 100px;
+            height: 5px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 3px;
+            overflow: hidden;
+            border: 1px solid var(--stroke-soft);
+        }
+        .orch-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--grad-ember);
+            box-shadow: 0 0 6px rgba(255, 140, 80, 0.4);
+            transition: width 0.1s linear;
+        }
+        .orch-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            min-width: 82px;
+            text-align: right;
+        }
+        .orch-tempo {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+        }
+
+        .orch-sys-message {
+            min-height: 1.1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-ember);
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.4s;
+            flex-shrink: 0;
+        }
+
+        /* Tiny inline hint pointing out the jam-along flow. Only shown during playback. */
+        .orch-jam-hint {
+            margin: 0;
+            padding: 6px 10px;
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            text-align: center;
+            background: rgba(255, 140, 80, 0.06);
+            border: 1px solid rgba(255, 140, 80, 0.18);
+            border-radius: var(--r-md);
+            flex-shrink: 0;
+        }
+        .orch-jam-hint svg { color: var(--text-ember); }
+
+        /* Inside the Scribe drawer, let the tab editor flex naturally instead of
+           greedily filling all remaining height — otherwise the Parts section
+           above would get shoved up too far on tall drawers. */
+        .scribe-editor {
+            flex: 1 1 280px;
+            min-height: 280px;
+        }
+
+        @media (max-width: 680px) {
+            .orch-track {
+                grid-template-columns: auto 1fr auto;
+                grid-template-areas: "num info mute" "inst inst inst";
+                gap: 6px;
+            }
+            .orch-track-num { grid-area: num; }
+            .orch-track-info { grid-area: info; }
+            .orch-track-mute { grid-area: mute; }
+            .orch-track-inst { grid-area: inst; }
+        }
+
+        /* ---- Floating mini-player: appears when the Scribe drawer closes mid-playback ---- */
+        #orch-mini {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 150;
+            pointer-events: none; /* the pill itself re-enables them — piano stays clickable */
+            animation: orchMiniPop 0.35s var(--ease-spring);
+        }
+        @keyframes orchMiniPop {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .orch-mini-pill {
+            pointer-events: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px 8px 14px;
+            border-radius: var(--r-full);
+            background: rgba(16, 12, 24, 0.92);
+            border: 1px solid var(--stroke-mid);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            box-shadow: var(--shadow-md), 0 0 30px rgba(255, 140, 80, 0.12);
+            max-width: min(420px, calc(100vw - 40px));
+        }
+        .orch-mini-icon { color: var(--text-ember); flex-shrink: 0; }
+        .orch-mini-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-primary);
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+            min-width: 0;
+        }
+        .orch-mini-progress {
+            width: 72px;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 2px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        #orch-mini-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--grad-ember);
+            box-shadow: 0 0 6px rgba(255, 140, 80, 0.45);
+            transition: width 0.1s linear;
+        }
+        .orch-mini-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+            min-width: 28px;
+        }
+        .orch-mini-btn {
+            width: 28px; height: 28px;
+            padding: 0;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--stroke-soft);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s var(--ease-smooth);
+        }
+        .orch-mini-btn:hover {
+            border-color: var(--stroke-mid);
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .orch-mini-btn:focus-visible { outline: 2px solid var(--ember-warm); outline-offset: 2px; }
+        #btn-orch-mini-stop { color: var(--coral); }
+        #btn-orch-mini-stop:hover { border-color: var(--coral); color: #ff7ea0; }
+
+        @media (max-width: 520px) {
+            #orch-mini { bottom: 12px; right: 12px; left: 12px; }
+            .orch-mini-pill { width: 100%; max-width: none; justify-content: space-between; }
+            .orch-mini-progress { display: none; }
+            .orch-mini-title { max-width: none; flex: 1; }
+        }
+
+        /* ========================================== */
+        /* REDUCED MOTION                            */
+        /* ========================================== */
         @media (prefers-reduced-motion: reduce) {
             .bg-mesh { animation: none; }
             .dot.active { animation: none !important; }
@@ -1609,28 +1913,80 @@
             <div class="drawer-header">
                 <div>
                     <h2 class="drawer-title">Tome Scribe</h2>
-                    <p class="drawer-subtitle">Convert arcane MIDI magic.</p>
+                    <p class="drawer-subtitle">One upload — arrange the parts, play along, read the tab.</p>
                 </div>
-                <div style="display:flex; gap:8px; align-items:center;">
-                    <select id="bprSelect" class="input" style="padding:6px 10px; font-size:0.78rem;" title="Bars per row">
-                        <option value="4">4 BPR</option>
-                        <option value="3">3 BPR</option>
-                        <option value="2">2 BPR</option>
-                        <option value="1">1 BPR</option>
-                    </select>
-                    <button id="btn-close-scribe" class="btn btn-icon btn-ghost" aria-label="Close Scribe" type="button">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                    </button>
-                </div>
+                <button id="btn-close-scribe" class="btn btn-icon btn-ghost" aria-label="Close Scribe" type="button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
             </div>
 
+            <!-- Unified MIDI upload — feeds both the track list and the tab notation below -->
             <label for="midiFileInput" class="btn btn-primary" style="width:100%; padding:14px;" title="Upload a MIDI file">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                 Upload MIDI File
             </label>
             <input type="file" id="midiFileInput" accept=".mid,.midi" style="display:none;">
+            <div id="orch-filename" class="orch-filename" style="text-align:center;">No file loaded yet.</div>
 
-            <div style="display:flex; gap:8px;">
+            <!-- ═══ Parts & Instruments (assign a voice to each MIDI track) ═══ -->
+            <div class="scribe-section-header">
+                <span>Parts &amp; Instruments</span>
+                <button id="btn-orch-auto" class="btn btn-ghost" type="button" title="Auto-match each track to the closest SF2 preset (by General MIDI program)" style="display:none; padding:5px 10px; font-size:0.72rem;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                    Auto
+                </button>
+            </div>
+
+            <div id="orch-empty" class="orch-empty">
+                Upload a MIDI file to see its parts here.
+            </div>
+
+            <div id="orch-tracks" class="orch-tracks-wrap" style="display:none;"></div>
+
+            <div id="orch-controls" class="orch-controls" style="display:none;">
+                <button id="btn-orch-play" class="btn btn-primary" type="button" title="Play">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    <span>Play</span>
+                </button>
+                <button id="btn-orch-stop" class="btn" type="button" title="Stop">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
+                    <span>Stop</span>
+                </button>
+                <div class="orch-progress" title="Playback progress">
+                    <div id="orch-progress-fill" class="orch-progress-fill"></div>
+                </div>
+                <span id="orch-time" class="orch-time">0:00 / 0:00</span>
+                <div class="orch-tempo">
+                    <span>Tempo</span>
+                    <select id="orch-tempo" class="input" style="padding:5px 8px; font-size:0.72rem;">
+                        <option value="0.5">0.5×</option>
+                        <option value="0.75">0.75×</option>
+                        <option value="1" selected>1×</option>
+                        <option value="1.25">1.25×</option>
+                        <option value="1.5">1.5×</option>
+                        <option value="2">2×</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="orch-sys-message" class="orch-sys-message">Ready.</div>
+            <p class="orch-jam-hint" id="orch-jam-hint" style="display:none;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:4px;"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                Mute a part, close this panel — playback keeps going so you can cover it live on the piano.
+            </p>
+
+            <!-- ═══ Notation (tab preview + export tools) ═══ -->
+            <div class="scribe-section-header">
+                <span>Notation</span>
+                <select id="bprSelect" class="input" style="padding:5px 10px; font-size:0.72rem;" title="Bars per row">
+                    <option value="4">4 BPR</option>
+                    <option value="3">3 BPR</option>
+                    <option value="2">2 BPR</option>
+                    <option value="1">1 BPR</option>
+                </select>
+            </div>
+
+            <div style="display:flex; gap:8px; flex-shrink:0;">
                 <button id="copyTabBtn" class="btn" type="button" style="flex:1; flex-direction:column; padding:10px; gap:2px;">
                     <span style="display:flex; align-items:center; gap:6px; font-size:0.75rem; font-weight:600;">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -1654,11 +2010,11 @@
                 </button>
             </div>
 
-            <div id="scribe-sys-message" style="min-height:1.25rem; font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:var(--text-ember); text-align:center; opacity:0; transition:opacity 0.5s;">
+            <div id="scribe-sys-message" style="min-height:1.25rem; font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:var(--text-ember); text-align:center; opacity:0; transition:opacity 0.5s; flex-shrink:0;">
                 Awaiting input…
             </div>
 
-            <div class="editor-container">
+            <div class="editor-container scribe-editor">
                 <div id="textareaB" class="editor-layer editor-back" aria-hidden="true"></div>
                 <textarea id="textareaA" spellcheck="false" class="editor-layer editor-front"></textarea>
             </div>
@@ -1717,6 +2073,26 @@
         <div style="margin-top:24px; padding-top:16px; border-top:1px solid var(--stroke-soft); text-align:center; color:var(--text-muted); font-style:italic; font-family:'Fraunces', serif; font-size:0.82rem;">
             Crafted with ember and ink. For exclusive use of everyone.
         </div>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ORCHESTRA MINI-PLAYER                        -->
+<!-- Appears when the Scribe panel is closed but playback is still running, -->
+<!-- so the user can jam on the piano without losing track of what's playing. -->
+<!-- ============================================ -->
+<div id="orch-mini" aria-label="Orchestra mini player" style="display:none;">
+    <div class="orch-mini-pill">
+        <svg class="orch-mini-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <span class="orch-mini-title" id="orch-mini-title">—</span>
+        <div class="orch-mini-progress"><div id="orch-mini-fill"></div></div>
+        <span class="orch-mini-time" id="orch-mini-time">0:00</span>
+        <button id="btn-orch-mini-stop" class="orch-mini-btn" type="button" aria-label="Stop" title="Stop">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
+        </button>
+        <button id="btn-orch-mini-expand" class="orch-mini-btn" type="button" aria-label="Open Scribe" title="Open Scribe">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+        </button>
     </div>
 </div>
 
@@ -2180,13 +2556,15 @@
             }
         }
 
-        function playNote(offset, octave, elementId) {
+        function playNote(offset, octave, elementId, instrumentOverride) {
             initAudio();
             if (activeNodes[elementId]) return;
 
             const midiNote = 12 * (octave + 1) + offset;
             const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
-            const instrumentMode = synthSelect.value;
+            // Optional override lets the Orchestra route each track through its own instrument
+            // without disturbing the user-facing synth selector. Falls back to the dropdown.
+            const instrumentMode = instrumentOverride || synthSelect.value;
 
             // Trigger Particle Magic
             spawnParticles(elementId, instrumentMode, offset);
@@ -3135,8 +3513,8 @@
         // We wrap the originals — monkey-patch style — to avoid touching the core audio code.
         const _origPlayNote = playNote;
         const _origStopNote = stopNote;
-        playNote = function(offset, octave, elementId) {
-            _origPlayNote(offset, octave, elementId);
+        playNote = function(offset, octave, elementId, instrumentOverride) {
+            _origPlayNote(offset, octave, elementId, instrumentOverride);
             if (isRecording && !elementId.startsWith('pb-')) {
                 recordEvent('down', offset, octave, elementId);
             }
@@ -3475,19 +3853,28 @@
             textareaA.dispatchEvent(new Event('input', { bubbles: true }));
         }
 
+        // Forward-declared here so the Orchestra block below can assign to it.
+        // When set, the shared MIDI upload will also populate the Parts & Instruments list.
+        let orchLoadMidi = null;
+
         midiInput.addEventListener("change", async (e) => {
             try {
                 const file = e.target.files[0];
                 if (!file) return;
-                showScribeMessage(`Scribing ${file.name}... Please wait.`);
+                showScribeMessage(`Loading ${file.name}... Please wait.`);
                 originalFileName = file.name;
                 globalMidiFile = file;
 
                 bprSelect.value = "4";
                 settings.barsPerRow = 4;
 
-                await processMidiFile();
-                showScribeMessage(`Scribe complete. Notation generated successfully.`);
+                // Run both jobs in parallel: generate the text tabs AND parse the
+                // Orchestra track list. One upload, both features populated.
+                await Promise.all([
+                    processMidiFile(),
+                    orchLoadMidi ? orchLoadMidi(file) : Promise.resolve()
+                ]);
+                showScribeMessage(`Ready — ${file.name} loaded.`);
             } catch (err) {
                 console.error("Critical MIDI upload error:", err);
                 showScribeMessage(err.message || "Failed to process MIDI file. Check console.");
@@ -3723,6 +4110,413 @@
             XLSXLib.writeFile(wb, `${baseFileName}.xlsx`);
             showScribeMessage("Spreadsheet successfully exported!");
         });
+
+        // ==========================================================================
+        // 4. ORCHESTRA — per-track instrument assignment & MIDI playback
+        // ==========================================================================
+        // Lives inside the Scribe drawer so the user gets one unified surface:
+        //   upload MIDI → see the parts → assign instruments → play → see the tab.
+        // Piano stays visible because the drawer pushes content instead of covering it.
+        // Closing the drawer while playback is running hands control to a floating
+        // mini-pill, so the user can jam on the piano while the other parts play.
+        //
+        // The player routes each scheduled note through playNote(..., instrumentOverride)
+        // so the user's live instrument selector is never disturbed.
+        (function initOrchestra() {
+            // --- DOM refs: all live inside the Scribe panel now ---
+            const fileNameEl = document.getElementById('orch-filename');
+            const tracksWrap = document.getElementById('orch-tracks');
+            const emptyEl = document.getElementById('orch-empty');
+            const controlsEl = document.getElementById('orch-controls');
+            const btnPlay = document.getElementById('btn-orch-play');
+            const btnStop = document.getElementById('btn-orch-stop');
+            const btnAuto = document.getElementById('btn-orch-auto');
+            const progressFill = document.getElementById('orch-progress-fill');
+            const timeEl = document.getElementById('orch-time');
+            const tempoSel = document.getElementById('orch-tempo');
+            const msgEl = document.getElementById('orch-sys-message');
+            const jamHint = document.getElementById('orch-jam-hint');
+
+            // Floating mini-player
+            const miniBar = document.getElementById('orch-mini');
+            const miniTitle = document.getElementById('orch-mini-title');
+            const miniFill = document.getElementById('orch-mini-fill');
+            const miniTime = document.getElementById('orch-mini-time');
+            const btnMiniStop = document.getElementById('btn-orch-mini-stop');
+            const btnMiniExpand = document.getElementById('btn-orch-mini-expand');
+
+            // One source of truth for playback state
+            const orch = {
+                midi: null,              // parsed @tonejs/midi object
+                tracks: [],              // [{ name, channel, noteCount, program, isDrum, notes, assignedInstrument, muted }]
+                playing: false,
+                startedAt: 0,            // performance.now() when playback began
+                duration: 0,             // total seconds (original tempo)
+                activeIds: new Set(),    // elementIds currently ringing from playback
+                timers: [],              // setTimeout handles so we can cancel cleanly
+                rafId: null,             // progress-bar animation frame
+                tempo: 1.0               // playback speed multiplier
+            };
+
+            function orchMsg(txt) {
+                msgEl.textContent = txt;
+                msgEl.style.opacity = 1;
+                clearTimeout(orchMsg._t);
+                orchMsg._t = setTimeout(() => msgEl.style.opacity = 0, 3500);
+            }
+
+            function formatTime(sec) {
+                if (!isFinite(sec) || sec < 0) sec = 0;
+                const m = Math.floor(sec / 60);
+                const s = Math.floor(sec % 60);
+                return `${m}:${s.toString().padStart(2, '0')}`;
+            }
+
+            function escapeAttr(s) {
+                return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                                .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            }
+
+            // --- Mini-bar visibility (shown only when Scribe is closed AND playing) ---
+            function showMiniBar() {
+                if (globalMidiFile) miniTitle.textContent = globalMidiFile.name;
+                miniBar.style.display = '';
+            }
+            function hideMiniBar() { miniBar.style.display = 'none'; }
+
+            // --- General MIDI program-number → best-guess built-in synth ---
+            // Used when no SF2 preset matches a track's GM program. Keeps things musical
+            // even with just the four built-in synths.
+            function gmProgramToBuiltin(program, isDrum) {
+                if (isDrum) return 'crystal';
+                if (program == null) return 'lute';
+                if (program < 8)   return 'lute';     // Piano family
+                if (program < 16)  return 'crystal';  // Chromatic perc
+                if (program < 24)  return 'brass';    // Organ
+                if (program < 32)  return 'lute';     // Guitar
+                if (program < 40)  return 'brass';    // Bass
+                if (program < 56)  return 'flute';    // Strings / Ensemble
+                if (program < 80)  return 'brass';    // Brass / Reed
+                if (program < 96)  return 'flute';    // Pipe / Synth Lead
+                if (program < 104) return 'crystal';  // Synth Pad
+                return 'crystal';                     // FX / Ethnic / Perc / SFX
+            }
+
+            // Find the closest SF2 preset for a given GM program. Prefers bank 0 (melodic)
+            // for pitched tracks, bank 128 (percussion) for drums.
+            function findMatchingSf2Preset(program, isDrum) {
+                if (!sf2Data.presets || sf2Data.presets.length === 0) return null;
+                if (isDrum) {
+                    const perc = sf2Data.presets.find(p => p.bank === 128);
+                    if (perc) return sf2Data.presets.indexOf(perc);
+                }
+                const exact = sf2Data.presets.find(p => p.bank === 0 && p.presetId === program);
+                if (exact) return sf2Data.presets.indexOf(exact);
+                const anyBank = sf2Data.presets.find(p => p.presetId === program);
+                if (anyBank) return sf2Data.presets.indexOf(anyBank);
+                const firstMelodic = sf2Data.presets.find(p => p.bank !== 128);
+                if (firstMelodic) return sf2Data.presets.indexOf(firstMelodic);
+                return 0;
+            }
+
+            function pickDefaultInstrument(track) {
+                const sf2Idx = findMatchingSf2Preset(track.program, track.isDrum);
+                if (sf2Idx !== null && sf2Data.presets.length > 0) return 'sf2_' + sf2Idx;
+                return gmProgramToBuiltin(track.program, track.isDrum);
+            }
+
+            // --- Parse a MIDI file into our track model ---
+            async function loadMidiFile(file) {
+                await midiReady;
+                if (!MidiLib) {
+                    orchMsg('MIDI library unavailable.');
+                    return;
+                }
+                try {
+                    const buffer = await file.arrayBuffer();
+                    const midi = new MidiLib.Midi(buffer);
+
+                    // Keep only tracks that have actual notes — empty tracks are noise
+                    const usable = midi.tracks.filter(t => t.notes && t.notes.length > 0);
+                    if (usable.length === 0) {
+                        orchMsg('No playable notes in this MIDI.');
+                        renderTracks();
+                        return;
+                    }
+
+                    orch.midi = midi;
+                    orch.duration = midi.duration || usable.reduce((max, t) => {
+                        const last = t.notes[t.notes.length - 1];
+                        return last ? Math.max(max, last.time + last.duration) : max;
+                    }, 0);
+
+                    orch.tracks = usable.map((t, i) => {
+                        const isDrum = t.channel === 9; // MIDI channel 10 (0-indexed) is percussion
+                        const program = (t.instrument && typeof t.instrument.number === 'number')
+                            ? t.instrument.number : 0;
+                        const nameGuess = (t.name && t.name.trim()) ||
+                            (t.instrument && t.instrument.name) ||
+                            (isDrum ? 'Drums' : `Track ${i + 1}`);
+                        const track = {
+                            name: nameGuess,
+                            channel: t.channel != null ? t.channel : 0,
+                            noteCount: t.notes.length,
+                            program,
+                            isDrum,
+                            notes: t.notes.map(n => ({
+                                midi: n.midi, time: n.time,
+                                duration: n.duration, velocity: n.velocity
+                            })),
+                            muted: false,
+                            assignedInstrument: null
+                        };
+                        track.assignedInstrument = pickDefaultInstrument(track);
+                        return track;
+                    });
+
+                    fileNameEl.textContent = file.name;
+                    fileNameEl.classList.add('has-file');
+                    btnAuto.style.display = '';
+                    renderTracks();
+                    orchMsg(`${orch.tracks.length} track${orch.tracks.length === 1 ? '' : 's'} · ${formatTime(orch.duration)}`);
+                } catch (err) {
+                    console.error('Orchestra: failed to parse MIDI', err);
+                    orchMsg('Could not parse this MIDI file.');
+                }
+            }
+
+            // Expose the loader to the shared MIDI upload handler at module scope.
+            orchLoadMidi = loadMidiFile;
+
+            // --- Render the list of track rows ---
+            function renderTracks() {
+                if (orch.tracks.length === 0) {
+                    emptyEl.style.display = '';
+                    tracksWrap.style.display = 'none';
+                    controlsEl.style.display = 'none';
+                    btnAuto.style.display = 'none';
+                    return;
+                }
+                emptyEl.style.display = 'none';
+                tracksWrap.style.display = '';
+                controlsEl.style.display = '';
+
+                tracksWrap.innerHTML = '';
+                orch.tracks.forEach((trk, idx) => {
+                    const row = document.createElement('div');
+                    row.className = 'orch-track' + (trk.muted ? ' is-muted' : '');
+                    row.dataset.idx = idx;
+
+                    const chLabel = trk.isDrum ? 'Ch 10 · Drums' : `Ch ${trk.channel + 1}`;
+                    const muteIcon = trk.muted
+                        ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>'
+                        : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
+
+                    row.innerHTML = `
+                        <div class="orch-track-num">${idx + 1}</div>
+                        <div class="orch-track-info">
+                            <span class="orch-track-name" title="${escapeAttr(trk.name)}">${escapeAttr(trk.name)}</span>
+                            <span class="orch-track-meta">${chLabel} · ${trk.noteCount} notes</span>
+                        </div>
+                        <select class="input orch-track-inst" aria-label="Instrument for ${escapeAttr(trk.name)}"></select>
+                        <button class="orch-track-mute ${trk.muted ? 'is-muted' : ''}" type="button" aria-label="${trk.muted ? 'Unmute' : 'Mute'} track" title="${trk.muted ? 'Unmute — let playback cover this part again' : 'Mute — play this part yourself on the piano'}">${muteIcon}</button>
+                    `;
+
+                    // Clone the main synth selector's options so SF2 presets show up here too
+                    const selEl = row.querySelector('.orch-track-inst');
+                    selEl.innerHTML = synthSelect.innerHTML;
+                    // If the remembered assignment was removed (e.g. SF2 unloaded), fall back
+                    if (!Array.from(selEl.options).some(o => o.value === trk.assignedInstrument)) {
+                        trk.assignedInstrument = gmProgramToBuiltin(trk.program, trk.isDrum);
+                    }
+                    selEl.value = trk.assignedInstrument;
+                    selEl.addEventListener('change', (e) => {
+                        trk.assignedInstrument = e.target.value;
+                    });
+
+                    const muteBtn = row.querySelector('.orch-track-mute');
+                    muteBtn.addEventListener('click', () => {
+                        trk.muted = !trk.muted;
+                        renderTracks();
+                        // Silence any notes from this track that are currently ringing
+                        if (trk.muted && orch.playing) {
+                            for (const id of Array.from(orch.activeIds)) {
+                                if (id.startsWith(`orch-${idx}-`)) {
+                                    stopNote(id);
+                                    orch.activeIds.delete(id);
+                                }
+                            }
+                        }
+                    });
+
+                    tracksWrap.appendChild(row);
+                });
+            }
+
+            // Refresh every dropdown — called when the drawer opens so newly-loaded
+            // SF2 presets appear without requiring a page reload.
+            function refreshAllInstrumentDropdowns() {
+                const selects = tracksWrap.querySelectorAll('.orch-track-inst');
+                selects.forEach((sel, idx) => {
+                    const trk = orch.tracks[idx];
+                    if (!trk) return;
+                    const prev = trk.assignedInstrument;
+                    sel.innerHTML = synthSelect.innerHTML;
+                    if (Array.from(sel.options).some(o => o.value === prev)) {
+                        sel.value = prev;
+                    } else {
+                        const fallback = gmProgramToBuiltin(trk.program, trk.isDrum);
+                        sel.value = fallback;
+                        trk.assignedInstrument = fallback;
+                    }
+                });
+            }
+
+            // --- Auto-assign button: re-pick smart defaults (handy after loading SF2) ---
+            btnAuto.addEventListener('click', () => {
+                if (orch.tracks.length === 0) return;
+                orch.tracks.forEach(trk => { trk.assignedInstrument = pickDefaultInstrument(trk); });
+                renderTracks();
+                orchMsg('Auto-assigned each track to its best match.');
+            });
+
+            // --- Playback ---
+            // @tonejs/midi gives us absolute seconds already accounting for tempo changes,
+            // so a flat setTimeout schedule is simple and plenty precise for human music.
+            function startPlayback() {
+                if (orch.tracks.length === 0 || orch.playing) return;
+                initAudio();
+                orch.playing = true;
+                orch.startedAt = performance.now();
+                orch.activeIds = new Set();
+                orch.timers = [];
+                orch.tempo = parseFloat(tempoSel.value) || 1.0;
+                const speed = 1 / orch.tempo;
+
+                btnPlay.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg><span>Pause</span>';
+                tracksWrap.querySelectorAll('.orch-track').forEach(el => el.classList.add('is-active'));
+
+                orch.tracks.forEach((trk, tIdx) => {
+                    if (trk.muted) return;
+                    trk.notes.forEach((n, nIdx) => {
+                        const octave = Math.floor(n.midi / 12) - 1;
+                        const offset = n.midi % 12;
+                        const elementId = `orch-${tIdx}-${nIdx}`;
+
+                        const onTimer = setTimeout(() => {
+                            if (!orch.playing || trk.muted) return;
+                            // Route this note through the track's chosen instrument.
+                            // Live input is unaffected — it still uses synthSelect.value.
+                            playNote(offset, octave, elementId, trk.assignedInstrument);
+                            orch.activeIds.add(elementId);
+                        }, n.time * 1000 * speed);
+
+                        const offTimer = setTimeout(() => {
+                            if (orch.activeIds.has(elementId)) {
+                                stopNote(elementId);
+                                orch.activeIds.delete(elementId);
+                            }
+                        }, (n.time + n.duration) * 1000 * speed);
+
+                        orch.timers.push(onTimer, offTimer);
+                    });
+                });
+
+                const endTimer = setTimeout(() => stopPlaybackOrch(true),
+                                            orch.duration * 1000 * speed + 200);
+                orch.timers.push(endTimer);
+
+                tickProgress();
+                jamHint.style.display = '';
+                orchMsg(`Playing · ${orch.tempo}× — close this panel to jam on the piano`);
+            }
+
+            // Named stopPlaybackOrch to avoid colliding with the recording module's
+            // own stopPlayback() function.
+            function stopPlaybackOrch(reachedEnd) {
+                if (!orch.playing && orch.timers.length === 0) return;
+                orch.playing = false;
+                orch.timers.forEach(t => clearTimeout(t));
+                orch.timers = [];
+                // Hard-stop every note we scheduled so nothing hangs
+                for (const id of Array.from(orch.activeIds)) stopNote(id);
+                orch.activeIds.clear();
+                if (orch.rafId !== null) {
+                    cancelAnimationFrame(orch.rafId);
+                    orch.rafId = null;
+                }
+                progressFill.style.width = '0%';
+                miniFill.style.width = '0%';
+                miniTime.textContent = '0:00';
+                timeEl.textContent = `0:00 / ${formatTime(orch.duration)}`;
+                btnPlay.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Play</span>';
+                tracksWrap.querySelectorAll('.orch-track').forEach(el => el.classList.remove('is-active'));
+                jamHint.style.display = 'none';
+                hideMiniBar();
+                if (reachedEnd) orchMsg('Playback finished.');
+            }
+
+            function tickProgress() {
+                if (!orch.playing) return;
+                const elapsed = (performance.now() - orch.startedAt) / 1000;
+                const totalScaled = orch.duration / orch.tempo;
+                const pct = Math.min(100, (elapsed / totalScaled) * 100);
+                progressFill.style.width = pct + '%';
+                // Show original-time clock, not scaled — more intuitive
+                const elapsedOrig = Math.min(orch.duration, elapsed * orch.tempo);
+                timeEl.textContent = `${formatTime(elapsedOrig)} / ${formatTime(orch.duration)}`;
+                // Mirror state into the mini bar so the user can monitor while jamming
+                miniFill.style.width = pct + '%';
+                miniTime.textContent = formatTime(elapsedOrig);
+                orch.rafId = requestAnimationFrame(tickProgress);
+            }
+
+            btnPlay.addEventListener('click', () => {
+                if (orch.playing) stopPlaybackOrch();
+                else startPlayback();
+            });
+            btnStop.addEventListener('click', () => stopPlaybackOrch());
+
+            // Changing tempo mid-play: simplest is to restart from the top at the new
+            // speed. Trying to scale already-scheduled timers in place gets messy.
+            tempoSel.addEventListener('change', () => {
+                if (orch.playing) {
+                    stopPlaybackOrch();
+                    startPlayback();
+                }
+            });
+
+            // --- Mini bar wiring ---
+            btnMiniStop.addEventListener('click', () => {
+                stopPlaybackOrch();
+                hideMiniBar();
+            });
+            btnMiniExpand.addEventListener('click', () => {
+                // Open the Scribe drawer if it isn't already open
+                if (!isScribeOpen) btnToggleScribe.click();
+            });
+
+            // Wire the Scribe drawer's open/close to the mini bar visibility.
+            // This listener is added AFTER the panel's own toggle handler, so by the
+            // time it runs, isScribeOpen already reflects the new state.
+            btnToggleScribe.addEventListener('click', () => {
+                if (isScribeOpen) {
+                    hideMiniBar();
+                    // Refresh dropdowns so newly-loaded SF2 presets show up
+                    refreshAllInstrumentDropdowns();
+                } else if (orch.playing) {
+                    showMiniBar();
+                }
+            });
+
+            // Safety: release orchestra notes if the tab goes hidden
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && orch.playing) stopPlaybackOrch();
+            });
+
+            // Initial paint
+            renderTracks();
+        })();
 
     </script>
 
