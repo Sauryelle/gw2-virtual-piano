@@ -4,11 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0b0814">
+    <script>
+        // Apply the saved theme before first paint so there's no flash of the default palette.
+        try {
+            var savedTheme = localStorage.getItem('tyrianTheme');
+            if (savedTheme && savedTheme !== 'ember') document.documentElement.dataset.theme = savedTheme;
+        } catch (e) {}
+    </script>
     <title>Sarya's Music Thingy</title>
 
     <link rel="icon" type="image/png" href="saryamusic2.png">
 
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -74,6 +80,118 @@
             --r-lg: 18px;
             --r-xl: 24px;
             --r-full: 999px;
+
+            /* ------ Component tokens (theme-dependent) ------ */
+            --on-accent: #1a0a00;              /* text on the primary accent gradient */
+            --glow-1: rgba(255, 107, 53, 0.18); /* atmosphere mesh glows */
+            --glow-2: rgba(228, 68, 122, 0.14);
+            --glow-3: rgba(74, 200, 197, 0.08);
+            --glow-4: rgba(255, 188, 107, 0.08);
+            --halo: rgba(255, 140, 80, 0.12);
+            --edge-shine: rgba(255, 200, 140, 0.4);
+            --paper: #f0e8d6;
+            --rec: #ff3355;
+            --scroll-thumb: rgba(255, 180, 120, 0.15);
+            --scroll-thumb-hover: rgba(255, 180, 120, 0.3);
+
+            /* White keys */
+            --key-1: #f6f2ea; --key-2: #f0ebe0; --key-3: #e4dccc;
+            --key-edge: #d6ccb8; --key-ledge: #a89878;
+            --key-inner: rgba(180, 160, 130, 0.35);
+            --key-text: #4a3828; --key-subtext: #8a7a62;
+            --key-hot-1: #ffe3b0; --key-hot-2: #ffb563; --key-hot-3: #ff8b3d;
+            --key-hot-edge: #d08843; --key-hot-ledge: #c85b2a; --key-hot-text: #3a1a00;
+            --key-hot-glowA: rgba(255, 107, 53, 0.5); --key-hot-glowB: rgba(255, 140, 80, 0.5);
+
+            /* Black keys */
+            --bkey-1: #2a2332; --bkey-2: #1a1424; --bkey-3: #0d0814; --bkey-edge: #0a0510;
+            --bkey-subtext: #8a7a90;
+            --bkey-hot-1: #ff8b3d; --bkey-hot-2: #e4447a; --bkey-hot-3: #6b2f5c;
+            --bkey-hot-edge: #8a2050; --bkey-hot-ledge: #4a1030; --bkey-hot-text: #fff1e0;
+            --bkey-hot-glowA: rgba(255, 92, 138, 0.6); --bkey-hot-glowB: rgba(255, 107, 53, 0.5);
+
+            /* Heartopia bind tags */
+            --tag-1: #3a2d48; --tag-2: #241a30;
+
+            /* Playback state */
+            --grad-play: linear-gradient(135deg, #4ac8c5, #8ef0a0);
+            --on-play: #052024; --play-edge: #4ac8c5; --play-glow: rgba(74, 200, 197, 0.4);
+        }
+
+        /* ========================================== */
+        /* THEME: BLOODLINES                         */
+        /* Inspired by Vampire: The Masquerade –     */
+        /* Bloodlines (2004): blood crimson on       */
+        /* asphalt black, aged gold lettering, bone  */
+        /* ivories, a whisper of sickly HUD green.   */
+        /* ========================================== */
+        [data-theme="bloodlines"] {
+            --bg-base: #0c0709;
+            --bg-deep: #060304;
+            --bg-elevated: #180d10;
+
+            --surface-1: rgba(34, 18, 22, 0.55);
+            --surface-2: rgba(48, 24, 30, 0.72);
+            --surface-raised: rgba(62, 30, 38, 0.9);
+
+            --stroke-soft: rgba(255, 255, 255, 0.06);
+            --stroke-mid: rgba(216, 184, 102, 0.16);
+            --stroke-strong: rgba(216, 184, 102, 0.32);
+            --stroke-accent: rgba(193, 27, 43, 0.5);
+
+            --text-primary: #eadfce;
+            --text-secondary: #ab9585;
+            --text-muted: #6f5b52;
+            --text-ember: #d8b866;
+            --text-coral: #e06666;
+
+            --ember: #c11b2b;
+            --ember-hot: #a01020;
+            --ember-warm: #d8b866;
+            --gold: #d8b866;
+            --coral: #c11b2b;
+            --rose: #8a0f1f;
+            --plum: #3d0d18;
+            --teal: #8aa33a;
+
+            --grad-ember: linear-gradient(135deg, #7c0d1b 0%, #b3202e 50%, #d84350 100%);
+            --grad-ember-soft: linear-gradient(135deg, rgba(179, 32, 46, 0.9) 0%, rgba(216, 67, 80, 0.8) 100%);
+            --grad-hero: linear-gradient(92deg, #e6cf8f 0%, #d8b866 30%, #c11b2b 65%, #5c0a14 100%);
+            --grad-coral: linear-gradient(135deg, #c11b2b 0%, #7c0d1b 100%);
+
+            --shadow-ember: 0 0 40px rgba(193, 27, 43, 0.2);
+            --shadow-ember-strong: 0 0 30px rgba(193, 27, 43, 0.55), 0 0 60px rgba(138, 15, 31, 0.3);
+
+            --on-accent: #f7e9d3;
+            --glow-1: rgba(193, 27, 43, 0.2);
+            --glow-2: rgba(138, 15, 31, 0.16);
+            --glow-3: rgba(126, 148, 52, 0.07);
+            --glow-4: rgba(216, 184, 102, 0.06);
+            --halo: rgba(193, 27, 43, 0.14);
+            --edge-shine: rgba(216, 184, 102, 0.35);
+            --paper: #e7d9ba;
+            --rec: #ff2e44;
+            --scroll-thumb: rgba(193, 80, 80, 0.18);
+            --scroll-thumb-hover: rgba(193, 80, 80, 0.34);
+
+            --key-1: #efe7d3; --key-2: #e7dcc1; --key-3: #d6c6a4;
+            --key-edge: #bdab86; --key-ledge: #8f7d5c;
+            --key-inner: rgba(150, 130, 95, 0.4);
+            --key-text: #4a3324; --key-subtext: #8a7458;
+            --key-hot-1: #f0b8a8; --key-hot-2: #d4544a; --key-hot-3: #a81c28;
+            --key-hot-edge: #8a2a28; --key-hot-ledge: #6e1018; --key-hot-text: #2e0507;
+            --key-hot-glowA: rgba(193, 27, 43, 0.5); --key-hot-glowB: rgba(193, 27, 43, 0.45);
+
+            --bkey-1: #2a1a20; --bkey-2: #1c1015; --bkey-3: #0d0609; --bkey-edge: #080305;
+            --bkey-subtext: #8a6f76;
+            --bkey-hot-1: #c11b2b; --bkey-hot-2: #8a0f1f; --bkey-hot-3: #3d0d18;
+            --bkey-hot-edge: #7c1f2f; --bkey-hot-ledge: #3d0d18; --bkey-hot-text: #f7e8d8;
+            --bkey-hot-glowA: rgba(193, 27, 43, 0.6); --bkey-hot-glowB: rgba(138, 15, 31, 0.5);
+
+            --tag-1: #42222b; --tag-2: #26121a;
+
+            --grad-play: linear-gradient(135deg, #8aa33a, #c2cc63);
+            --on-play: #141a05; --play-edge: #8aa33a; --play-glow: rgba(138, 163, 58, 0.4);
         }
 
         /* ========================================== */
@@ -114,10 +232,10 @@
             inset: 0;
             z-index: -2;
             background:
-                radial-gradient(ellipse 80% 50% at 20% 0%, rgba(255, 107, 53, 0.18), transparent 60%),
-                radial-gradient(ellipse 60% 50% at 80% 10%, rgba(228, 68, 122, 0.14), transparent 55%),
-                radial-gradient(ellipse 70% 60% at 50% 100%, rgba(74, 200, 197, 0.08), transparent 60%),
-                radial-gradient(ellipse 50% 40% at 85% 80%, rgba(255, 188, 107, 0.08), transparent 60%),
+                radial-gradient(ellipse 80% 50% at 20% 0%, var(--glow-1), transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 10%, var(--glow-2), transparent 55%),
+                radial-gradient(ellipse 70% 60% at 50% 100%, var(--glow-3), transparent 60%),
+                radial-gradient(ellipse 50% 40% at 85% 80%, var(--glow-4), transparent 60%),
                 var(--bg-base);
             animation: meshDrift 22s ease-in-out infinite alternate;
         }
@@ -209,7 +327,7 @@
 
         .btn-primary {
             background: var(--grad-ember);
-            color: #1a0a00;
+            color: var(--on-accent);
             border: none;
             font-weight: 600;
             box-shadow: var(--shadow-sm), var(--shadow-ember);
@@ -242,10 +360,10 @@
         }
 
         .btn-playing {
-            background: linear-gradient(135deg, #4ac8c5, #8ef0a0) !important;
-            color: #052024 !important;
-            border-color: #4ac8c5 !important;
-            box-shadow: 0 0 22px rgba(74, 200, 197, 0.4) !important;
+            background: var(--grad-play) !important;
+            color: var(--on-play) !important;
+            border-color: var(--play-edge) !important;
+            box-shadow: 0 0 22px var(--play-glow) !important;
         }
 
         /* ========================================== */
@@ -300,7 +418,7 @@
         input[type="range"].slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
         input[type="range"].slider::-moz-range-thumb {
             width: 14px; height: 14px;
-            background: #ff8b3d;
+            background: var(--ember);
             border: 2px solid var(--bg-base);
             border-radius: 50%;
             cursor: pointer;
@@ -329,7 +447,7 @@
             position: absolute;
             left: 4px; top: 1px;
             width: 5px; height: 10px;
-            border: solid #1a0a00;
+            border: solid var(--on-accent);
             border-width: 0 2px 2px 0;
             transform: rotate(45deg);
         }
@@ -386,7 +504,7 @@
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent 40%);
             pointer-events: none;
         }
-        .brand-mark svg { position: relative; z-index: 1; }
+        .brand-mark svg { position: relative; z-index: 1; stroke: var(--on-accent); }
         .brand-title {
             font-family: 'Fraunces', serif;
             font-weight: 600;
@@ -437,7 +555,7 @@
             letter-spacing: 0.01em;
         }
         .view-switch button.is-active {
-            color: #1a0a00;
+            color: var(--on-accent);
         }
         .view-switch .switch-indicator {
             position: absolute;
@@ -488,7 +606,7 @@
         /* Custom scrollbar for the center panel when pushed on smaller screens */
         #center-panel::-webkit-scrollbar { height: 10px; }
         #center-panel::-webkit-scrollbar-track { background: transparent; }
-        #center-panel::-webkit-scrollbar-thumb { background: rgba(255, 180, 120, 0.15); border-radius: 5px; }
+        #center-panel::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 5px; }
 
         /* Header inside stage */
         .stage-header {
@@ -544,6 +662,83 @@
             align-items: stretch;
             justify-content: center;
             gap: 8px;
+        }
+
+        /* Grouped dock: each cluster of related controls gets a
+           labelled sub-surface so the toolbar reads as sections
+           (Sound / Tempo / Performance / Recorder) instead of a
+           flat soup of pills. */
+        .dock-groups {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: stretch;
+            gap: 10px;
+        }
+        .dock-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px 12px 12px;
+            background: rgba(0, 0, 0, 0.22);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+            min-width: 0;
+        }
+        .dock-group--sound { flex: 1 1 360px; max-width: 620px; }
+        .dock-group--recorder { flex: 0 1 auto; }
+        .dock-group-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 600;
+            line-height: 1;
+        }
+        .dock-group-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        /* Theme picker in the topbar */
+        .theme-pick {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: background 0.2s var(--ease-smooth), border-color 0.2s var(--ease-smooth);
+        }
+        .theme-pick:hover { background: rgba(255, 255, 255, 0.04); border-color: var(--stroke-mid); }
+        .theme-pick svg { flex-shrink: 0; }
+        .theme-pick select {
+            appearance: none;
+            -webkit-appearance: none;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 500;
+            padding: 0 18px 0 0;
+            cursor: pointer;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path fill="none" stroke="%23ffbc6b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M1 1.3L5 5L9 1.3"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right center;
+        }
+        .theme-pick select option {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
         }
 
         /* Every control in the dock is a "dock-item" pill with identical height. */
@@ -693,8 +888,8 @@
             animation: dotPulse 2.2s ease-in-out infinite;
         }
         .dot.active.rec-dot {
-            background: #ff3355;
-            box-shadow: 0 0 10px #ff3355;
+            background: var(--rec);
+            box-shadow: 0 0 10px var(--rec);
             animation: dotPulse 1.1s ease-in-out infinite;
         }
         @keyframes dotPulse {
@@ -750,7 +945,7 @@
             border-radius: var(--r-xl);
             background:
                 linear-gradient(180deg, rgba(12, 8, 20, 0.9), rgba(6, 4, 12, 0.95)),
-                radial-gradient(ellipse at top, rgba(255, 140, 80, 0.12), transparent 70%);
+                radial-gradient(ellipse at top, var(--halo), transparent 70%);
             border: 1px solid var(--stroke-mid);
             box-shadow:
                 var(--shadow-lg),
@@ -762,21 +957,21 @@
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 200, 140, 0.4), transparent);
+            background: linear-gradient(90deg, transparent, var(--edge-shine), transparent);
             border-radius: var(--r-xl) var(--r-xl) 0 0;
         }
 
         .piano-key {
             width: 72px;
             height: 260px;
-            background: linear-gradient(to bottom, #f6f2ea 0%, #f0ebe0 45%, #e4dccc 100%);
-            border: 1px solid #d6ccb8;
+            background: linear-gradient(to bottom, var(--key-1) 0%, var(--key-2) 45%, var(--key-3) 100%);
+            border: 1px solid var(--key-edge);
             border-radius: 3px 3px 10px 10px;
             box-shadow:
-                inset 0 -14px 20px -10px rgba(180, 160, 130, 0.35),
+                inset 0 -14px 20px -10px var(--key-inner),
                 inset 2px 0 2px rgba(255, 255, 255, 0.3),
                 inset -2px 0 2px rgba(0, 0, 0, 0.05),
-                0 3px 0 #a89878,
+                0 3px 0 var(--key-ledge),
                 0 6px 12px rgba(0, 0, 0, 0.5);
             position: relative;
             cursor: pointer;
@@ -802,21 +997,21 @@
 
         .piano-key.active {
             transform: translateY(3px);
-            background: linear-gradient(to bottom, #ffe3b0 0%, #ffb563 50%, #ff8b3d 100%);
+            background: linear-gradient(to bottom, var(--key-hot-1) 0%, var(--key-hot-2) 50%, var(--key-hot-3) 100%);
             box-shadow:
                 inset 0 -10px 20px -8px rgba(255, 80, 30, 0.4),
                 inset 0 2px 6px rgba(255, 255, 255, 0.3),
-                0 1px 0 #c85b2a,
-                0 3px 10px rgba(255, 107, 53, 0.5),
-                0 0 30px rgba(255, 140, 80, 0.5);
-            border-color: #d08843;
+                0 1px 0 var(--key-hot-ledge),
+                0 3px 10px var(--key-hot-glowA),
+                0 0 30px var(--key-hot-glowB);
+            border-color: var(--key-hot-edge);
         }
 
         .black-key {
             width: 46px;
             height: 160px;
-            background: linear-gradient(to bottom, #2a2332 0%, #1a1424 60%, #0d0814 100%);
-            border: 1px solid #0a0510;
+            background: linear-gradient(to bottom, var(--bkey-1) 0%, var(--bkey-2) 60%, var(--bkey-3) 100%);
+            border: 1px solid var(--bkey-edge);
             right: -2px;
             transform: translateX(50%);
             border-radius: 2px 2px 8px 8px;
@@ -833,21 +1028,21 @@
 
         .black-key.active {
             transform: translateX(50%) translateY(3px);
-            background: linear-gradient(to bottom, #ff8b3d 0%, #e4447a 60%, #6b2f5c 100%);
+            background: linear-gradient(to bottom, var(--bkey-hot-1) 0%, var(--bkey-hot-2) 60%, var(--bkey-hot-3) 100%);
             box-shadow:
                 inset 0 2px 4px rgba(255, 255, 255, 0.3),
                 inset 0 -6px 10px rgba(0, 0, 0, 0.3),
-                0 1px 0 #4a1030,
-                0 3px 12px rgba(255, 92, 138, 0.6),
-                0 0 24px rgba(255, 107, 53, 0.5);
-            border-color: #8a2050;
+                0 1px 0 var(--bkey-hot-ledge),
+                0 3px 12px var(--bkey-hot-glowA),
+                0 0 24px var(--bkey-hot-glowB);
+            border-color: var(--bkey-hot-edge);
         }
 
         .key-note {
             font-family: 'Fraunces', serif;
             font-weight: 600;
             font-size: 1.4rem;
-            color: #4a3828;
+            color: var(--key-text);
             letter-spacing: -0.02em;
             line-height: 1;
         }
@@ -855,15 +1050,15 @@
             font-family: 'JetBrains Mono', monospace;
             font-weight: 500;
             font-size: 0.7rem;
-            color: #8a7a62;
+            color: var(--key-subtext);
             margin-top: 6px;
             letter-spacing: 0.02em;
         }
-        .piano-key.active .key-note, .piano-key.active .key-bind { color: #3a1a00; }
-        .piano-key.black-key.active .key-note, .piano-key.black-key.active .key-bind { color: #fff1e0; }
+        .piano-key.active .key-note, .piano-key.active .key-bind { color: var(--key-hot-text); }
+        .piano-key.black-key.active .key-note, .piano-key.black-key.active .key-bind { color: var(--bkey-hot-text); }
 
         .black-key .key-note { color: #ffbc6b; font-size: 1.15rem; font-weight: 500; }
-        .black-key .key-bind { color: #8a7a90; }
+        .black-key .key-bind { color: var(--bkey-subtext); }
 
         /* ========================================== */
         /* HEARTOPIA VIEW                            */
@@ -882,11 +1077,11 @@
         .htp-white {
             width: 54px;
             height: 72px;
-            background: linear-gradient(to bottom, #fbf8f0, #ece4d2);
-            border: 1px solid #d0c6b2;
+            background: linear-gradient(to bottom, var(--key-1), var(--key-3));
+            border: 1px solid var(--key-edge);
             border-radius: 14px;
             box-shadow:
-                0 5px 0 #a89878,
+                0 5px 0 var(--key-ledge),
                 0 8px 14px rgba(0, 0, 0, 0.4),
                 inset 0 2px 3px rgba(255, 255, 255, 0.6);
             display: flex;
@@ -905,11 +1100,11 @@
 
         .htp-white:active, .htp-white.active {
             transform: translateY(4px);
-            background: linear-gradient(to bottom, #ffe3b0, #ffb563);
+            background: linear-gradient(to bottom, var(--key-hot-1), var(--key-hot-2));
             box-shadow:
-                0 1px 0 #c85b2a,
-                0 3px 10px rgba(255, 107, 53, 0.55),
-                0 0 25px rgba(255, 140, 80, 0.45),
+                0 1px 0 var(--key-hot-ledge),
+                0 3px 10px var(--key-hot-glowA),
+                0 0 25px var(--key-hot-glowB),
                 inset 0 2px 3px rgba(255, 255, 255, 0.4);
         }
 
@@ -917,13 +1112,13 @@
             font-family: 'Fraunces', serif;
             font-weight: 600;
             font-size: 1.3rem;
-            color: #2a1810;
+            color: var(--key-text);
             line-height: 1;
         }
         .htp-white-sol {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.58rem;
-            color: #7a6752;
+            color: var(--key-subtext);
             font-weight: 500;
             letter-spacing: 0.08em;
             margin-top: 3px;
@@ -932,7 +1127,7 @@
         .htp-bind-tag {
             position: absolute;
             bottom: -14px;
-            background: linear-gradient(135deg, #3a2d48, #241a30);
+            background: linear-gradient(135deg, var(--tag-1), var(--tag-2));
             color: var(--text-ember);
             padding: 3px 9px;
             border-radius: var(--r-full);
@@ -950,8 +1145,8 @@
 
         .htp-black {
             width: 36px; height: 36px;
-            background: linear-gradient(135deg, #2a2232, #140a1c);
-            border: 1px solid #0a0510;
+            background: linear-gradient(135deg, var(--bkey-1), var(--bkey-3));
+            border: 1px solid var(--bkey-edge);
             border-radius: 50%;
             box-shadow:
                 0 4px 0 rgba(0, 0, 0, 0.6),
@@ -977,13 +1172,13 @@
 
         .htp-black:active, .htp-black.active {
             transform: translateY(3px);
-            background: linear-gradient(135deg, #ff8b3d, #e4447a);
+            background: linear-gradient(135deg, var(--bkey-hot-1), var(--bkey-hot-2));
             box-shadow:
                 0 1px 0 rgba(0, 0, 0, 0.5),
-                0 3px 10px rgba(255, 92, 138, 0.55),
-                0 0 20px rgba(255, 140, 80, 0.5);
+                0 3px 10px var(--bkey-hot-glowA),
+                0 0 20px var(--bkey-hot-glowB);
             color: #fff;
-            border-color: #c04070;
+            border-color: var(--bkey-hot-edge);
         }
 
         /* ========================================== */
@@ -1150,7 +1345,7 @@
         }
         .tab-pills button.is-active {
             background: var(--grad-ember);
-            color: #1a0a00;
+            color: var(--on-accent);
             font-weight: 600;
             box-shadow: var(--shadow-sm);
         }
@@ -1160,7 +1355,7 @@
             width: 100%;
             flex: 1;
             min-height: 400px;
-            background: #f0e8d6;
+            background: var(--paper);
             border: 1px solid var(--stroke-soft);
             border-radius: var(--r-md);
         }
@@ -1249,7 +1444,7 @@
             border-radius: var(--r-xl);
             background: var(--bg-elevated);
             border: 1px solid var(--stroke-mid);
-            box-shadow: var(--shadow-lg), 0 0 80px rgba(255, 140, 80, 0.12);
+            box-shadow: var(--shadow-lg), 0 0 80px var(--halo);
             position: relative;
             transform: scale(0.95);
             transition: transform 0.3s var(--ease-spring);
@@ -1306,8 +1501,8 @@
         /* ========================================== */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 180, 120, 0.15); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 180, 120, 0.3); }
+        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-thumb-hover); }
 
         /* ========================================== */
         /* FOCUS STATES                              */
@@ -1337,6 +1532,10 @@
             .htp-black { width: 30px; height: 30px; font-size: 0.68rem; top: -14px; right: -18px; }
             #help-overlay .help-card { padding: 20px; }
             .view-switch button { padding: 5px 12px; font-size: 0.72rem; }
+            .theme-pick { height: 34px; padding: 0 10px; }
+            .theme-pick select { font-size: 0.75rem; }
+            .dock-group { padding: 8px 10px 10px; }
+            .dock-group--sound { flex-basis: 100%; max-width: 100%; }
 
             /* Panels flow naturally underneath the piano on vertical screens */
             .stage { flex-direction: column; align-items: center; }
@@ -1368,316 +1567,46 @@
         /* ========================================== */
         /* REDUCED MOTION                            */
         /* ========================================== */
-        /* ORCHESTRA — parts/instruments inside Scribe */
-        /* ========================================== */
-        /* A visual break between the Scribe panel's sections (upload / parts / notation). */
-        .scribe-section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            font-family: 'Fraunces', serif;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text-ember);
-            margin-top: 4px;
-            padding: 6px 0 6px;
-            border-bottom: 1px solid var(--stroke-soft);
-            flex-shrink: 0;
-        }
-        .scribe-section-header > span:first-child { letter-spacing: 0.01em; }
-
-        /* The filename confirmation right under the upload button. */
-        .orch-filename {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.76rem;
-            color: var(--text-secondary);
-            font-style: italic;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin: -2px 0 0;
-            flex-shrink: 0;
-        }
-        .orch-filename.has-file { color: var(--text-ember); font-style: normal; }
-
-        /* "No MIDI loaded" placeholder that swaps in for the track list. */
-        .orch-empty {
-            padding: 22px 16px;
-            text-align: center;
-            color: var(--text-muted);
-            font-family: 'Fraunces', serif;
-            font-style: italic;
-            font-size: 0.86rem;
-            border: 1px dashed var(--stroke-soft);
-            border-radius: var(--r-md);
-            flex-shrink: 0;
-        }
-
-        /* Vertical list of track rows — scrolls internally if the MIDI has many tracks. */
-        .orch-tracks-wrap {
-            max-height: 240px;
-            overflow-y: auto;
-            padding-right: 4px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            flex-shrink: 0;
-        }
-        .orch-tracks-wrap::-webkit-scrollbar { width: 6px; }
-        .orch-tracks-wrap::-webkit-scrollbar-track { background: transparent; }
-        .orch-tracks-wrap::-webkit-scrollbar-thumb { background: rgba(255, 180, 120, 0.18); border-radius: 3px; }
-
-        /* One row per MIDI track: [num · name/channel/notes · instrument dropdown · mute]. */
-        .orch-track {
-            display: grid;
-            grid-template-columns: auto 1fr minmax(140px, 180px) auto;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 10px;
-            background: rgba(0, 0, 0, 0.28);
-            border: 1px solid var(--stroke-soft);
-            border-radius: var(--r-md);
-            transition: border-color 0.2s var(--ease-smooth), opacity 0.2s;
-        }
-        .orch-track:hover { border-color: var(--stroke-mid); }
-        .orch-track.is-muted { opacity: 0.4; }
-        .orch-track.is-active { border-color: var(--stroke-accent); box-shadow: 0 0 14px rgba(255, 140, 80, 0.15); }
-
-        .orch-track-num {
-            font-family: 'Fraunces', serif;
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--text-ember);
-            min-width: 20px;
-            text-align: center;
-        }
-        .orch-track-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-        .orch-track-name {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .orch-track-meta {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.64rem;
-            color: var(--text-muted);
-            letter-spacing: 0.04em;
-        }
-        .orch-track-inst {
-            width: 100%;
-            padding: 6px 28px 6px 10px !important;
-            font-size: 0.76rem !important;
-        }
-        .orch-track-mute {
-            width: 30px; height: 30px;
-            padding: 0;
-            border-radius: var(--r-md);
-            background: transparent;
-            border: 1px solid var(--stroke-soft);
-            color: var(--text-secondary);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s var(--ease-smooth);
-        }
-        .orch-track-mute:hover { border-color: var(--stroke-mid); color: var(--text-primary); }
-        .orch-track-mute.is-muted {
-            background: rgba(228, 68, 122, 0.15);
-            border-color: var(--coral);
-            color: var(--coral);
-        }
-
-        /* Playback transport: Play · Stop · progress bar · time · tempo. */
-        .orch-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            flex-shrink: 0;
-        }
-        .orch-progress {
-            flex: 1;
-            min-width: 100px;
-            height: 5px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 3px;
-            overflow: hidden;
-            border: 1px solid var(--stroke-soft);
-        }
-        .orch-progress-fill {
-            height: 100%;
-            width: 0%;
-            background: var(--grad-ember);
-            box-shadow: 0 0 6px rgba(255, 140, 80, 0.4);
-            transition: width 0.1s linear;
-        }
-        .orch-time {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.72rem;
-            color: var(--text-secondary);
-            min-width: 82px;
-            text-align: right;
-        }
-        .orch-tempo {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.72rem;
-            color: var(--text-secondary);
-        }
-
-        .orch-sys-message {
-            min-height: 1.1rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.72rem;
-            color: var(--text-ember);
-            text-align: center;
-            opacity: 0;
-            transition: opacity 0.4s;
-            flex-shrink: 0;
-        }
-
-        /* Tiny inline hint pointing out the jam-along flow. Only shown during playback. */
-        .orch-jam-hint {
-            margin: 0;
-            padding: 6px 10px;
-            font-family: 'Fraunces', serif;
-            font-style: italic;
-            font-size: 0.76rem;
-            color: var(--text-muted);
-            text-align: center;
-            background: rgba(255, 140, 80, 0.06);
-            border: 1px solid rgba(255, 140, 80, 0.18);
-            border-radius: var(--r-md);
-            flex-shrink: 0;
-        }
-        .orch-jam-hint svg { color: var(--text-ember); }
-
-        /* Inside the Scribe drawer, let the tab editor flex naturally instead of
-           greedily filling all remaining height — otherwise the Parts section
-           above would get shoved up too far on tall drawers. */
-        .scribe-editor {
-            flex: 1 1 280px;
-            min-height: 280px;
-        }
-
-        @media (max-width: 680px) {
-            .orch-track {
-                grid-template-columns: auto 1fr auto;
-                grid-template-areas: "num info mute" "inst inst inst";
-                gap: 6px;
-            }
-            .orch-track-num { grid-area: num; }
-            .orch-track-info { grid-area: info; }
-            .orch-track-mute { grid-area: mute; }
-            .orch-track-inst { grid-area: inst; }
-        }
-
-        /* ---- Floating mini-player: appears when the Scribe drawer closes mid-playback ---- */
-        #orch-mini {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 150;
-            pointer-events: none; /* the pill itself re-enables them — piano stays clickable */
-            animation: orchMiniPop 0.35s var(--ease-spring);
-        }
-        @keyframes orchMiniPop {
-            from { opacity: 0; transform: translateY(10px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        .orch-mini-pill {
-            pointer-events: auto;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 10px 8px 14px;
-            border-radius: var(--r-full);
-            background: rgba(16, 12, 24, 0.92);
-            border: 1px solid var(--stroke-mid);
-            backdrop-filter: blur(20px) saturate(160%);
-            -webkit-backdrop-filter: blur(20px) saturate(160%);
-            box-shadow: var(--shadow-md), 0 0 30px rgba(255, 140, 80, 0.12);
-            max-width: min(420px, calc(100vw - 40px));
-        }
-        .orch-mini-icon { color: var(--text-ember); flex-shrink: 0; }
-        .orch-mini-title {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--text-primary);
-            letter-spacing: 0.01em;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 160px;
-            min-width: 0;
-        }
-        .orch-mini-progress {
-            width: 72px;
-            height: 3px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 2px;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-        #orch-mini-fill {
-            height: 100%;
-            width: 0%;
-            background: var(--grad-ember);
-            box-shadow: 0 0 6px rgba(255, 140, 80, 0.45);
-            transition: width 0.1s linear;
-        }
-        .orch-mini-time {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.68rem;
-            color: var(--text-secondary);
-            flex-shrink: 0;
-            min-width: 28px;
-        }
-        .orch-mini-btn {
-            width: 28px; height: 28px;
-            padding: 0;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--stroke-soft);
-            color: var(--text-secondary);
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.2s var(--ease-smooth);
-        }
-        .orch-mini-btn:hover {
-            border-color: var(--stroke-mid);
-            color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.05);
-        }
-        .orch-mini-btn:focus-visible { outline: 2px solid var(--ember-warm); outline-offset: 2px; }
-        #btn-orch-mini-stop { color: var(--coral); }
-        #btn-orch-mini-stop:hover { border-color: var(--coral); color: #ff7ea0; }
-
-        @media (max-width: 520px) {
-            #orch-mini { bottom: 12px; right: 12px; left: 12px; }
-            .orch-mini-pill { width: 100%; max-width: none; justify-content: space-between; }
-            .orch-mini-progress { display: none; }
-            .orch-mini-title { max-width: none; flex: 1; }
-        }
-
-        /* ========================================== */
-        /* REDUCED MOTION                            */
-        /* ========================================== */
         @media (prefers-reduced-motion: reduce) {
             .bg-mesh { animation: none; }
             .dot.active { animation: none !important; }
             .key-ripple { display: none; }
             * { transition: none !important; animation: none !important; }
         }
+
+        /* ========================================== */
+        /* LOCAL UTILITIES (replaces Tailwind CDN)   */
+        /* Only the classes this app actually uses.  */
+        /* Placed LAST so they beat component rules  */
+        /* with equal specificity — Tailwind's CDN   */
+        /* injected its styles after this sheet, so  */
+        /* the JS-built markup relies on that order  */
+        /* (e.g. black keys: .piano-key sets         */
+        /* position:relative; .absolute must win).   */
+        /* ========================================== */
+        .hidden { display: none !important; }
+        .flex { display: flex; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .top-0 { top: 0; }
+        .z-10 { z-index: 10; }
+        .flex-none { flex: none; }
+        .justify-center { justify-content: center; }
+        .gap-2 { gap: 0.5rem; }
+        .ml-8 { margin-left: 2rem; }
+
+        /* Rebind-in-progress "?" indicator */
+        @keyframes rebindPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.35; }
+        }
+        .rebind-pulse {
+            color: var(--ember);
+            animation: rebindPulse 1s ease-in-out infinite;
+        }
+
+        /* MIDI label lights up gold while a device is connected */
+        .dock-label.midi-live { color: var(--gold); }
     </style>
 </head>
 <body>
@@ -1715,13 +1644,20 @@
         <button id="btn-toggle-view" type="button" style="display:none;">Switch</button>
 
         <div class="nav-actions">
-            <button id="btn-toggle-songbook" class="btn btn-ghost" type="button" aria-label="Toggle Songbook">
+            <label class="theme-pick" title="Colour theme">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="0.5" fill="currentColor"/><circle cx="17.5" cy="10.5" r="0.5" fill="currentColor"/><circle cx="8.5" cy="7.5" r="0.5" fill="currentColor"/><circle cx="6.5" cy="12.5" r="0.5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+                <select id="theme-select" aria-label="Colour theme">
+                    <option value="ember">Ember</option>
+                    <option value="bloodlines">Bloodlines</option>
+                </select>
+            </label>
+            <button id="btn-toggle-songbook" class="btn btn-ghost" type="button" aria-label="Toggle Songbook" aria-expanded="false">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                <span>Songbook</span>
+                <span id="lbl-toggle-songbook">Songbook</span>
             </button>
-            <button id="btn-toggle-scribe" class="btn btn-ghost" type="button" aria-label="Toggle Scribe">
+            <button id="btn-toggle-scribe" class="btn btn-ghost" type="button" aria-label="Toggle Scribe" aria-expanded="false">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                <span>Scribe</span>
+                <span id="lbl-toggle-scribe">Scribe</span>
             </button>
             <button id="btn-help" class="btn btn-icon btn-ghost" type="button" aria-label="Keyboard shortcuts">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -1769,7 +1705,7 @@
 
             <iframe id="songbook-frame" title="Songbook" src="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview"></iframe>
 
-            <div id="custom-notes-container" class="editor-container" style="display:none; min-height:400px;">
+            <div id="custom-notes-container" class="editor-container hidden" style="min-height:400px;">
                 <div id="customTextareaB" class="editor-layer editor-back" aria-hidden="true"></div>
                 <textarea id="customTextareaA" spellcheck="false" class="editor-layer editor-front"></textarea>
             </div>
@@ -1786,78 +1722,92 @@
                 <p class="stage-tagline">An instrument for Tyrians and everyone else.</p>
             </header>
 
-            <!-- Control dock: row 1 = sound, row 2 = performance + recording -->
+            <!-- Control dock: labeled clusters — Sound / Tempo / Performance / Recorder -->
             <div class="dock glass-strong">
+                <div class="dock-groups">
 
-                <!-- Row 1: SOUND -->
-                <div class="dock-row">
-                    <div class="dock-item dock-item--grow" title="Instrument">
-                        <span class="dock-label">Instrument</span>
-                        <select id="synth-select" class="dock-select">
-                            <optgroup label="Default Magic Instruments">
-                                <option value="lute">Lute</option>
-                                <option value="brass">Brass</option>
-                                <option value="flute">Flute</option>
-                                <option value="crystal">Crystal</option>
-                            </optgroup>
-                        </select>
+                    <div class="dock-group dock-group--sound">
+                        <span class="dock-group-label">Sound</span>
+                        <div class="dock-group-row">
+                            <div class="dock-item dock-item--grow" title="Instrument">
+                                <select id="synth-select" class="dock-select" aria-label="Instrument">
+                                    <optgroup label="Default Magic Instruments">
+                                        <option value="lute">Lute</option>
+                                        <option value="brass">Brass</option>
+                                        <option value="flute">Flute</option>
+                                        <option value="crystal">Crystal</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+
+                            <div class="dock-item" title="Master volume">
+                                <svg class="dock-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                                <input type="range" id="master-volume" class="slider" min="0" max="1" step="0.01" value="0.8" style="width:100px;" aria-label="Master volume">
+                            </div>
+
+                            <label for="sf2-upload" class="dock-item dock-item--btn" title="Load a custom SoundFont (.sf2)">
+                                <svg class="dock-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                <span class="dock-label">Load SF2</span>
+                            </label>
+                            <input type="file" id="sf2-upload" accept=".sf2" class="hidden">
+                            <button id="btn-unload-sf2" class="dock-item dock-item--btn hidden" type="button">Unload SF2</button>
+
+                            <div class="dock-item" id="midi-status" title="Web MIDI controller">
+                                <div id="midi-dot" class="dot midi-dot"></div>
+                                <span class="dock-label" id="midi-label">MIDI: —</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="dock-item" title="Master volume">
-                        <svg class="dock-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                        <input type="range" id="master-volume" class="slider" min="0" max="1" step="0.01" value="0.8" style="width:110px;">
+                    <div class="dock-group">
+                        <span class="dock-group-label">Tempo</span>
+                        <div class="dock-group-row">
+                            <label class="dock-item dock-item--toggle" title="Metronome">
+                                <input type="checkbox" id="metronome-toggle" class="check">
+                                <span class="dock-label">Metronome</span>
+                            </label>
+                            <div class="dock-item" title="Beats per minute">
+                                <input type="number" id="metronome-bpm" value="120" min="20" max="300" class="dock-num" aria-label="Beats per minute">
+                                <span class="dock-label dock-label--dim">BPM</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <label for="sf2-upload" class="dock-item dock-item--btn" title="Load a custom SoundFont (.sf2)">
-                        <svg class="dock-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                        <span class="dock-label">Load SF2</span>
-                    </label>
-                    <input type="file" id="sf2-upload" accept=".sf2" style="display:none;">
-                    <button id="btn-unload-sf2" class="dock-item dock-item--btn" style="display:none;" type="button">Unload SF2</button>
-
-                    <div class="dock-item" id="midi-status" title="Web MIDI controller">
-                        <div id="midi-dot" class="dot midi-dot"></div>
-                        <span class="dock-label" id="midi-label">MIDI: —</span>
-                    </div>
-                </div>
-
-                <!-- Row 2: PERFORMANCE + RECORDING -->
-                <div class="dock-row">
-                    <label class="dock-item dock-item--toggle" title="Metronome">
-                        <input type="checkbox" id="metronome-toggle" class="check">
-                        <span class="dock-label">Metronome</span>
-                    </label>
-
-                    <div class="dock-item" title="Beats per minute">
-                        <input type="number" id="metronome-bpm" value="120" min="20" max="300" class="dock-num">
-                        <span class="dock-label dock-label--dim">BPM</span>
+                    <div class="dock-group">
+                        <span class="dock-group-label">Performance</span>
+                        <div class="dock-group-row">
+                            <label class="dock-item dock-item--toggle" title="Hold notes longer (sustain pedal)">
+                                <input type="checkbox" id="sustain-toggle" class="check">
+                                <span class="dock-label">Sustain</span>
+                            </label>
+                            <button id="btn-panic" class="dock-item dock-item--btn" type="button" title="Instantly release every ringing note">
+                                <svg class="dock-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+                                <span class="dock-label">Silence</span>
+                            </button>
+                        </div>
                     </div>
 
-                    <label class="dock-item dock-item--toggle" title="Hold notes longer (sustain pedal)">
-                        <input type="checkbox" id="sustain-toggle" class="check">
-                        <span class="dock-label">Sustain</span>
-                    </label>
-
-                    <div class="dock-divider"></div>
-
-                    <button id="btn-record" class="dock-item dock-item--btn dock-item--rec" type="button" title="Record (R)">
-                        <div id="rec-dot" class="dot rec-dot"></div>
-                        <span id="rec-label" class="dock-label">Record</span>
-                    </button>
-                    <button id="btn-play-recording" class="dock-item dock-item--btn" type="button" title="Play recording (Space)" disabled>
-                        <svg class="dock-icon" width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                        <span id="play-label" class="dock-label">Play</span>
-                    </button>
-                    <label class="dock-item dock-item--toggle" title="Loop playback">
-                        <input type="checkbox" id="loop-toggle" class="check">
-                        <span class="dock-label">Loop</span>
-                    </label>
-
-                    <div class="dock-spacer"></div>
-
-                    <div class="dock-item dock-item--status" aria-live="polite">
-                        <span id="rec-status">idle</span>
+                    <div class="dock-group dock-group--recorder">
+                        <span class="dock-group-label">Recorder</span>
+                        <div class="dock-group-row">
+                            <button id="btn-record" class="dock-item dock-item--btn dock-item--rec" type="button" title="Record (R)">
+                                <div id="rec-dot" class="dot rec-dot"></div>
+                                <span id="rec-label" class="dock-label">Record</span>
+                            </button>
+                            <button id="btn-play-recording" class="dock-item dock-item--btn" type="button" title="Play recording (Space)" disabled>
+                                <svg class="dock-icon" width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                <span id="play-label" class="dock-label">Play</span>
+                            </button>
+                            <label class="dock-item dock-item--toggle" title="Loop playback">
+                                <input type="checkbox" id="loop-toggle" class="check">
+                                <span class="dock-label">Loop</span>
+                            </label>
+                            <div class="dock-item dock-item--status" aria-live="polite">
+                                <span id="rec-status">idle</span>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </div>
 
@@ -1885,7 +1835,7 @@
                 </div>
 
                 <div style="display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:16px; margin-top:4px;">
-                    <button id="btn-edit-binds" class="btn" type="button">Edit Binds: OFF</button>
+                    <button id="btn-edit-binds" class="btn" type="button" aria-pressed="false">Edit Binds: OFF</button>
                     <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:var(--text-secondary); font-size:0.85rem;">
                         <input type="checkbox" id="octave-toggle" class="check" checked>
                         <span>Restrict Octaves (Low / Mid / High)</span>
@@ -1913,80 +1863,28 @@
             <div class="drawer-header">
                 <div>
                     <h2 class="drawer-title">Tome Scribe</h2>
-                    <p class="drawer-subtitle">One upload — arrange the parts, play along, read the tab.</p>
+                    <p class="drawer-subtitle">Convert arcane MIDI magic.</p>
                 </div>
-                <button id="btn-close-scribe" class="btn btn-icon btn-ghost" aria-label="Close Scribe" type="button">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </button>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <select id="bprSelect" class="input" style="padding:6px 10px; font-size:0.78rem;" title="Bars per row">
+                        <option value="4">4 BPR</option>
+                        <option value="3">3 BPR</option>
+                        <option value="2">2 BPR</option>
+                        <option value="1">1 BPR</option>
+                    </select>
+                    <button id="btn-close-scribe" class="btn btn-icon btn-ghost" aria-label="Close Scribe" type="button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
             </div>
 
-            <!-- Unified MIDI upload — feeds both the track list and the tab notation below -->
             <label for="midiFileInput" class="btn btn-primary" style="width:100%; padding:14px;" title="Upload a MIDI file">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                 Upload MIDI File
             </label>
             <input type="file" id="midiFileInput" accept=".mid,.midi" style="display:none;">
-            <div id="orch-filename" class="orch-filename" style="text-align:center;">No file loaded yet.</div>
 
-            <!-- ═══ Parts & Instruments (assign a voice to each MIDI track) ═══ -->
-            <div class="scribe-section-header">
-                <span>Parts &amp; Instruments</span>
-                <button id="btn-orch-auto" class="btn btn-ghost" type="button" title="Auto-match each track to the closest SF2 preset (by General MIDI program)" style="display:none; padding:5px 10px; font-size:0.72rem;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-                    Auto
-                </button>
-            </div>
-
-            <div id="orch-empty" class="orch-empty">
-                Upload a MIDI file to see its parts here.
-            </div>
-
-            <div id="orch-tracks" class="orch-tracks-wrap" style="display:none;"></div>
-
-            <div id="orch-controls" class="orch-controls" style="display:none;">
-                <button id="btn-orch-play" class="btn btn-primary" type="button" title="Play">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                    <span>Play</span>
-                </button>
-                <button id="btn-orch-stop" class="btn" type="button" title="Stop">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
-                    <span>Stop</span>
-                </button>
-                <div class="orch-progress" title="Playback progress">
-                    <div id="orch-progress-fill" class="orch-progress-fill"></div>
-                </div>
-                <span id="orch-time" class="orch-time">0:00 / 0:00</span>
-                <div class="orch-tempo">
-                    <span>Tempo</span>
-                    <select id="orch-tempo" class="input" style="padding:5px 8px; font-size:0.72rem;">
-                        <option value="0.5">0.5×</option>
-                        <option value="0.75">0.75×</option>
-                        <option value="1" selected>1×</option>
-                        <option value="1.25">1.25×</option>
-                        <option value="1.5">1.5×</option>
-                        <option value="2">2×</option>
-                    </select>
-                </div>
-            </div>
-
-            <div id="orch-sys-message" class="orch-sys-message">Ready.</div>
-            <p class="orch-jam-hint" id="orch-jam-hint" style="display:none;">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:4px;"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-                Mute a part, close this panel — playback keeps going so you can cover it live on the piano.
-            </p>
-
-            <!-- ═══ Notation (tab preview + export tools) ═══ -->
-            <div class="scribe-section-header">
-                <span>Notation</span>
-                <select id="bprSelect" class="input" style="padding:5px 10px; font-size:0.72rem;" title="Bars per row">
-                    <option value="4">4 BPR</option>
-                    <option value="3">3 BPR</option>
-                    <option value="2">2 BPR</option>
-                    <option value="1">1 BPR</option>
-                </select>
-            </div>
-
-            <div style="display:flex; gap:8px; flex-shrink:0;">
+            <div style="display:flex; gap:8px;">
                 <button id="copyTabBtn" class="btn" type="button" style="flex:1; flex-direction:column; padding:10px; gap:2px;">
                     <span style="display:flex; align-items:center; gap:6px; font-size:0.75rem; font-weight:600;">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -2010,11 +1908,11 @@
                 </button>
             </div>
 
-            <div id="scribe-sys-message" style="min-height:1.25rem; font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:var(--text-ember); text-align:center; opacity:0; transition:opacity 0.5s; flex-shrink:0;">
+            <div id="scribe-sys-message" style="min-height:1.25rem; font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:var(--text-ember); text-align:center; opacity:0; transition:opacity 0.5s;">
                 Awaiting input…
             </div>
 
-            <div class="editor-container scribe-editor">
+            <div class="editor-container">
                 <div id="textareaB" class="editor-layer editor-back" aria-hidden="true"></div>
                 <textarea id="textareaA" spellcheck="false" class="editor-layer editor-front"></textarea>
             </div>
@@ -2073,26 +1971,6 @@
         <div style="margin-top:24px; padding-top:16px; border-top:1px solid var(--stroke-soft); text-align:center; color:var(--text-muted); font-style:italic; font-family:'Fraunces', serif; font-size:0.82rem;">
             Crafted with ember and ink. For exclusive use of everyone.
         </div>
-    </div>
-</div>
-
-<!-- ============================================ -->
-<!-- ORCHESTRA MINI-PLAYER                        -->
-<!-- Appears when the Scribe panel is closed but playback is still running, -->
-<!-- so the user can jam on the piano without losing track of what's playing. -->
-<!-- ============================================ -->
-<div id="orch-mini" aria-label="Orchestra mini player" style="display:none;">
-    <div class="orch-mini-pill">
-        <svg class="orch-mini-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-        <span class="orch-mini-title" id="orch-mini-title">—</span>
-        <div class="orch-mini-progress"><div id="orch-mini-fill"></div></div>
-        <span class="orch-mini-time" id="orch-mini-time">0:00</span>
-        <button id="btn-orch-mini-stop" class="orch-mini-btn" type="button" aria-label="Stop" title="Stop">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
-        </button>
-        <button id="btn-orch-mini-expand" class="orch-mini-btn" type="button" aria-label="Open Scribe" title="Open Scribe">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-        </button>
     </div>
 </div>
 
@@ -2239,48 +2117,118 @@
             }
         } catch(e) {}
 
+        // ==========================================
+        // 1.5 THEMES
+        // ==========================================
+        // Palettes live entirely in CSS custom properties; JS only flips the
+        // data-theme attribute, persists the choice, and adjusts particle hues.
+        const themeSelect = document.getElementById('theme-select');
+        const themeMeta = document.querySelector('meta[name="theme-color"]');
+
+        // Per-theme particle character: Ember keeps the full note rainbow;
+        // Bloodlines compresses it into a blood-crimson-to-aged-gold band.
+        const THEME_FX = {
+            ember:      { sat: 85, light: 72, hue: h => h },
+            bloodlines: { sat: 68, light: 58, hue: h => (330 + h * 0.25) % 360 }
+        };
+
+        function currentThemeName() {
+            return document.documentElement.dataset.theme || 'ember';
+        }
+
+        function applyTheme(name) {
+            if (name === 'ember') delete document.documentElement.dataset.theme;
+            else document.documentElement.dataset.theme = name;
+            try { localStorage.setItem('tyrianTheme', name); } catch (e) {}
+            // Keep the browser chrome color in step with the page background
+            if (themeMeta) {
+                const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg-base').trim();
+                if (bg) themeMeta.content = bg;
+            }
+        }
+
+        if (themeSelect) {
+            themeSelect.value = currentThemeName();
+            applyTheme(currentThemeName()); // sync meta color on first load
+            themeSelect.addEventListener('change', (e) => {
+                applyTheme(e.target.value);
+                showMessage(e.target.value === 'bloodlines'
+                    ? 'The Masquerade holds. Theme attuned.'
+                    : 'Ember rekindled. Theme attuned.');
+            });
+        }
+
+        // ==========================================
+        // 1.6 PERSISTED PLAYER SETTINGS (volume, BPM)
+        // ==========================================
+        const masterVolumeSlider = document.getElementById('master-volume');
+        try {
+            const savedVol = localStorage.getItem('tyrianVolume');
+            if (savedVol !== null && savedVol !== '') masterVolumeSlider.value = savedVol;
+        } catch (e) {}
+        masterVolumeSlider.addEventListener('input', (e) => {
+            try { localStorage.setItem('tyrianVolume', e.target.value); } catch (err) {}
+        });
+
+        try {
+            const savedBpm = parseInt(localStorage.getItem('tyrianBpm'), 10);
+            if (!isNaN(savedBpm) && savedBpm >= 20 && savedBpm <= 300) {
+                bpm = savedBpm;
+                bpmInput.value = savedBpm;
+            }
+        } catch (e) {}
+
+        let sysMsgTimer = null;
         function showMessage(m) {
             const sm = document.getElementById('sys-message');
             sm.textContent = m; sm.style.opacity = 1;
-            setTimeout(() => sm.style.opacity = 0, 2000);
+            clearTimeout(sysMsgTimer);
+            sysMsgTimer = setTimeout(() => sm.style.opacity = 0, 2000);
         }
 
+        let scribeMsgTimer = null;
         function showScribeMessage(msg) {
             const sm = document.getElementById('scribe-sys-message');
             sm.textContent = msg;
             sm.style.opacity = 1;
-            setTimeout(() => sm.style.opacity = 0, 4000);
+            clearTimeout(scribeMsgTimer);
+            scribeMsgTimer = setTimeout(() => sm.style.opacity = 0, 4000);
         }
 
         // ==========================================
         // 2. SLIDING PANELS & SONGBOOK
         // ==========================================
+        const lblToggleSongbook = document.getElementById('lbl-toggle-songbook');
+        const lblToggleScribe = document.getElementById('lbl-toggle-scribe');
+
         btnToggleSongbook.addEventListener('click', () => {
             isSongbookOpen = !isSongbookOpen;
+            btnToggleSongbook.classList.toggle('active', isSongbookOpen);
+            btnToggleSongbook.setAttribute('aria-expanded', String(isSongbookOpen));
+            lblToggleSongbook.textContent = isSongbookOpen ? 'Close Songbook' : 'Songbook';
             if (isSongbookOpen) {
                 songbookPanel.classList.add('is-open');
                 songbookPanel.classList.remove('hidden');
-                btnToggleSongbook.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg> <span class="hidden sm:inline">Close Songbook</span><span class="inline sm:hidden">Close</span>';
                 if (!songbookFrame.src || songbookFrame.src === window.location.href || songbookFrame.src === 'about:blank') {
                     loadSongbookUrl();
                 }
             } else {
                 songbookPanel.classList.remove('is-open');
                 setTimeout(() => songbookPanel.classList.add('hidden'), 450);
-                btnToggleSongbook.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg> <span class="hidden sm:inline">Open Songbook</span><span class="inline sm:hidden">Songs</span>';
             }
         });
 
         btnToggleScribe.addEventListener('click', () => {
             isScribeOpen = !isScribeOpen;
+            btnToggleScribe.classList.toggle('active', isScribeOpen);
+            btnToggleScribe.setAttribute('aria-expanded', String(isScribeOpen));
+            lblToggleScribe.textContent = isScribeOpen ? 'Close Scribe' : 'Scribe';
             if (isScribeOpen) {
                 scribePanel.classList.add('is-open');
                 scribePanel.classList.remove('hidden');
-                btnToggleScribe.innerHTML = '<span class="hidden sm:inline">Close Scribe</span><span class="inline sm:hidden">Close</span> <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>';
             } else {
                 scribePanel.classList.remove('is-open');
                 setTimeout(() => scribePanel.classList.add('hidden'), 450);
-                btnToggleScribe.innerHTML = '<span class="hidden sm:inline">Open Scribe</span><span class="inline sm:hidden">Scribe</span> <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>';
             }
         });
 
@@ -2303,10 +2251,8 @@
 
         // Tome of Melodies Button
         btnLoadTomeDark.addEventListener('click', () => {
-            btnLoadTomeDark.classList.add('border-[#d4af37]');
-            btnLoadTomeDark.classList.remove('border-[#5a4b3c]');
-            btnToggleCustom.classList.remove('border-[#d4af37]');
-            btnToggleCustom.classList.add('border-[#5a4b3c]');
+            btnLoadTomeDark.classList.add('is-active');
+            btnToggleCustom.classList.remove('is-active');
 
             docInputArea.classList.remove('hidden');
             customNotesContainer.classList.add('hidden');
@@ -2318,10 +2264,8 @@
 
         // Custom Notes Toggle Button
         btnToggleCustom.addEventListener('click', () => {
-            btnToggleCustom.classList.add('border-[#d4af37]');
-            btnToggleCustom.classList.remove('border-[#5a4b3c]');
-            btnLoadTomeDark.classList.remove('border-[#d4af37]');
-            btnLoadTomeDark.classList.add('border-[#5a4b3c]');
+            btnToggleCustom.classList.add('is-active');
+            btnLoadTomeDark.classList.remove('is-active');
 
             docInputArea.classList.add('hidden');
             songbookFrame.classList.add('hidden');
@@ -2390,10 +2334,12 @@
             else if (instrument === 'flute') baseColor = '#bbffaa';
             else if (instrument && instrument.startsWith('sf2_')) baseColor = '#ffccff';
 
-            // Each note-offset nudges the hue so consecutive notes paint a visible pattern
+            // Each note-offset nudges the hue so consecutive notes paint a visible pattern.
+            // The active theme shapes the palette (Ember: full rainbow; Bloodlines: blood-to-gold).
+            const fx = THEME_FX[currentThemeName()] || THEME_FX.ember;
             const hueShift = (typeof offset === 'number') ? NOTE_HUES[((offset % 12) + 12) % 12] : null;
             const color = hueShift !== null
-                ? `hsl(${hueShift}, 85%, 72%)`
+                ? `hsl(${Math.round(fx.hue(hueShift))}, ${fx.sat}%, ${fx.light}%)`
                 : baseColor;
 
             for (let i = 0; i < 6; i++) {
@@ -2490,7 +2436,7 @@
             e.stopPropagation(); e.preventDefault();
             if (activeRebind) cancelRebind();
             let originalText = targetEl.innerHTML;
-            targetEl.innerHTML = `<span class="text-[#ff8c00] animate-pulse">?</span>`;
+            targetEl.innerHTML = `<span class="rebind-pulse">?</span>`;
             activeRebind = { type, index, el: targetEl, originalText };
             showMessage("Press any key to bind...");
         }
@@ -2556,15 +2502,13 @@
             }
         }
 
-        function playNote(offset, octave, elementId, instrumentOverride) {
+        function playNote(offset, octave, elementId) {
             initAudio();
             if (activeNodes[elementId]) return;
 
             const midiNote = 12 * (octave + 1) + offset;
             const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
-            // Optional override lets the Orchestra route each track through its own instrument
-            // without disturbing the user-facing synth selector. Falls back to the dropdown.
-            const instrumentMode = instrumentOverride || synthSelect.value;
+            const instrumentMode = synthSelect.value;
 
             // Trigger Particle Magic
             spawnParticles(elementId, instrumentMode, offset);
@@ -2901,6 +2845,13 @@
         window.addEventListener('blur', releaseAllNotes);
         document.addEventListener('visibilitychange', () => { if (document.hidden) releaseAllNotes(); });
 
+        // Panic button — instantly cut everything: scheduled playback and every ringing note
+        document.getElementById('btn-panic').addEventListener('click', () => {
+            stopPlayback();
+            releaseAllNotes();
+            showMessage('Silence. All notes released.');
+        });
+
         // --- CORE FIX: RESTORED OCTAVE REBIND LISTENERS ---
         btnOctDown.addEventListener('mousedown', (e) => {
             if (isRemappingMode) startRebind(e, 'octaveDown', null, lblOctDown);
@@ -2939,15 +2890,23 @@
         });
 
         window.addEventListener('keydown', (e) => {
-            if (/^F\d+$/.test(e.code)) {
+            if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+            // Only hijack F-keys that are actually bound to notes — F5/F11/F12 etc. keep
+            // their browser behavior unless the player deliberately bound them.
+            if (/^F\d+$/.test(e.code) && bindings.notes.includes(e.code)) {
                 e.preventDefault();
             }
 
-            if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
             if (e.repeat) return;
 
             if (currentViewMode === 'gw2') {
                 if (activeRebind) {
+                    if (e.code === 'Escape') {
+                        cancelRebind();
+                        showMessage("Rebind cancelled.");
+                        return;
+                    }
                     if (activeRebind.type === 'note') {
                         bindings.notes[activeRebind.index] = e.code;
                         activeRebind.el.innerHTML = getFormattedBindString(e.code, currentOctave);
@@ -2996,11 +2955,11 @@
         });
 
         window.addEventListener('keyup', (e) => {
-            if (/^F\d+$/.test(e.code)) {
+            if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+            if (/^F\d+$/.test(e.code) && bindings.notes.includes(e.code)) {
                 e.preventDefault();
             }
-
-            if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
             if (currentViewMode === 'gw2') {
                 let idx = bindings.notes.indexOf(e.code);
 
@@ -3028,8 +2987,16 @@
             if (octaveMode === 'restricted') {
                 if (currentOctave < 3) currentOctave = 3;
                 if (currentOctave > 5) currentOctave = 5;
+            } else {
+                // Full mode still needs sane audio bounds
+                if (currentOctave < 0) currentOctave = 0;
+                if (currentOctave > 8) currentOctave = 8;
             }
-            document.getElementById('octave-display').textContent = `Octave: ${currentOctave === 4 ? 'Mid' : (currentOctave === 3 ? 'Low' : 'High')}`;
+            const octLabel = currentOctave === 4 ? 'Mid'
+                : currentOctave === 3 ? 'Low'
+                : currentOctave === 5 ? 'High'
+                : `${currentOctave}`;
+            document.getElementById('octave-display').textContent = `Octave: ${octLabel}`;
             document.querySelectorAll('#gw2-view .key-bind').forEach(el => {
                 let i = el.dataset.index;
                 el.textContent = getFormattedBindString(bindings.notes[i], currentOctave);
@@ -3038,8 +3005,10 @@
 
         btnEditBinds.addEventListener('click', () => {
             isRemappingMode = !isRemappingMode;
+            if (!isRemappingMode) cancelRebind();
             btnEditBinds.textContent = isRemappingMode ? 'Edit Binds: ON' : 'Edit Binds: OFF';
-            btnEditBinds.classList.toggle('text-[#d4af37]');
+            btnEditBinds.classList.toggle('active', isRemappingMode);
+            btnEditBinds.setAttribute('aria-pressed', String(isRemappingMode));
         });
 
         octaveToggle.addEventListener('change', (e) => { octaveMode = e.target.checked ? 'restricted' : 'full'; updateOctave(0); });
@@ -3101,6 +3070,7 @@
             if (val > 300) val = 300;
             bpmInput.value = val;
             bpm = val;
+            try { localStorage.setItem('tyrianBpm', String(val)); } catch (err) {}
             if (isMetronomeOn) showMessage(`BPM attuned to ${bpm}.`);
         });
 
@@ -3306,10 +3276,11 @@
             const offset = midiNote % 12;
             const elementId = `midi-note-${midiNote}`;
             if (activeNodes[elementId]) return;
+            // playNote is wrapped by the recorder below, so this is captured automatically —
+            // no explicit recordEvent here (it used to double-record every MIDI note).
             playNote(offset, octave, elementId);
             // Also light up the on-screen key if visible in the current view
             lightCorrespondingKey(offset, octave, true);
-            if (isRecording) recordEvent('down', offset, octave, elementId);
         }
 
         function midiNoteOff(midiNote) {
@@ -3318,7 +3289,6 @@
             const elementId = `midi-note-${midiNote}`;
             stopNote(elementId);
             lightCorrespondingKey(offset, octave, false);
-            if (isRecording) recordEvent('up', offset, octave, elementId);
         }
 
         function lightCorrespondingKey(offset, octave, on) {
@@ -3337,21 +3307,22 @@
             const cmd = status & 0xf0;
             if (cmd === 0x90 && velocity > 0) midiNoteOn(note, velocity);
             else if (cmd === 0x80 || (cmd === 0x90 && velocity === 0)) midiNoteOff(note);
-            else if (cmd === 0xb0 && note === 64) isSustainEnabled = velocity >= 64; // CC64 = sustain pedal
+            else if (cmd === 0xb0 && note === 64) { // CC64 = sustain pedal
+                isSustainEnabled = velocity >= 64;
+                if (sustainToggle) sustainToggle.checked = isSustainEnabled; // keep UI in sync
+            }
         }
 
         function updateMidiIndicator(names) {
             if (!names || names.length === 0) {
                 midiDot.classList.remove('active');
                 midiLabel.textContent = 'MIDI: —';
-                midiLabel.classList.remove('text-[#d4af37]');
-                midiLabel.classList.add('status-text');
+                midiLabel.classList.remove('midi-live');
             } else {
                 midiDot.classList.add('active');
                 const first = names[0].length > 18 ? names[0].slice(0, 18) + '…' : names[0];
                 midiLabel.textContent = names.length === 1 ? first : `${first} +${names.length - 1}`;
-                midiLabel.classList.add('text-[#d4af37]');
-                midiLabel.classList.remove('status-text');
+                midiLabel.classList.add('midi-live');
             }
         }
 
@@ -3513,8 +3484,8 @@
         // We wrap the originals — monkey-patch style — to avoid touching the core audio code.
         const _origPlayNote = playNote;
         const _origStopNote = stopNote;
-        playNote = function(offset, octave, elementId, instrumentOverride) {
-            _origPlayNote(offset, octave, elementId, instrumentOverride);
+        playNote = function(offset, octave, elementId) {
+            _origPlayNote(offset, octave, elementId);
             if (isRecording && !elementId.startsWith('pb-')) {
                 recordEvent('down', offset, octave, elementId);
             }
@@ -3548,6 +3519,7 @@
         window.addEventListener('keydown', (e) => {
             if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
             if (activeRebind) return;
+            if (e.repeat) return;
 
             if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
                 e.preventDefault();
@@ -3853,28 +3825,19 @@
             textareaA.dispatchEvent(new Event('input', { bubbles: true }));
         }
 
-        // Forward-declared here so the Orchestra block below can assign to it.
-        // When set, the shared MIDI upload will also populate the Parts & Instruments list.
-        let orchLoadMidi = null;
-
         midiInput.addEventListener("change", async (e) => {
             try {
                 const file = e.target.files[0];
                 if (!file) return;
-                showScribeMessage(`Loading ${file.name}... Please wait.`);
+                showScribeMessage(`Scribing ${file.name}... Please wait.`);
                 originalFileName = file.name;
                 globalMidiFile = file;
 
                 bprSelect.value = "4";
                 settings.barsPerRow = 4;
 
-                // Run both jobs in parallel: generate the text tabs AND parse the
-                // Orchestra track list. One upload, both features populated.
-                await Promise.all([
-                    processMidiFile(),
-                    orchLoadMidi ? orchLoadMidi(file) : Promise.resolve()
-                ]);
-                showScribeMessage(`Ready — ${file.name} loaded.`);
+                await processMidiFile();
+                showScribeMessage(`Scribe complete. Notation generated successfully.`);
             } catch (err) {
                 console.error("Critical MIDI upload error:", err);
                 showScribeMessage(err.message || "Failed to process MIDI file. Check console.");
@@ -3936,14 +3899,25 @@
 
 
         // --- Utilities ---
-        document.getElementById("copyTabBtn").addEventListener("click", () => {
+        document.getElementById("copyTabBtn").addEventListener("click", async () => {
             const content = document.getElementById("textareaA").value.trim();
             if (!content) {
                 showScribeMessage("Nothing to copy!");
                 return;
             }
 
-            // Generate invisible clipboard container safely
+            // Prefer the modern async Clipboard API when available (secure contexts)
+            if (navigator.clipboard && window.isSecureContext) {
+                try {
+                    await navigator.clipboard.writeText(content);
+                    showScribeMessage("Tabs copied to clipboard!");
+                    return;
+                } catch (ex) {
+                    // fall through to the legacy path below
+                }
+            }
+
+            // Legacy fallback: invisible textarea + execCommand
             const textArea = document.createElement("textarea");
             textArea.value = content;
             textArea.style.position = "fixed";
@@ -4110,413 +4084,6 @@
             XLSXLib.writeFile(wb, `${baseFileName}.xlsx`);
             showScribeMessage("Spreadsheet successfully exported!");
         });
-
-        // ==========================================================================
-        // 4. ORCHESTRA — per-track instrument assignment & MIDI playback
-        // ==========================================================================
-        // Lives inside the Scribe drawer so the user gets one unified surface:
-        //   upload MIDI → see the parts → assign instruments → play → see the tab.
-        // Piano stays visible because the drawer pushes content instead of covering it.
-        // Closing the drawer while playback is running hands control to a floating
-        // mini-pill, so the user can jam on the piano while the other parts play.
-        //
-        // The player routes each scheduled note through playNote(..., instrumentOverride)
-        // so the user's live instrument selector is never disturbed.
-        (function initOrchestra() {
-            // --- DOM refs: all live inside the Scribe panel now ---
-            const fileNameEl = document.getElementById('orch-filename');
-            const tracksWrap = document.getElementById('orch-tracks');
-            const emptyEl = document.getElementById('orch-empty');
-            const controlsEl = document.getElementById('orch-controls');
-            const btnPlay = document.getElementById('btn-orch-play');
-            const btnStop = document.getElementById('btn-orch-stop');
-            const btnAuto = document.getElementById('btn-orch-auto');
-            const progressFill = document.getElementById('orch-progress-fill');
-            const timeEl = document.getElementById('orch-time');
-            const tempoSel = document.getElementById('orch-tempo');
-            const msgEl = document.getElementById('orch-sys-message');
-            const jamHint = document.getElementById('orch-jam-hint');
-
-            // Floating mini-player
-            const miniBar = document.getElementById('orch-mini');
-            const miniTitle = document.getElementById('orch-mini-title');
-            const miniFill = document.getElementById('orch-mini-fill');
-            const miniTime = document.getElementById('orch-mini-time');
-            const btnMiniStop = document.getElementById('btn-orch-mini-stop');
-            const btnMiniExpand = document.getElementById('btn-orch-mini-expand');
-
-            // One source of truth for playback state
-            const orch = {
-                midi: null,              // parsed @tonejs/midi object
-                tracks: [],              // [{ name, channel, noteCount, program, isDrum, notes, assignedInstrument, muted }]
-                playing: false,
-                startedAt: 0,            // performance.now() when playback began
-                duration: 0,             // total seconds (original tempo)
-                activeIds: new Set(),    // elementIds currently ringing from playback
-                timers: [],              // setTimeout handles so we can cancel cleanly
-                rafId: null,             // progress-bar animation frame
-                tempo: 1.0               // playback speed multiplier
-            };
-
-            function orchMsg(txt) {
-                msgEl.textContent = txt;
-                msgEl.style.opacity = 1;
-                clearTimeout(orchMsg._t);
-                orchMsg._t = setTimeout(() => msgEl.style.opacity = 0, 3500);
-            }
-
-            function formatTime(sec) {
-                if (!isFinite(sec) || sec < 0) sec = 0;
-                const m = Math.floor(sec / 60);
-                const s = Math.floor(sec % 60);
-                return `${m}:${s.toString().padStart(2, '0')}`;
-            }
-
-            function escapeAttr(s) {
-                return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
-                                .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-            }
-
-            // --- Mini-bar visibility (shown only when Scribe is closed AND playing) ---
-            function showMiniBar() {
-                if (globalMidiFile) miniTitle.textContent = globalMidiFile.name;
-                miniBar.style.display = '';
-            }
-            function hideMiniBar() { miniBar.style.display = 'none'; }
-
-            // --- General MIDI program-number → best-guess built-in synth ---
-            // Used when no SF2 preset matches a track's GM program. Keeps things musical
-            // even with just the four built-in synths.
-            function gmProgramToBuiltin(program, isDrum) {
-                if (isDrum) return 'crystal';
-                if (program == null) return 'lute';
-                if (program < 8)   return 'lute';     // Piano family
-                if (program < 16)  return 'crystal';  // Chromatic perc
-                if (program < 24)  return 'brass';    // Organ
-                if (program < 32)  return 'lute';     // Guitar
-                if (program < 40)  return 'brass';    // Bass
-                if (program < 56)  return 'flute';    // Strings / Ensemble
-                if (program < 80)  return 'brass';    // Brass / Reed
-                if (program < 96)  return 'flute';    // Pipe / Synth Lead
-                if (program < 104) return 'crystal';  // Synth Pad
-                return 'crystal';                     // FX / Ethnic / Perc / SFX
-            }
-
-            // Find the closest SF2 preset for a given GM program. Prefers bank 0 (melodic)
-            // for pitched tracks, bank 128 (percussion) for drums.
-            function findMatchingSf2Preset(program, isDrum) {
-                if (!sf2Data.presets || sf2Data.presets.length === 0) return null;
-                if (isDrum) {
-                    const perc = sf2Data.presets.find(p => p.bank === 128);
-                    if (perc) return sf2Data.presets.indexOf(perc);
-                }
-                const exact = sf2Data.presets.find(p => p.bank === 0 && p.presetId === program);
-                if (exact) return sf2Data.presets.indexOf(exact);
-                const anyBank = sf2Data.presets.find(p => p.presetId === program);
-                if (anyBank) return sf2Data.presets.indexOf(anyBank);
-                const firstMelodic = sf2Data.presets.find(p => p.bank !== 128);
-                if (firstMelodic) return sf2Data.presets.indexOf(firstMelodic);
-                return 0;
-            }
-
-            function pickDefaultInstrument(track) {
-                const sf2Idx = findMatchingSf2Preset(track.program, track.isDrum);
-                if (sf2Idx !== null && sf2Data.presets.length > 0) return 'sf2_' + sf2Idx;
-                return gmProgramToBuiltin(track.program, track.isDrum);
-            }
-
-            // --- Parse a MIDI file into our track model ---
-            async function loadMidiFile(file) {
-                await midiReady;
-                if (!MidiLib) {
-                    orchMsg('MIDI library unavailable.');
-                    return;
-                }
-                try {
-                    const buffer = await file.arrayBuffer();
-                    const midi = new MidiLib.Midi(buffer);
-
-                    // Keep only tracks that have actual notes — empty tracks are noise
-                    const usable = midi.tracks.filter(t => t.notes && t.notes.length > 0);
-                    if (usable.length === 0) {
-                        orchMsg('No playable notes in this MIDI.');
-                        renderTracks();
-                        return;
-                    }
-
-                    orch.midi = midi;
-                    orch.duration = midi.duration || usable.reduce((max, t) => {
-                        const last = t.notes[t.notes.length - 1];
-                        return last ? Math.max(max, last.time + last.duration) : max;
-                    }, 0);
-
-                    orch.tracks = usable.map((t, i) => {
-                        const isDrum = t.channel === 9; // MIDI channel 10 (0-indexed) is percussion
-                        const program = (t.instrument && typeof t.instrument.number === 'number')
-                            ? t.instrument.number : 0;
-                        const nameGuess = (t.name && t.name.trim()) ||
-                            (t.instrument && t.instrument.name) ||
-                            (isDrum ? 'Drums' : `Track ${i + 1}`);
-                        const track = {
-                            name: nameGuess,
-                            channel: t.channel != null ? t.channel : 0,
-                            noteCount: t.notes.length,
-                            program,
-                            isDrum,
-                            notes: t.notes.map(n => ({
-                                midi: n.midi, time: n.time,
-                                duration: n.duration, velocity: n.velocity
-                            })),
-                            muted: false,
-                            assignedInstrument: null
-                        };
-                        track.assignedInstrument = pickDefaultInstrument(track);
-                        return track;
-                    });
-
-                    fileNameEl.textContent = file.name;
-                    fileNameEl.classList.add('has-file');
-                    btnAuto.style.display = '';
-                    renderTracks();
-                    orchMsg(`${orch.tracks.length} track${orch.tracks.length === 1 ? '' : 's'} · ${formatTime(orch.duration)}`);
-                } catch (err) {
-                    console.error('Orchestra: failed to parse MIDI', err);
-                    orchMsg('Could not parse this MIDI file.');
-                }
-            }
-
-            // Expose the loader to the shared MIDI upload handler at module scope.
-            orchLoadMidi = loadMidiFile;
-
-            // --- Render the list of track rows ---
-            function renderTracks() {
-                if (orch.tracks.length === 0) {
-                    emptyEl.style.display = '';
-                    tracksWrap.style.display = 'none';
-                    controlsEl.style.display = 'none';
-                    btnAuto.style.display = 'none';
-                    return;
-                }
-                emptyEl.style.display = 'none';
-                tracksWrap.style.display = '';
-                controlsEl.style.display = '';
-
-                tracksWrap.innerHTML = '';
-                orch.tracks.forEach((trk, idx) => {
-                    const row = document.createElement('div');
-                    row.className = 'orch-track' + (trk.muted ? ' is-muted' : '');
-                    row.dataset.idx = idx;
-
-                    const chLabel = trk.isDrum ? 'Ch 10 · Drums' : `Ch ${trk.channel + 1}`;
-                    const muteIcon = trk.muted
-                        ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>'
-                        : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
-
-                    row.innerHTML = `
-                        <div class="orch-track-num">${idx + 1}</div>
-                        <div class="orch-track-info">
-                            <span class="orch-track-name" title="${escapeAttr(trk.name)}">${escapeAttr(trk.name)}</span>
-                            <span class="orch-track-meta">${chLabel} · ${trk.noteCount} notes</span>
-                        </div>
-                        <select class="input orch-track-inst" aria-label="Instrument for ${escapeAttr(trk.name)}"></select>
-                        <button class="orch-track-mute ${trk.muted ? 'is-muted' : ''}" type="button" aria-label="${trk.muted ? 'Unmute' : 'Mute'} track" title="${trk.muted ? 'Unmute — let playback cover this part again' : 'Mute — play this part yourself on the piano'}">${muteIcon}</button>
-                    `;
-
-                    // Clone the main synth selector's options so SF2 presets show up here too
-                    const selEl = row.querySelector('.orch-track-inst');
-                    selEl.innerHTML = synthSelect.innerHTML;
-                    // If the remembered assignment was removed (e.g. SF2 unloaded), fall back
-                    if (!Array.from(selEl.options).some(o => o.value === trk.assignedInstrument)) {
-                        trk.assignedInstrument = gmProgramToBuiltin(trk.program, trk.isDrum);
-                    }
-                    selEl.value = trk.assignedInstrument;
-                    selEl.addEventListener('change', (e) => {
-                        trk.assignedInstrument = e.target.value;
-                    });
-
-                    const muteBtn = row.querySelector('.orch-track-mute');
-                    muteBtn.addEventListener('click', () => {
-                        trk.muted = !trk.muted;
-                        renderTracks();
-                        // Silence any notes from this track that are currently ringing
-                        if (trk.muted && orch.playing) {
-                            for (const id of Array.from(orch.activeIds)) {
-                                if (id.startsWith(`orch-${idx}-`)) {
-                                    stopNote(id);
-                                    orch.activeIds.delete(id);
-                                }
-                            }
-                        }
-                    });
-
-                    tracksWrap.appendChild(row);
-                });
-            }
-
-            // Refresh every dropdown — called when the drawer opens so newly-loaded
-            // SF2 presets appear without requiring a page reload.
-            function refreshAllInstrumentDropdowns() {
-                const selects = tracksWrap.querySelectorAll('.orch-track-inst');
-                selects.forEach((sel, idx) => {
-                    const trk = orch.tracks[idx];
-                    if (!trk) return;
-                    const prev = trk.assignedInstrument;
-                    sel.innerHTML = synthSelect.innerHTML;
-                    if (Array.from(sel.options).some(o => o.value === prev)) {
-                        sel.value = prev;
-                    } else {
-                        const fallback = gmProgramToBuiltin(trk.program, trk.isDrum);
-                        sel.value = fallback;
-                        trk.assignedInstrument = fallback;
-                    }
-                });
-            }
-
-            // --- Auto-assign button: re-pick smart defaults (handy after loading SF2) ---
-            btnAuto.addEventListener('click', () => {
-                if (orch.tracks.length === 0) return;
-                orch.tracks.forEach(trk => { trk.assignedInstrument = pickDefaultInstrument(trk); });
-                renderTracks();
-                orchMsg('Auto-assigned each track to its best match.');
-            });
-
-            // --- Playback ---
-            // @tonejs/midi gives us absolute seconds already accounting for tempo changes,
-            // so a flat setTimeout schedule is simple and plenty precise for human music.
-            function startPlayback() {
-                if (orch.tracks.length === 0 || orch.playing) return;
-                initAudio();
-                orch.playing = true;
-                orch.startedAt = performance.now();
-                orch.activeIds = new Set();
-                orch.timers = [];
-                orch.tempo = parseFloat(tempoSel.value) || 1.0;
-                const speed = 1 / orch.tempo;
-
-                btnPlay.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg><span>Pause</span>';
-                tracksWrap.querySelectorAll('.orch-track').forEach(el => el.classList.add('is-active'));
-
-                orch.tracks.forEach((trk, tIdx) => {
-                    if (trk.muted) return;
-                    trk.notes.forEach((n, nIdx) => {
-                        const octave = Math.floor(n.midi / 12) - 1;
-                        const offset = n.midi % 12;
-                        const elementId = `orch-${tIdx}-${nIdx}`;
-
-                        const onTimer = setTimeout(() => {
-                            if (!orch.playing || trk.muted) return;
-                            // Route this note through the track's chosen instrument.
-                            // Live input is unaffected — it still uses synthSelect.value.
-                            playNote(offset, octave, elementId, trk.assignedInstrument);
-                            orch.activeIds.add(elementId);
-                        }, n.time * 1000 * speed);
-
-                        const offTimer = setTimeout(() => {
-                            if (orch.activeIds.has(elementId)) {
-                                stopNote(elementId);
-                                orch.activeIds.delete(elementId);
-                            }
-                        }, (n.time + n.duration) * 1000 * speed);
-
-                        orch.timers.push(onTimer, offTimer);
-                    });
-                });
-
-                const endTimer = setTimeout(() => stopPlaybackOrch(true),
-                                            orch.duration * 1000 * speed + 200);
-                orch.timers.push(endTimer);
-
-                tickProgress();
-                jamHint.style.display = '';
-                orchMsg(`Playing · ${orch.tempo}× — close this panel to jam on the piano`);
-            }
-
-            // Named stopPlaybackOrch to avoid colliding with the recording module's
-            // own stopPlayback() function.
-            function stopPlaybackOrch(reachedEnd) {
-                if (!orch.playing && orch.timers.length === 0) return;
-                orch.playing = false;
-                orch.timers.forEach(t => clearTimeout(t));
-                orch.timers = [];
-                // Hard-stop every note we scheduled so nothing hangs
-                for (const id of Array.from(orch.activeIds)) stopNote(id);
-                orch.activeIds.clear();
-                if (orch.rafId !== null) {
-                    cancelAnimationFrame(orch.rafId);
-                    orch.rafId = null;
-                }
-                progressFill.style.width = '0%';
-                miniFill.style.width = '0%';
-                miniTime.textContent = '0:00';
-                timeEl.textContent = `0:00 / ${formatTime(orch.duration)}`;
-                btnPlay.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Play</span>';
-                tracksWrap.querySelectorAll('.orch-track').forEach(el => el.classList.remove('is-active'));
-                jamHint.style.display = 'none';
-                hideMiniBar();
-                if (reachedEnd) orchMsg('Playback finished.');
-            }
-
-            function tickProgress() {
-                if (!orch.playing) return;
-                const elapsed = (performance.now() - orch.startedAt) / 1000;
-                const totalScaled = orch.duration / orch.tempo;
-                const pct = Math.min(100, (elapsed / totalScaled) * 100);
-                progressFill.style.width = pct + '%';
-                // Show original-time clock, not scaled — more intuitive
-                const elapsedOrig = Math.min(orch.duration, elapsed * orch.tempo);
-                timeEl.textContent = `${formatTime(elapsedOrig)} / ${formatTime(orch.duration)}`;
-                // Mirror state into the mini bar so the user can monitor while jamming
-                miniFill.style.width = pct + '%';
-                miniTime.textContent = formatTime(elapsedOrig);
-                orch.rafId = requestAnimationFrame(tickProgress);
-            }
-
-            btnPlay.addEventListener('click', () => {
-                if (orch.playing) stopPlaybackOrch();
-                else startPlayback();
-            });
-            btnStop.addEventListener('click', () => stopPlaybackOrch());
-
-            // Changing tempo mid-play: simplest is to restart from the top at the new
-            // speed. Trying to scale already-scheduled timers in place gets messy.
-            tempoSel.addEventListener('change', () => {
-                if (orch.playing) {
-                    stopPlaybackOrch();
-                    startPlayback();
-                }
-            });
-
-            // --- Mini bar wiring ---
-            btnMiniStop.addEventListener('click', () => {
-                stopPlaybackOrch();
-                hideMiniBar();
-            });
-            btnMiniExpand.addEventListener('click', () => {
-                // Open the Scribe drawer if it isn't already open
-                if (!isScribeOpen) btnToggleScribe.click();
-            });
-
-            // Wire the Scribe drawer's open/close to the mini bar visibility.
-            // This listener is added AFTER the panel's own toggle handler, so by the
-            // time it runs, isScribeOpen already reflects the new state.
-            btnToggleScribe.addEventListener('click', () => {
-                if (isScribeOpen) {
-                    hideMiniBar();
-                    // Refresh dropdowns so newly-loaded SF2 presets show up
-                    refreshAllInstrumentDropdowns();
-                } else if (orch.playing) {
-                    showMiniBar();
-                }
-            });
-
-            // Safety: release orchestra notes if the tab goes hidden
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden && orch.playing) stopPlaybackOrch();
-            });
-
-            // Initial paint
-            renderTracks();
-        })();
 
     </script>
 
