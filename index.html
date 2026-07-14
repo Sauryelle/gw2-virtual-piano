@@ -2145,6 +2145,59 @@
             flex-shrink: 0;
         }
 
+        /* ==============================================================
+           FOCUS MODE — just the keys and the pinned song
+           ============================================================== */
+        body.focus-mode .rail,
+        body.focus-mode .masthead,
+        body.focus-mode .console,
+        body.focus-mode #songbook-panel,
+        body.focus-mode #scribe-panel,
+        body.focus-mode .hints,
+        body.focus-mode .flourish { display: none !important; }
+        body.focus-mode .main { padding: 10px; gap: 8px; }
+        body.focus-mode #center-panel {
+            background: transparent;
+            border-color: transparent;
+            box-shadow: none;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+        #btn-focus-exit {
+            position: fixed;
+            top: 12px; right: 12px;
+            z-index: 170;
+            display: none;
+            background: var(--surface-3);
+            border-color: var(--stroke-mid);
+        }
+        body.focus-mode #btn-focus-exit { display: inline-flex; }
+
+        /* ==============================================================
+           MOBILE & TOUCH PASS
+           ============================================================== */
+        button, .dock-item, .rail-btn, .tab-pills button, .library-item, .theme-card, .archive-card { touch-action: manipulation; }
+        #htp-view { -webkit-overflow-scrolling: touch; }
+
+        @media (max-width: 700px) {
+            .masthead { padding-top: 6px; gap: 4px; }
+            .masthead .eyebrow, .masthead-tagline { display: none; }
+            .masthead-rule { margin-top: 4px; }
+            .view-switch { margin-top: 8px; }
+            #center-panel { padding: 14px 8px; }
+            .piano-stage { max-width: 100%; }
+            .piano-container { width: 100%; padding: 10px 8px 14px; gap: 2px; }
+            /* White keys share the full width instead of shrinking to slivers */
+            .piano-container > .relative { flex: 1 1 0; min-width: 34px; max-width: 80px; }
+            .piano-container > .relative .piano-key:not(.black-key) { width: 100%; height: 190px; }
+            .black-key { width: min(9.5vw, 34px); height: 116px; }
+            .octave-bar { gap: 6px; }
+            .octave-bar .btn { padding: 8px 10px; font-size: 0.72rem; }
+            .octave-display { min-width: 0; padding: 8px 12px; font-size: 0.78rem; }
+            .pin-controls { width: 100%; margin-left: 0; }
+            .hints { font-size: 0.74rem; }
+        }
+
         /* Collapsed side panels must not contribute height to the stage row */
         #songbook-panel:not(.is-open) > *,
         #scribe-panel:not(.is-open) > * { display: none !important; }
@@ -2277,13 +2330,13 @@
 
                 <div id="doc-input-area" style="display:flex; flex-direction:column; gap:8px;">
                     <div style="display:flex; gap:8px;">
-                        <input type="text" id="songbook-url" class="input" style="flex:1;" placeholder="Paste Google Doc link…" value="https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview?tab=t.0">
+                        <input type="text" id="songbook-url" class="input" style="flex:1;" placeholder="Paste Google Doc link…" value="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview">
                         <button id="btn-load-songbook" class="btn btn-primary" type="button">Load</button>
                     </div>
                     <p style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin:0;">Load a <span style="color:var(--text-acc);">public Google Doc</span> URL.</p>
                 </div>
 
-                <iframe id="songbook-frame" title="Songbook" src="https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview?tab=t.0"></iframe>
+                <iframe id="songbook-frame" title="Songbook" src="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview"></iframe>
 
                 <div id="custom-notes-container" class="editor-container hidden" style="min-height:400px;">
                     <div id="customTextareaB" class="editor-layer editor-back" aria-hidden="true"></div>
@@ -2295,9 +2348,10 @@
                     <div id="library-bar" class="library-bar">
                         <input type="text" id="library-search" class="input" style="flex:1;" placeholder="Search songs…">
                         <button id="btn-library-import" class="btn" type="button">Import</button>
+                        <button id="btn-library-export" class="btn btn-ghost" type="button" title="Download the whole library as songs.txt">Export</button>
                     </div>
                     <div id="library-import-area" class="hidden" style="display:flex; flex-direction:column; gap:8px;">
-                        <p class="library-hint">Each song starts with a line like <b>### Song Name - Artist</b>, followed by its tab. Paste below or load a .txt.</p>
+                        <p class="library-hint">Each song starts with a line like <b>### Song Name - Artist</b>, followed by its tab. Paste below, load a .txt, or host a <b>songs.txt</b> next to this page and it loads on its own.</p>
                         <textarea id="library-import-text" class="input library-import-text" spellcheck="false" placeholder="### Evenstar - Lord of The Rings&#10;[6]/(3) 1 3 …"></textarea>
                         <div style="display:flex; gap:8px; flex-wrap:wrap;">
                             <label for="library-file" class="btn" style="flex:1;">Load .txt file</label>
@@ -2393,6 +2447,10 @@
                                 <button id="btn-panic" class="dock-item dock-item--btn" type="button" title="Instantly release every ringing note">
                                     <svg class="dock-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
                                     <span class="dock-label">Silence</span>
+                                </button>
+                                <button id="btn-focus" class="dock-item dock-item--btn" type="button" title="Focus mode — just the keys and the pinned song">
+                                    <svg class="dock-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+                                    <span class="dock-label">Focus</span>
                                 </button>
                             </div>
                         </div>
@@ -2529,6 +2587,22 @@
                         </span>
                         <span style="font-size:0.62rem; color:var(--text-muted);">Spell Page PNG</span>
                     </button>
+                </div>
+
+                <button id="btn-scribe-save" class="btn" type="button" style="width:100%;" title="Store the converted tab in your Library">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Save to Library
+                </button>
+                <div id="scribe-save-form" class="hidden" style="display:flex; flex-direction:column; gap:8px;">
+                    <input type="text" id="scribe-save-title" class="input" placeholder="Song title (required)" maxlength="120">
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="scribe-save-artist" class="input" style="flex:1;" placeholder="Artist (optional)" maxlength="120">
+                        <input type="number" id="scribe-save-bpm" class="input" style="width:90px;" placeholder="BPM" min="20" max="300">
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button id="btn-scribe-save-confirm" class="btn btn-primary" type="button" style="flex:1;">Save</button>
+                        <button id="btn-scribe-save-cancel" class="btn btn-ghost" type="button">Cancel</button>
+                    </div>
                 </div>
 
                 <div id="scribe-sys-message" style="min-height:1.25rem; font-family:var(--font-mono); font-size:0.75rem; color:var(--text-acc); text-align:center; opacity:0; transition:opacity 0.5s;">
@@ -2681,6 +2755,10 @@
     </div>
 </aside>
 
+<button id="btn-focus-exit" class="btn btn-icon" type="button" aria-label="Exit focus mode" title="Exit focus mode">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
+
 <!-- ============================================ -->
 <!-- HELP OVERLAY                                 -->
 <!-- ============================================ -->
@@ -2809,7 +2887,7 @@
                 name: "Sarya's Songbook",
                 description: "The original Tome of Melodies — game, movie & TV themes.",
                 image: "saryamusic2.png",
-                url: "https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview?tab=t.0"
+                url: "https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview"
             }
             // , {
             //     name: "Another Tome",
@@ -3264,7 +3342,7 @@
             libraryContainer.classList.add('hidden');
             songbookFrame.classList.remove('hidden');
 
-            songbookUrlInput.value = 'https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview?tab=t.0';
+            songbookUrlInput.value = 'https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview';
             loadSongbookUrl();
         });
 
@@ -3340,7 +3418,7 @@
                 const empty = document.createElement('div');
                 empty.className = 'library-empty';
                 empty.innerHTML = librarySongs.length === 0
-                    ? 'No songs yet.<br>Press <b>Import</b> to paste your tabs or load a .txt file — or host a <b>songs.txt</b> next to this page and it loads on its own.<br><br>Each song starts with a line like<br><b>### Song Name - Artist</b><br><br><b>I WILL ADD MY SONGS HERE LATER</b>'
+                    ? 'No songs yet.<br>Press <b>Import</b> to paste your tabs or load a .txt file — or host a <b>songs.txt</b> next to this page and it loads on its own.<br><br>Each song starts with a line like<br><b>### Song Name - Artist</b>'
                     : 'No songs match your search.';
                 libraryList.appendChild(empty);
                 return;
@@ -3742,6 +3820,118 @@
         [btnLoadTomeDark, btnToggleCustom, btnToggleLibrary].forEach(b =>
             b.addEventListener('click', () => setTimeout(updateRailActive, 0)));
         updateRailActive();
+
+        // On stacked (mobile/tablet) layouts, opening a panel scrolls to it
+        function nudgePanel(panel) {
+            if (window.innerWidth <= 1200 && panel.classList.contains('is-open')) {
+                setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+            }
+        }
+        btnToggleSongbook.addEventListener('click', () => nudgePanel(songbookPanel));
+        btnRailLibrary.addEventListener('click', () => nudgePanel(songbookPanel));
+        btnRailNotes.addEventListener('click', () => nudgePanel(songbookPanel));
+        btnToggleScribe.addEventListener('click', () => nudgePanel(scribePanel));
+
+        // ==========================================
+        // 2.7 AUTHORING LOOP — Scribe → Library → songs.txt
+        // ==========================================
+        function serializeLibrary(songs) {
+            return songs.map(s => {
+                let out = '### ' + s.title + (s.artist ? ' - ' + s.artist : '') + '\n';
+                if (s.bpm) out += '@bpm: ' + s.bpm + '\n';
+                return out + (s.body || '');
+            }).join('\n\n') + '\n';
+        }
+        function persistImportedSongs() {
+            try { localStorage.setItem('saryaLibraryText', serializeLibrary(importedSongs)); } catch (e) {}
+        }
+
+        const scribeSaveForm = document.getElementById('scribe-save-form');
+        const scribeSaveTitle = document.getElementById('scribe-save-title');
+        const scribeSaveArtist = document.getElementById('scribe-save-artist');
+        const scribeSaveBpm = document.getElementById('scribe-save-bpm');
+
+        document.getElementById('btn-scribe-save').addEventListener('click', () => {
+            if (!textareaA.value.trim()) {
+                showScribeMessage('Nothing to save \u2014 the Scribe is empty.');
+                return;
+            }
+            scribeSaveForm.classList.toggle('hidden');
+            if (!scribeSaveForm.classList.contains('hidden')) scribeSaveTitle.focus();
+        });
+        document.getElementById('btn-scribe-save-cancel').addEventListener('click', () => {
+            scribeSaveForm.classList.add('hidden');
+        });
+        document.getElementById('btn-scribe-save-confirm').addEventListener('click', () => {
+            const title = scribeSaveTitle.value.trim();
+            const body = textareaA.value.trim();
+            if (!title) { showScribeMessage('A title is required.'); scribeSaveTitle.focus(); return; }
+            if (!body) { showScribeMessage('Nothing to save \u2014 the Scribe is empty.'); return; }
+            const artist = scribeSaveArtist.value.trim();
+            const bpmVal = parseInt(scribeSaveBpm.value, 10);
+            const entry = { title, artist, bpm: (bpmVal >= 20 && bpmVal <= 300) ? bpmVal : 0, body };
+            const slug = songSlug(title);
+            const existing = importedSongs.findIndex(s => songSlug(s.title) === slug);
+            let msg;
+            if (existing >= 0) { importedSongs[existing] = entry; msg = '\u201c' + title + '\u201d updated in your Library.'; }
+            else { importedSongs.push(entry); msg = '\u201c' + title + '\u201d saved to your Library.'; }
+            persistImportedSongs();
+            rebuildLibrary();
+            scribeSaveForm.classList.add('hidden');
+            scribeSaveTitle.value = ''; scribeSaveArtist.value = ''; scribeSaveBpm.value = '';
+            showScribeMessage(msg);
+            showMessage(msg);
+        });
+
+        document.getElementById('btn-library-export').addEventListener('click', () => {
+            const all = hostedSongs.concat(importedSongs);
+            if (all.length === 0) { showMessage('The library is empty \u2014 nothing to export.'); return; }
+            const header = "Sarya's Music Thingy \u2014 Song Library\n"
+                + 'Host this file as songs.txt next to index.html and it loads automatically.\n'
+                + 'Exported ' + new Date().toISOString().slice(0, 10) + ' \u2014 ' + all.length + ' songs.\n\n';
+            const blob = new Blob([header + serializeLibrary(all)], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'songs.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+            showMessage('songs.txt exported \u2014 ' + all.length + ' songs.');
+        });
+
+        // ==========================================
+        // 2.8 FOCUS MODE — just the keys and the pinned song
+        // ==========================================
+        const btnFocus = document.getElementById('btn-focus');
+        const btnFocusExit = document.getElementById('btn-focus-exit');
+        let focusUsedFullscreen = false;
+
+        function enterFocus() {
+            document.body.classList.add('focus-mode');
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen()
+                    .then(() => { focusUsedFullscreen = true; })
+                    .catch(() => {});
+            }
+            showMessage('Focus \u2014 just you and the keys.');
+        }
+        function exitFocus() {
+            document.body.classList.remove('focus-mode');
+            if (document.fullscreenElement && document.exitFullscreen) {
+                document.exitFullscreen().catch(() => {});
+            }
+            focusUsedFullscreen = false;
+        }
+        btnFocus.addEventListener('click', enterFocus);
+        btnFocusExit.addEventListener('click', exitFocus);
+        // Leaving browser fullscreen (Esc) also leaves focus mode
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement && focusUsedFullscreen) {
+                focusUsedFullscreen = false;
+                document.body.classList.remove('focus-mode');
+            }
+        });
 
         btnToggleView.addEventListener('click', () => {
             if (currentViewMode === 'gw2') {
@@ -4999,6 +5189,7 @@
                 else openHelp();
             } else if (e.key === 'Escape') {
                 if (helpOverlay.classList.contains('is-open')) { closeHelp(); return; }
+                if (document.body.classList.contains('focus-mode')) { exitFocus(); return; }
                 if (isAtelierOpen()) { closeAtelier(); return; }
                 if (isArchiveOpen()) { closeArchive(); return; }
                 if (isSongbookOpen) { btnToggleSongbook.click(); return; }
