@@ -2198,6 +2198,108 @@
             .hints { font-size: 0.74rem; }
         }
 
+        /* ==============================================================
+           LIBRARY v2 — favorites, tags, notes
+           ============================================================== */
+        .library-item-main {
+            flex: 1;
+            min-width: 0;
+            display: block;
+            background: none;
+            border: none;
+            padding: 0;
+            color: inherit;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+        }
+        .library-item-main:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; border-radius: 4px; }
+        .library-star {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            line-height: 1;
+            padding: 4px 6px;
+            flex-shrink: 0;
+            transition: color 0.2s, transform 0.15s var(--ease-spring);
+        }
+        .library-star:hover { transform: scale(1.2); color: var(--text-secondary); }
+        .library-star.is-fav { color: var(--sec); text-shadow: 0 0 10px var(--sec); }
+        .library-star:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; border-radius: 4px; }
+        .library-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .tag-chip {
+            padding: 4px 12px;
+            border-radius: var(--r-pill);
+            background: var(--well);
+            border: 1px solid var(--stroke-soft);
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+        }
+        .tag-chip:hover { border-color: var(--stroke-mid); color: var(--text-primary); }
+        .tag-chip.is-active { background: var(--grad-acc-computed); color: var(--on-acc); border-color: var(--stroke-acc); }
+        .library-notes, .pin-notes {
+            font-family: var(--font-tagline);
+            font-style: italic;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            background: var(--wash);
+            border-left: 3px solid var(--sec);
+            padding: 8px 12px;
+            border-radius: 0 var(--r-sm) var(--r-sm) 0;
+        }
+        [data-theme="ash"] .library-notes, [data-theme="ash"] .pin-notes { font-style: normal; font-size: 0.76rem; }
+        .pin-notes { padding: 6px 10px; font-size: 0.76rem; }
+
+        /* ==============================================================
+           HAUNTED MODE & THE MASQUERADE FLARE
+           ============================================================== */
+        body.haunted { --vignette: 0.82; }
+        body.haunted #ambient-canvas {
+            display: block !important;
+            z-index: 60;
+        }
+        body.haunted .masthead-title { animation: hauntFlicker 5.5s ease-in-out infinite; }
+        @keyframes hauntFlicker {
+            0%, 100% { opacity: 1; filter: none; }
+            6%  { opacity: 0.72; }
+            8%  { opacity: 1; }
+            46% { opacity: 0.88; filter: blur(0.4px); }
+            50% { opacity: 1; filter: none; }
+            77% { opacity: 0.78; }
+            80% { opacity: 1; }
+        }
+        body.masquerade { --vignette: 0.88; }
+        body.masquerade .sconce { display: flex !important; }
+        body.masquerade .flame { width: 17px; height: 29px; }
+        body.masquerade .masthead-title {
+            background: linear-gradient(94deg, #e8b4b8 0%, #c22333 45%, #6e0a14 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .blood-drip {
+            position: fixed;
+            top: -34px;
+            width: 4px;
+            height: 26px;
+            z-index: 90;
+            background: linear-gradient(180deg, #c22333, #5e0812);
+            border-radius: 2px 2px 4px 4px;
+            pointer-events: none;
+            animation: bloodFall 3s linear forwards;
+        }
+        @keyframes bloodFall {
+            0%   { transform: translateY(0) scaleY(1); opacity: 0; }
+            8%   { opacity: 0.9; }
+            100% { transform: translateY(115vh) scaleY(1.6); opacity: 0.5; }
+        }
+
         /* Collapsed side panels must not contribute height to the stage row */
         #songbook-panel:not(.is-open) > *,
         #scribe-panel:not(.is-open) > * { display: none !important; }
@@ -2261,6 +2363,11 @@
         <button id="btn-cycle-theme" class="rail-btn" type="button" aria-label="Cycle theme pack" title="Cycle theme pack">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="0.5" fill="currentColor"/><circle cx="17.5" cy="10.5" r="0.5" fill="currentColor"/><circle cx="8.5" cy="7.5" r="0.5" fill="currentColor"/><circle cx="6.5" cy="12.5" r="0.5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
             <span class="rail-label" id="lbl-cycle-theme">Nocturne</span>
+        </button>
+
+        <button id="btn-haunted" class="rail-btn" type="button" aria-label="Toggle haunted mode" aria-pressed="false" title="Haunted mode — spirits, gloom, and (if you host a haunted.mid) a phantom performance">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-7 7v12l3-2.5 2 2 2-2 2 2 2-2 3 2.5V9a7 7 0 0 0-7-7z"/><line x1="9.5" y1="10" x2="9.51" y2="10"/><line x1="14.5" y1="10" x2="14.51" y2="10"/></svg>
+            <span class="rail-label">Haunted</span>
         </button>
 
         <div class="rail-spacer"></div>
@@ -2330,13 +2437,13 @@
 
                 <div id="doc-input-area" style="display:flex; flex-direction:column; gap:8px;">
                     <div style="display:flex; gap:8px;">
-                        <input type="text" id="songbook-url" class="input" style="flex:1;" placeholder="Paste Google Doc link…" value="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview">
+                        <input type="text" id="songbook-url" class="input" style="flex:1;" placeholder="Paste Google Doc link…" value="https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview">
                         <button id="btn-load-songbook" class="btn btn-primary" type="button">Load</button>
                     </div>
                     <p style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin:0;">Load a <span style="color:var(--text-acc);">public Google Doc</span> URL.</p>
                 </div>
 
-                <iframe id="songbook-frame" title="Songbook" src="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview"></iframe>
+                <iframe id="songbook-frame" title="Songbook" src="https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview"></iframe>
 
                 <div id="custom-notes-container" class="editor-container hidden" style="min-height:400px;">
                     <div id="customTextareaB" class="editor-layer editor-back" aria-hidden="true"></div>
@@ -2350,6 +2457,7 @@
                         <button id="btn-library-import" class="btn" type="button">Import</button>
                         <button id="btn-library-export" class="btn btn-ghost" type="button" title="Download the whole library as songs.txt">Export</button>
                     </div>
+                    <div id="library-tags" class="library-tags hidden"></div>
                     <div id="library-import-area" class="hidden" style="display:flex; flex-direction:column; gap:8px;">
                         <p class="library-hint">Each song starts with a line like <b>### Song Name - Artist</b>, followed by its tab. Paste below, load a .txt, or host a <b>songs.txt</b> next to this page and it loads on its own.</p>
                         <textarea id="library-import-text" class="input library-import-text" spellcheck="false" placeholder="### Evenstar - Lord of The Rings&#10;[6]/(3) 1 3 …"></textarea>
@@ -2364,6 +2472,7 @@
                     <div id="library-song" class="hidden" style="display:flex; flex-direction:column; gap:10px; flex:1; min-height:300px;">
                         <div style="display:flex; align-items:center; gap:10px;">
                             <button id="btn-library-back" class="btn btn-ghost" type="button">← All songs</button>
+                            <button id="btn-library-fav" class="library-star" type="button" title="Add to favorites" aria-label="Toggle favorite">☆</button>
                             <div id="library-song-title" class="library-song-title"></div>
                             <div style="margin-left:auto; display:flex; gap:8px;">
                                 <button id="btn-library-share" class="btn btn-ghost" type="button" title="Copy a link straight to this song">Share</button>
@@ -2371,6 +2480,7 @@
                                 <button id="btn-library-copy" class="btn" type="button">Copy</button>
                             </div>
                         </div>
+                        <div id="library-song-notes" class="library-notes hidden"></div>
                         <div id="library-song-body" class="library-song-view"></div>
                     </div>
                 </div>
@@ -2491,6 +2601,7 @@
                             <button id="pin-close" class="btn btn-ghost btn-icon" type="button" title="Unpin" aria-label="Unpin song">&#10005;</button>
                         </div>
                     </div>
+                    <div id="pin-notes" class="pin-notes hidden"></div>
                     <div id="pin-body" class="pin-body"></div>
                 </div>
 
@@ -2711,6 +2822,10 @@
             <button type="button" data-v="extra">Extra</button>
         </div>
         <p class="atelier-note">Note particles and ambient drift. Extra is gloriously unnecessary.</p>
+        <label class="atelier-toggle-row" for="atelier-ribbons">
+            <span>Key ribbons on held notes</span>
+            <input type="checkbox" id="atelier-ribbons" class="check" checked>
+        </label>
     </div>
 
     <div class="atelier-section">
@@ -2887,7 +3002,7 @@
                 name: "Sarya's Songbook",
                 description: "The original Tome of Melodies — game, movie & TV themes.",
                 image: "saryamusic2.png",
-                url: "https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview"
+                url: "https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview"
             }
             // , {
             //     name: "Another Tome",
@@ -3007,7 +3122,7 @@
             ash:      { sat: 14, light: 74, hue: () => 211 }
         };
 
-        const ATELIER_DEFAULTS = { theme: 'nocturne', hue: 0, fx: 'full', motion: 'auto', atmo: true, corners: 'theme', density: 'cozy', labels: 'full' };
+        const ATELIER_DEFAULTS = { theme: 'nocturne', hue: 0, fx: 'full', motion: 'auto', atmo: true, corners: 'theme', density: 'cozy', labels: 'full', ribbons: true };
         let prefs = { ...ATELIER_DEFAULTS };
         try {
             const savedPrefs = JSON.parse(localStorage.getItem('saryaAtelier') || '{}');
@@ -3113,6 +3228,10 @@
         bindSeg('seg-labels', 'labels');
 
         atmoToggle.addEventListener('change', (e) => { prefs.atmo = e.target.checked; applyPrefs(); });
+        document.getElementById('atelier-ribbons').addEventListener('change', (e) => {
+            prefs.ribbons = e.target.checked;
+            savePrefs();
+        });
 
         document.getElementById('btn-atelier-reset').addEventListener('click', () => {
             prefs = { ...ATELIER_DEFAULTS };
@@ -3127,6 +3246,8 @@
             hueSlider.value = prefs.hue;
             hueValue.textContent = (prefs.hue > 0 ? '+' : '') + prefs.hue + '\u00b0';
             atmoToggle.checked = !!prefs.atmo;
+            const ribbonsToggle = document.getElementById('atelier-ribbons');
+            if (ribbonsToggle) ribbonsToggle.checked = prefs.ribbons !== false;
             const reflectSeg = (id, val) => document.querySelectorAll('#' + id + ' button').forEach(b =>
                 b.classList.toggle('is-active', b.dataset.v === val));
             reflectSeg('seg-fx', prefs.fx);
@@ -3143,6 +3264,7 @@
         let ambientRaf = null;
 
         function ambientConfig() {
+            if (hauntedOn && motionAllowed()) return { count: Math.round(20 * Math.max(fxMult(), 0.5)), kind: 'spirit' };
             if (!prefs.atmo || !motionAllowed() || fxMult() <= 0) return { count: 0 };
             if (prefs.theme === 'nocturne') return { count: Math.round(26 * Math.min(fxMult(), 2)), kind: 'ember' };
             if (prefs.theme === 'meadow') return { count: Math.round(16 * Math.min(fxMult(), 2)), kind: 'glyph' };
@@ -3161,6 +3283,15 @@
 
         function makeMote(kind, seed) {
             const W = ambientCanvas.width, H = ambientCanvas.height;
+            if (kind === 'spirit') {
+                return {
+                    kind, x: Math.random() * W, y: seed ? Math.random() * H : H + 12,
+                    vx: (Math.random() - 0.5) * 0.25, vy: -(Math.random() * 0.35 + 0.14),
+                    size: Math.random() * 3 + 2,
+                    hue: 110 + Math.random() * 40,
+                    alpha: Math.random() * 0.35 + 0.3, phase: Math.random() * Math.PI * 2
+                };
+            }
             if (kind === 'ember') {
                 return {
                     kind, x: Math.random() * W, y: seed ? Math.random() * H : H + 10,
@@ -3206,14 +3337,21 @@
                 const m = ambientMotes[i];
                 m.x += m.vx + Math.sin(t * 0.8 + m.phase) * 0.14;
                 m.y += m.vy;
-                if (m.kind === 'ember') {
-                    const flicker = 0.72 + 0.28 * Math.sin(t * 5 + m.phase);
+                if (m.kind === 'ember' || m.kind === 'spirit') {
+                    const flicker = 0.72 + 0.28 * Math.sin(t * (m.kind === 'spirit' ? 2.2 : 5) + m.phase);
                     aCtx.globalAlpha = m.alpha * flicker;
-                    aCtx.fillStyle = 'hsl(' + Math.round(m.hue) + ', 85%, 58%)';
+                    if (m.kind === 'spirit') {
+                        aCtx.fillStyle = 'hsl(' + Math.round(m.hue) + ', 55%, 68%)';
+                        aCtx.shadowColor = 'hsl(' + Math.round(m.hue) + ', 70%, 55%)';
+                        aCtx.shadowBlur = 12;
+                    } else {
+                        aCtx.fillStyle = 'hsl(' + Math.round(m.hue) + ', 85%, 58%)';
+                    }
                     aCtx.beginPath();
                     aCtx.arc(m.x, m.y, m.size, 0, Math.PI * 2);
                     aCtx.fill();
-                    if (m.y < -12 || m.x < -20 || m.x > W + 20) ambientMotes[i] = makeMote('ember', false);
+                    aCtx.shadowBlur = 0;
+                    if (m.y < -12 || m.x < -20 || m.x > W + 20) ambientMotes[i] = makeMote(m.kind, false);
                 } else {
                     m.rot += m.spin;
                     aCtx.globalAlpha = m.alpha;
@@ -3342,7 +3480,7 @@
             libraryContainer.classList.add('hidden');
             songbookFrame.classList.remove('hidden');
 
-            songbookUrlInput.value = 'https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview';
+            songbookUrlInput.value = 'https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview';
             loadSongbookUrl();
         });
 
@@ -3381,6 +3519,9 @@
         let hostedSongs = [];
         let importedSongs = [];
         let libraryFilter = '';
+        let libraryTagFilter = new Set();
+        let favSet = new Set();
+        try { favSet = new Set(JSON.parse(localStorage.getItem('saryaFavs') || '[]')); } catch (e) {}
         let currentLibrarySong = null;
         let pendingDeepSong = null;
 
@@ -3396,11 +3537,22 @@
                     cur = {
                         title: dash > 0 ? head.slice(0, dash).trim() : head,
                         artist: dash > 0 ? head.slice(dash + 3).trim() : '',
+                        bpm: 0, tags: [], notes: '',
                         body: ''
                     };
                 } else if (cur) {
                     const bpmMatch = raw.match(/^@bpm:\s*(\d{2,3})\s*$/i);
                     if (bpmMatch) { cur.bpm = parseInt(bpmMatch[1], 10); continue; }
+                    const tagMatch = raw.match(/^@tags:\s*(.+)$/i);
+                    if (tagMatch) {
+                        cur.tags = cur.tags.concat(tagMatch[1].split(',').map(x => x.trim()).filter(Boolean));
+                        continue;
+                    }
+                    const noteMatch = raw.match(/^@notes:\s*(.*)$/i);
+                    if (noteMatch) {
+                        cur.notes = cur.notes ? cur.notes + '\n' + noteMatch[1].trim() : noteMatch[1].trim();
+                        continue;
+                    }
                     cur.body += raw + '\n';
                 }
             }
@@ -3411,8 +3563,16 @@
 
         function renderLibraryList() {
             const q = libraryFilter.trim().toLowerCase();
-            const items = librarySongs.filter(s =>
-                !q || s.title.toLowerCase().includes(q) || s.artist.toLowerCase().includes(q));
+            const activeTags = [...libraryTagFilter];
+            const items = librarySongs.filter(s => {
+                if (q && !(s.title.toLowerCase().includes(q) || (s.artist || '').toLowerCase().includes(q))) return false;
+                if (activeTags.length) {
+                    const st = (s.tags || []).map(x => x.toLowerCase());
+                    if (!activeTags.every(t => st.includes(t))) return false;
+                }
+                return true;
+            });
+            renderLibraryTags();
             libraryList.innerHTML = '';
             if (items.length === 0) {
                 const empty = document.createElement('div');
@@ -3430,24 +3590,38 @@
                 libraryList.appendChild(h);
             };
             const addItem = (s) => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'library-item';
-                btn.innerHTML = '<span><span class="library-item-title">' + escapeHtml(s.title) + '</span>'
+                const slug = songSlug(s.title);
+                const fav = isFav(slug);
+                const row = document.createElement('div');
+                row.className = 'library-item';
+                row.innerHTML = '<button type="button" class="library-item-main">'
+                    + '<span class="library-item-title">' + escapeHtml(s.title) + '</span>'
                     + (s.artist ? '<br><span class="library-item-artist">' + escapeHtml(s.artist) + '</span>' : '')
-                    + '</span><span class="library-item-go" aria-hidden="true">›</span>';
-                btn.addEventListener('click', () => openLibrarySong(s));
-                libraryList.appendChild(btn);
+                    + '</button>'
+                    + '<button type="button" class="library-star' + (fav ? ' is-fav' : '') + '" aria-label="Toggle favorite" title="'
+                    + (fav ? 'Remove from favorites' : 'Add to favorites') + '">' + (fav ? '\u2605' : '\u2606') + '</button>'
+                    + '<span class="library-item-go" aria-hidden="true">\u203a</span>';
+                row.addEventListener('click', (e) => {
+                    if (e.target.closest('.library-star')) {
+                        toggleFav(slug);
+                        renderLibraryList();
+                        return;
+                    }
+                    openLibrarySong(s);
+                });
+                libraryList.appendChild(row);
             };
-            const baseItems = items.filter(s => s.source !== 'import');
-            const importItems = items.filter(s => s.source === 'import');
+            const favsFirst = (arr) => arr.slice().sort((a, b) =>
+                (isFav(songSlug(b.title)) ? 1 : 0) - (isFav(songSlug(a.title)) ? 1 : 0));
+            const baseItems = favsFirst(items.filter(s => s.source !== 'import'));
+            const importItems = favsFirst(items.filter(s => s.source === 'import'));
             if (baseItems.length && importItems.length) {
                 addHeader('Songbook');
                 baseItems.forEach(addItem);
                 addHeader('Your imports');
                 importItems.forEach(addItem);
             } else {
-                items.forEach(addItem);
+                favsFirst(items).forEach(addItem);
             }
         }
 
@@ -3461,6 +3635,15 @@
                 + (song.artist ? ' <span style="color:var(--text-muted); font-size:0.72em; font-family:var(--font-body);">— ' + escapeHtml(song.artist) + '</span>' : '');
             librarySongBody.innerHTML = applyHighlighting(song.body);
             librarySongBody.scrollTop = 0;
+            const songNotesBox = document.getElementById('library-song-notes');
+            if (song.notes) {
+                songNotesBox.innerHTML = escapeHtml(song.notes).replace(/\n/g, '<br>');
+                songNotesBox.classList.remove('hidden');
+            } else {
+                songNotesBox.classList.add('hidden');
+                songNotesBox.innerHTML = '';
+            }
+            updateSongFavStar();
             try {
                 const u = new URL(window.location.href);
                 u.searchParams.set('song', songSlug(song.title));
@@ -3681,13 +3864,16 @@
             pinRaf = requestAnimationFrame(tickPinScroll);
         }
         function pinSong(song, silent) {
-            pinnedSong = { title: song.title, artist: song.artist || '', bpm: song.bpm || 0, body: song.body };
+            pinnedSong = { title: song.title, artist: song.artist || '', bpm: song.bpm || 0, notes: song.notes || '', body: song.body };
             pinTitle.innerHTML = escapeHtml(song.title)
                 + (song.artist ? ' <span class="pin-artist">\u2014 ' + escapeHtml(song.artist) + '</span>' : '');
             pinBody.innerHTML = applyHighlighting(song.body);
             pinBody.scrollTop = 0;
             pinScrollPos = 0;
             pinBpmLabel.textContent = song.bpm ? song.bpm + ' BPM' : '';
+            const pinNotesEl = document.getElementById('pin-notes');
+            if (song.notes) { pinNotesEl.textContent = song.notes; pinNotesEl.classList.remove('hidden'); }
+            else { pinNotesEl.classList.add('hidden'); pinNotesEl.textContent = ''; }
             if (song.bpm) bpmInputEl.value = song.bpm;
             stopPinScroll();
             pinStrip.classList.remove('hidden');
@@ -3839,6 +4025,8 @@
             return songs.map(s => {
                 let out = '### ' + s.title + (s.artist ? ' - ' + s.artist : '') + '\n';
                 if (s.bpm) out += '@bpm: ' + s.bpm + '\n';
+                if (s.tags && s.tags.length) out += '@tags: ' + s.tags.join(', ') + '\n';
+                if (s.notes) String(s.notes).split('\n').forEach(n => { out += '@notes: ' + n + '\n'; });
                 return out + (s.body || '');
             }).join('\n\n') + '\n';
         }
@@ -3933,6 +4121,273 @@
             }
         });
 
+        // ==========================================
+        // 2.9 LIBRARY EXTRAS — favorites, tag chips, notes
+        // ==========================================
+        function isFav(slug) { return favSet.has(slug); }
+        function toggleFav(slug) {
+            favSet.has(slug) ? favSet.delete(slug) : favSet.add(slug);
+            try { localStorage.setItem('saryaFavs', JSON.stringify([...favSet])); } catch (e) {}
+        }
+        function renderLibraryTags() {
+            const tagEl = document.getElementById('library-tags');
+            const all = new Map();
+            librarySongs.forEach(s => (s.tags || []).forEach(t => {
+                const k = t.toLowerCase();
+                if (!all.has(k)) all.set(k, t);
+            }));
+            [...libraryTagFilter].forEach(t => { if (!all.has(t)) libraryTagFilter.delete(t); });
+            if (all.size === 0) { tagEl.classList.add('hidden'); tagEl.innerHTML = ''; return; }
+            tagEl.classList.remove('hidden');
+            tagEl.innerHTML = '';
+            [...all.entries()].sort((a, b) => a[0].localeCompare(b[0])).forEach(([k, label]) => {
+                const chip = document.createElement('button');
+                chip.type = 'button';
+                chip.className = 'tag-chip' + (libraryTagFilter.has(k) ? ' is-active' : '');
+                chip.textContent = label;
+                chip.addEventListener('click', () => {
+                    libraryTagFilter.has(k) ? libraryTagFilter.delete(k) : libraryTagFilter.add(k);
+                    renderLibraryList();
+                });
+                tagEl.appendChild(chip);
+            });
+        }
+        function updateSongFavStar() {
+            if (!currentLibrarySong) return;
+            const b = document.getElementById('btn-library-fav');
+            const fav = isFav(songSlug(currentLibrarySong.title));
+            b.textContent = fav ? '\u2605' : '\u2606';
+            b.classList.toggle('is-fav', fav);
+            b.title = fav ? 'Remove from favorites' : 'Add to favorites';
+        }
+        document.getElementById('btn-library-fav').addEventListener('click', () => {
+            if (!currentLibrarySong) return;
+            toggleFav(songSlug(currentLibrarySong.title));
+            updateSongFavStar();
+            renderLibraryList();
+        });
+
+        // ==========================================
+        // 2.10 EASTER EGGS — whisper "vtm"; play C-D-E-C
+        // ==========================================
+        let flareTimer = null;
+        let flareTitleHTML = null;
+        const mastheadTitleEl = document.querySelector('.masthead-title');
+        function masqueradeFlare() {
+            if (flareTimer) return;
+            document.body.classList.add('masquerade');
+            flareTitleHTML = mastheadTitleEl.innerHTML;
+            mastheadTitleEl.textContent = "Sarya's Blood Thingy";
+            showMessage('The Masquerade stirs\u2026');
+            if (motionAllowed()) {
+                for (let i = 0; i < 9; i++) {
+                    const d = document.createElement('div');
+                    d.className = 'blood-drip';
+                    d.style.left = (4 + Math.random() * 92) + 'vw';
+                    d.style.animationDuration = (2.6 + Math.random() * 2.4) + 's';
+                    d.style.animationDelay = (Math.random() * 5) + 's';
+                    d.addEventListener('animationend', () => d.remove());
+                    document.body.appendChild(d);
+                }
+            }
+            flareTimer = setTimeout(() => {
+                document.body.classList.remove('masquerade');
+                mastheadTitleEl.innerHTML = flareTitleHTML;
+                flareTimer = null;
+            }, 10000);
+        }
+        let vtmBuf = '';
+        window.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey || e.altKey) return;
+            const t = e.target;
+            if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+            if (e.key.length === 1 && /[a-z]/i.test(e.key)) {
+                vtmBuf = (vtmBuf + e.key.toLowerCase()).slice(-5);
+                if (vtmBuf.endsWith('vtm')) { vtmBuf = ''; masqueradeFlare(); }
+            }
+        });
+
+        function confettiBurst() {
+            if (!motionAllowed()) return;
+            const w = particleCanvas.offsetWidth, h = particleCanvas.offsetHeight;
+            for (let i = 0; i < 130; i++) {
+                particles.push({
+                    x: Math.random() * w,
+                    y: -10 - Math.random() * h * 0.3,
+                    vx: (Math.random() - 0.5) * 2.2,
+                    vy: Math.random() * 2 + 1.2,
+                    g: 0.05,
+                    life: 1,
+                    decay: 0.004 + Math.random() * 0.005,
+                    color: 'hsl(' + Math.floor(Math.random() * 360) + ', 85%, 62%)',
+                    size: Math.random() * 3 + 2,
+                    shape: 'rect',
+                    rot: Math.random() * Math.PI,
+                    vr: (Math.random() - 0.5) * 0.25
+                });
+            }
+            if (particleRafId === null) particleRafId = requestAnimationFrame(animateParticles);
+            showMessage('\u2728 Encore!');
+        }
+        let eggSeq = [];
+        let eggLast = 0;
+        let eggCooldown = 0;
+        function trackNoteEgg(offset) {
+            const now = performance.now();
+            if (now - eggLast > 4000) eggSeq = [];
+            eggLast = now;
+            eggSeq.push((((offset || 0) % 12) + 12) % 12);
+            if (eggSeq.length > 4) eggSeq.shift();
+            if (now > eggCooldown && eggSeq.length === 4
+                && eggSeq[0] === 0 && eggSeq[1] === 2 && eggSeq[2] === 4 && eggSeq[3] === 0) {
+                eggCooldown = now + 15000;
+                eggSeq = [];
+                confettiBurst();
+            }
+        }
+
+        // ==========================================
+        // 2.11 HAUNTED MODE — spirits + a phantom performance
+        // ==========================================
+        // Drop a "haunted.mid" next to index.html and the ghost plays it
+        // through the current instrument, pressing the keys as it goes.
+        var hauntedOn = false; // var (not let): read by ambientConfig before this line runs
+        const btnHaunted = document.getElementById('btn-haunted');
+        let hauntedEvents = null;
+        let hauntedTimer = null;
+        let hauntedIdx = 0;
+        let hauntedT0 = 0;
+        const hauntedNotesOn = new Set();
+
+        function parseSmfForPlayback(buffer) {
+            const d = new DataView(buffer);
+            let pos = 0;
+            const u32 = () => { const v = d.getUint32(pos); pos += 4; return v; };
+            const u16 = () => { const v = d.getUint16(pos); pos += 2; return v; };
+            const u8 = () => d.getUint8(pos++);
+            const varlen = () => { let v = 0, b; do { b = u8(); v = (v << 7) | (b & 0x7f); } while (b & 0x80); return v; };
+            try {
+                if (u32() !== 0x4d546864) return [];
+                const hlen = u32(); u16(); const ntrk = u16(); const div = u16();
+                pos = 8 + hlen;
+                if (div & 0x8000) return []; // SMPTE timing unsupported
+                const tpq = div || 480;
+                const raw = [];
+                const tempos = [{ tick: 0, usPerQ: 500000 }];
+                for (let t = 0; t < ntrk; t++) {
+                    if (pos + 8 > d.byteLength) break;
+                    if (u32() !== 0x4d54726b) break;
+                    const len = u32();
+                    const end = pos + len;
+                    let tick = 0, running = 0;
+                    while (pos < end) {
+                        tick += varlen();
+                        let status = u8();
+                        if (status < 0x80) { pos--; status = running; } else running = status;
+                        const cmd = status & 0xf0;
+                        if (cmd === 0x90 || cmd === 0x80) {
+                            const note = u8(); const vel = u8();
+                            raw.push({ tick, on: cmd === 0x90 && vel > 0, note });
+                        } else if (cmd === 0xa0 || cmd === 0xb0 || cmd === 0xe0) { pos += 2; }
+                        else if (cmd === 0xc0 || cmd === 0xd0) { pos += 1; }
+                        else if (status === 0xff) {
+                            const type = u8(); const mlen = varlen();
+                            if (type === 0x51 && mlen === 3) {
+                                tempos.push({ tick, usPerQ: (u8() << 16) | (u8() << 8) | u8() });
+                            } else pos += mlen;
+                        } else if (status === 0xf0 || status === 0xf7) { pos += varlen(); }
+                        else break;
+                    }
+                    pos = end;
+                }
+                tempos.sort((a, b) => a.tick - b.tick);
+                const segs = [];
+                let accS = 0;
+                for (let i = 0; i < tempos.length; i++) {
+                    segs.push({ tick: tempos[i].tick, sec: accS, usPerQ: tempos[i].usPerQ });
+                    const next = tempos[i + 1];
+                    if (next) accS += (next.tick - tempos[i].tick) * tempos[i].usPerQ / 1e6 / tpq;
+                }
+                const tickToSec = (tk) => {
+                    let s = segs[0];
+                    for (const seg of segs) { if (seg.tick <= tk) s = seg; else break; }
+                    return s.sec + (tk - s.tick) * s.usPerQ / 1e6 / tpq;
+                };
+                return raw.map(e => ({ t: tickToSec(e.tick), on: e.on, note: e.note }))
+                    .sort((a, b) => (a.t - b.t) || ((a.on ? 1 : 0) - (b.on ? 1 : 0)));
+            } catch (e) { return []; }
+        }
+
+        let hauntedLoadInfo = '';
+        async function loadHauntedMidi() {
+            if (hauntedEvents && hauntedEvents.length) return hauntedEvents; // only cache success
+            hauntedLoadInfo = '';
+            try {
+                const r = await fetch('haunted.mid', { cache: 'no-store' });
+                if (!r.ok) {
+                    hauntedEvents = [];
+                    hauntedLoadInfo = 'no haunted.mid found next to index.html (HTTP ' + r.status + ')';
+                } else {
+                    hauntedEvents = parseSmfForPlayback(await r.arrayBuffer());
+                    if (hauntedEvents.length === 0) hauntedLoadInfo = 'haunted.mid was found but could not be read as a MIDI file';
+                }
+            } catch (e) {
+                hauntedEvents = [];
+                hauntedLoadInfo = 'could not reach haunted.mid \u2014 if this page was opened as a local file, serve it from a web host';
+            }
+            return hauntedEvents;
+        }
+
+        function hauntedTick() {
+            if (!hauntedOn || !hauntedEvents || hauntedEvents.length === 0) return;
+            const now = (performance.now() - hauntedT0) / 1000;
+            while (hauntedIdx < hauntedEvents.length && hauntedEvents[hauntedIdx].t <= now) {
+                const ev = hauntedEvents[hauntedIdx++];
+                if (ev.on) { midiNoteOn(ev.note, 70); hauntedNotesOn.add(ev.note); }
+                else { midiNoteOff(ev.note); hauntedNotesOn.delete(ev.note); }
+            }
+            if (hauntedIdx >= hauntedEvents.length) {
+                hauntedNotesOn.forEach(n => midiNoteOff(n));
+                hauntedNotesOn.clear();
+                hauntedIdx = 0;
+                hauntedT0 = performance.now() + 2500; // a breath of stillness, then again
+            }
+        }
+
+        async function setHaunted(on) {
+            hauntedOn = on;
+            document.body.classList.toggle('haunted', on);
+            btnHaunted.classList.toggle('active', on);
+            btnHaunted.setAttribute('aria-pressed', on ? 'true' : 'false');
+            rebuildAmbient();
+            if (on) {
+                // Wake the audio engine inside the click gesture, otherwise the
+                // phantom's first notes (fired later from a timer) can be muted
+                // by the browser's autoplay policy.
+                try {
+                    initAudio();
+                    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+                } catch (e) {}
+                showMessage('Something stirs in the conservatory\u2026');
+                const evs = await loadHauntedMidi();
+                if (!hauntedOn) return; // toggled off while the tome was fetched
+                if (evs.length === 0) {
+                    showMessage('The spirits play in silence \u2014 ' + (hauntedLoadInfo || 'host a haunted.mid next to index.html to give them a tune') + '.');
+                } else {
+                    showMessage('\u266a The phantom clears its throat \u2014 ' + evs.filter(ev => ev.on).length + ' notes.');
+                }
+                hauntedIdx = 0;
+                hauntedT0 = performance.now() + 800;
+                if (!hauntedTimer) hauntedTimer = setInterval(hauntedTick, 30);
+            } else {
+                if (hauntedTimer) { clearInterval(hauntedTimer); hauntedTimer = null; }
+                hauntedNotesOn.forEach(n => midiNoteOff(n));
+                hauntedNotesOn.clear();
+                showMessage('The spirits rest.');
+            }
+        }
+        btnHaunted.addEventListener('click', () => setHaunted(!hauntedOn));
+
         btnToggleView.addEventListener('click', () => {
             if (currentViewMode === 'gw2') {
                 currentViewMode = 'heartopia';
@@ -4023,12 +4478,44 @@
             }
         }
 
+        // Held-note ribbons: a soft column of light grows above a key while it
+        // sounds, then detaches and floats away on release.
+        let ribbons = [];
+        function startRibbon(keyEl, offset, rid) {
+            if (prefs.ribbons === false || !motionAllowed() || fxMult() <= 0 || !keyEl) return;
+            if (ribbons.some(r => r.id === rid && r.held)) return;
+            const rect = keyEl.getBoundingClientRect();
+            const cRect = particleCanvas.getBoundingClientRect();
+            const fx = THEME_FX[currentThemeName()] || THEME_FX.nocturne;
+            const hueShift = NOTE_HUES[(((offset || 0) % 12) + 12) % 12];
+            ribbons.push({
+                id: rid,
+                x: rect.left - cRect.left + rect.width / 2,
+                w: Math.max(8, rect.width * 0.42),
+                baseY: rect.top - cRect.top + 6,
+                len: 6,
+                maxLen: 150,
+                hue: Math.round((fx.hue(hueShift) + userHue() + 360) % 360),
+                sat: fx.sat,
+                light: fx.light,
+                held: true,
+                alpha: 1,
+                sway: Math.random() * Math.PI * 2
+            });
+            if (particleRafId === null) particleRafId = requestAnimationFrame(animateParticles);
+        }
+        function endRibbon(rid) {
+            ribbons.forEach(r => { if (r.id === rid) r.held = false; });
+        }
+
         function animateParticles() {
             pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
             for (let i = particles.length - 1; i >= 0; i--) {
                 let p = particles[i];
                 p.x += p.vx;
                 p.y += p.vy;
+                if (p.g) p.vy += p.g;
+                if (p.vr) p.rot += p.vr;
                 p.life -= p.decay;
 
                 if (p.life <= 0) {
@@ -4036,16 +4523,43 @@
                     continue;
                 }
 
-                pCtx.globalAlpha = p.life;
+                pCtx.globalAlpha = Math.min(p.life, 1);
                 pCtx.fillStyle = p.color;
-                pCtx.beginPath();
-                pCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                pCtx.fill();
+                if (p.shape === 'rect') {
+                    pCtx.save();
+                    pCtx.translate(p.x, p.y);
+                    pCtx.rotate(p.rot || 0);
+                    pCtx.fillRect(-p.size, -p.size * 0.6, p.size * 2, p.size * 1.2);
+                    pCtx.restore();
+                } else {
+                    pCtx.beginPath();
+                    pCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    pCtx.fill();
+                }
+            }
+
+            for (let i = ribbons.length - 1; i >= 0; i--) {
+                const r = ribbons[i];
+                if (r.held) {
+                    r.len = Math.min(r.len + 2.4, r.maxLen);
+                } else {
+                    r.baseY -= 2.2;
+                    r.alpha -= 0.022;
+                }
+                if (r.alpha <= 0) { ribbons.splice(i, 1); continue; }
+                const sway = Math.sin(performance.now() / 400 + r.sway) * 3;
+                const top = r.baseY - r.len;
+                const grad = pCtx.createLinearGradient(0, top, 0, r.baseY);
+                grad.addColorStop(0, 'hsla(' + r.hue + ', ' + r.sat + '%, ' + r.light + '%, 0)');
+                grad.addColorStop(1, 'hsla(' + r.hue + ', ' + r.sat + '%, ' + r.light + '%, ' + (0.42 * r.alpha).toFixed(3) + ')');
+                pCtx.globalAlpha = 1;
+                pCtx.fillStyle = grad;
+                pCtx.fillRect(r.x - r.w / 2 + sway, top, r.w, r.len);
             }
             pCtx.globalAlpha = 1.0;
 
-            // Idle-out when no particles remain — saves CPU when you're not playing
-            if (particles.length > 0) {
+            // Idle-out when nothing remains — saves CPU when you're not playing
+            if (particles.length > 0 || ribbons.length > 0) {
                 particleRafId = requestAnimationFrame(animateParticles);
             } else {
                 particleRafId = null;
@@ -4303,6 +4817,8 @@
 
             const keyEl = document.getElementById(elementId);
             if (keyEl) keyEl.classList.add('active');
+            startRibbon(keyEl, offset, elementId);
+            trackNoteEgg(offset);
         }
 
         function stopNote(elementId) {
@@ -4344,6 +4860,7 @@
 
             const keyEl = document.getElementById(elementId);
             if (keyEl) keyEl.classList.remove('active');
+            endRibbon(elementId);
         }
 
         const pianoContainer = document.getElementById('piano');
@@ -4957,11 +5474,17 @@
             // GW2 view: only when at matching octave and offset < 13
             if (currentViewMode === 'gw2' && octave === currentOctave && offset < notes.length) {
                 const el = document.getElementById(`gw2-key-${offset}`);
-                if (el) el.classList.toggle('active', on);
+                if (el) {
+                    el.classList.toggle('active', on);
+                    on ? startRibbon(el, offset, 'lit-' + el.id) : endRibbon('lit-' + el.id);
+                }
             }
             // Heartopia view: match by octave+offset
             const htpEl = document.getElementById(`htp-key-${octave}-${offset}`);
-            if (htpEl) htpEl.classList.toggle('active', on);
+            if (htpEl) {
+                htpEl.classList.toggle('active', on);
+                on ? startRibbon(htpEl, offset, 'lit-' + htpEl.id) : endRibbon('lit-' + htpEl.id);
+            }
         }
 
         function handleMidiMessage(e) {
