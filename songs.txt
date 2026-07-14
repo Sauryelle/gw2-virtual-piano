@@ -1,0 +1,77 @@
+Sarya's Music Thingy — Song Library file
+=========================================
+Host this file as "songs.txt" in the same folder as index.html and the
+Library tab (Tome Viewer → Library) will load it automatically.
+You can also import this same content by hand: Library → Import → Load .txt.
+
+THE FORMAT
+----------
+* Every song begins with a header line that starts with three hashes:
+
+      ### Song Name - Artist
+
+  The part after the LAST " - " becomes the artist. The artist is
+  optional — "### Song Name" alone works too.
+
+* Everything between one header and the next is that song's tab,
+  exactly as you'd paste it in game. Blank lines are fine.
+
+* Lines above the first ### header (like this whole explanation) are
+  ignored, so you can keep notes up here.
+
+FILLING IT FROM YOUR GOOGLE DOC
+-------------------------------
+1. Open the doc → File → Download → Plain text (.txt)
+2. For each song, replace its title line with a ### header
+   (e.g. "Evenstar" under "Lord of The Rings" becomes
+   "### Evenstar - Lord of The Rings")
+3. Delete decorative lines you don't want (dividers, counters, etc.)
+4. Save as songs.txt next to index.html — done.
+
+Below are two placeholder songs showing the shape. Replace them with
+your real tabs.
+
+### Evenstar - Lord of The Rings
+[6]/(3) 1 3  - (2 3) [4]/(3) 1 6  - 6 8 [5]/8 2 (2 - - 1) [6]/(2) 1 (3)  - -
+[6]/1/3/(3) [3 6]  - (2 3) [3]/(3) 5 7  - - [4]/(4) 1 4/(3 - - 1) [5]/8 2 5/(2)  - -
+[6]/6 [3 6]  - 5 6 [4]/6 [6] 1/8  - 6 8 [5]/8 2 5/(2  - 1 2) [6]/(2) 3 (3)  - -
+[2]/2/4/6 [6] 2  - 5 6 [4]/1/4/6 1 4/8  - 6 8 [5]/2/5/8 2 7  - 5  [6]/3/6  - - -
+
+
+[6/8]/3  - - - [3/7]/3  - - - [2/6]/2/4  - - - [3/7]/3  - - -
+[3/6/8]/3  - - - [3/7]/3  - - - [2/6]/2/5  4 - - 4 [6/8]/4  3  - -
+[6]/6 [3 6]  - 5 6 [3]/6[7]35  - - [2]/5[6]26  - 3  [6]/4 [3 6]  - 3
+
+
+[6]  -3  -6  [6]/(3  -2  -1)  [6]/(3) 1 3 [8 6 8] (2 3) [4]/(3) 1 6 1 4 1 [4] 8
+[5]/8 2 (2) 2 5 2 (2 1) [6]/(2) 1 (3) 1 3 1 [6] 1 [6]/(3) 1 3 1 3 1 (2 3) [3]/(3) [7] 7 3 5 3 [7] 3
+[4]/(4) 1 (3) 1 4 1 8 1 [5]/8 2 (2) 2 5 2 [5] 2 [6 3 6 8] 3 [8 6 3 4 6 8] 4 6 4 [8 6]
+[5 7] 2 5 7 5 2 [7 6 6] 1 3 6 3 1 [6 6] 3 6 8 (3) 8 6 3 [4] 4 6 8 (4) 8 6 4
+[5] 5 7 (2 5 2) 7 5 [6]/(1/3/6)
+
+
+### The King of The Golden Hall - Lord of The Rings
+[6]/3/6  - [1/8]/5.  5.5.[6]/3/6  - - -
+[6] 666 8 7  8  [5]/(2) 2 5/7 - - 87·[6]/3/6  - - -
+[2] 222 4 3  4  [5]/5  2  - -
+[2] 222 4 3  6  [5]/7  (2)  - -
+[2 66]222 3  4 44·[5]/5  2  - -
+[6]/(3)  1/3/8  [3]/7  -8 [4]/8  1/6  - -
+[2/6] 22[6]/2 4 [1]/1/3  [4/8]/6  [5]/2/5/7  (2) 2 5 6 2 7/(3) [6/8]/(1/3)  6  7  -8 [4]/6/8  - - -
+[4]/4 1 6 - - 56·[5]/7  2/5  - -
+[4]/4 1 6  - [5]/5  - -
+[4]/4 1 6 - - 56·[5]/7  2/5/(2  - 1.2.3).[6]/(3)  - - -
+
+[4/8]/4 8 [5]/7  2/5  [6]/6 (1/3) [7]/(2)  - [4/8]/4 8 [5]/7  2/5  [6]/6 [3/6]/(1/3 - - 2 3)
+[2]/(4) 4 6 4 6 4 (3 4) [5]/(2) 2 5/7 2 [5] 2 5 2 [6]/6 [6 8] 3 [6 6 8] 3 [6 6 8] 4 [6 6 8] 4
+[2] 22[6]/2 4 [1]/1/3  [4/8]/4 [5]/5 2 [7] 2 [8 5] 2 [2] 22[6]/2 4 [1]/1/3  [4/8]/4/6 [5]/2/5/7 (2) 2 5 6 2 5
+[2]/2 (22)2/4/6/(2 4) 1/3/(3)  [2]/6/8/(4)  [5]/(5  2) 5 7 5 [5] 5 [6]/3 [3 8 3 7  6 8] [4/8  6  4 6 8 5]
+[2/6] 22[6]/2 4 [6/8]/3 [4/8]/6 [5]/2/7 5 [7 8 7 2 5] [2/6] 22[6]/2 4 [6/8]/3 [4/8]/6 [5]/2/5/7 (2) 2 5 2 [5] (3)
+
+[6]/(3) 1 3/8 [8 7 8 6]8(34)·[5]/(5  2) 5 7 5 (5 6) [4]/(6) 6 8 6 (4) 6 8 (6) [6]/(3/6  1)  7  -8
+[4]/8  4/6.  - 6(23)·[6]/(4) 1 3/(3) 1 (2) 1 3 (3) [5]/(2) 2 5.  - 6(23)·[2]/(4) 4 6/(3) 4 (2) 4 6 4
+[5]/8 2 5 2 [5]/7 2 5 2 [4]/4 1 8 [8 5]/7 2 5 2 [6]/6 [3 6 3 7 3 8  6]/4 [4] 1/8  [5]/7 2 5 2
+[2]/6 [6] 2 3 4 [6] 2 [6] 1/4 [4] 8 [8 5]/7 2 5 2 [7]/6 [4 7 4 1]/8 3 5 3 [2]/4 22[6]/2 4 [7]/4  [1]/5
+[2/6]/6  2  - - [2] 44[6]/4 2 [7]/4  [1/5]/5  [5]/2/6  5  - - [7 775/7] 2 2 [5] 2
+3 [3 7]  - - [7 777] 2 2 [5] 2  [6]/3 [6] 2 - - [6 6 3 7 3 8 3] 3 [3]
+[6]/6 [6 8] 3 7 [6 8] 3 [4]/8 [6 8] 4 - 64[2] 222 4 3  [6]/4  [1/5]/5  3.  - 4.3.[2/6]/2
