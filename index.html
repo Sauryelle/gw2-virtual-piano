@@ -2633,6 +2633,16 @@
         .jam-status { font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); }
         .jam-status.is-live { color: var(--good); }
         .jam-count { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); }
+        .jam-code {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--text-acc);
+            padding: 2px 6px;
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-sm);
+            cursor: help;
+        }
+        .jam-code.hidden { display: none; }
         .jam-warn {
             margin: 0;
             padding: 9px 11px;
@@ -3255,6 +3265,7 @@
 
                 <div class="jam-statusbar">
                     <span id="jam-status" class="jam-status">Not connected</span>
+                    <span id="jam-code" class="jam-code hidden" title="Room code. Everyone in the same room sees the same code — if a friend's differs, your room name or password doesn't match."></span>
                     <span id="jam-count" class="jam-count">offline</span>
                 </div>
 
@@ -7761,6 +7772,7 @@
         const jamPassInput  = document.getElementById('jam-pass');
         const jamJoinBtn    = document.getElementById('jam-join');
         const jamStatusEl   = document.getElementById('jam-status');
+        const jamCodeEl     = document.getElementById('jam-code');
         const jamCountEl    = document.getElementById('jam-count');
         const jamPeersEl    = document.getElementById('jam-peers');
         const jamWarnEl     = document.getElementById('jam-warn');
@@ -7771,7 +7783,23 @@
 
         // Trystero is fetched only when someone actually opens Jam — the page
         // costs nothing for the majority who never use it.
+        // Trystero otherwise picks 5 of its 16 default relays by shuffling them
+        // with a seed derived from our appId — a lottery that landed us on five
+        // obscure ones. Naming them ourselves means everyone meets on the same
+        // well-known relays, and one being down costs nothing (a single shared
+        // relay is enough for two peers to find each other).
+        const JAM_RELAYS = [
+            'wss://relay.damus.io',
+            'wss://nos.lol',
+            'wss://relay.primal.net',
+            'wss://eu.purplerelay.com',
+            'wss://nostr.mom',
+            'wss://nostr.data.haus',
+            'wss://multiplexer.huszonegy.world',
+            'wss://nostr.cool110.xyz'
+        ];
         let TrysteroJoin = null;
+        let TrysteroSockets = null;
         let trysteroReady = null;
         function loadTrystero() {
             if (!trysteroReady) {
@@ -7779,7 +7807,7 @@
                 // one: its relays are far more dependable than torrent trackers,
                 // and peers must use the same strategy to find each other at all.
                 trysteroReady = import('https://esm.sh/trystero@0.21/nostr')
-                    .then(m => { TrysteroJoin = m.joinRoom; })
+                    .then(m => { TrysteroJoin = m.joinRoom; TrysteroSockets = m.getRelaySockets; })
                     .catch(e => { console.error('Trystero failed to load', e); TrysteroJoin = null; });
             }
             return trysteroReady;
@@ -8068,7 +8096,9 @@
             if (jam.active || jam.joining) return;
             const roomName = (jamRoomInput.value || '').trim();
             if (!roomName) { jamSetStatus('Enter a room name first.'); jamRoomInput.focus(); return; }
-            const roomPass = jamPassInput.value;
+            // Trailing spaces from autofill are invisible and would silently put
+            // you in a different room, since the password shapes the room id.
+            const roomPass = (jamPassInput.value || '').trim();
             if (!roomPass) { jamSetStatus('A password is required.'); jamPassInput.focus(); return; }
             // The hashed channel and the encrypted signalling both need SubtleCrypto,
             // which only exists in a secure context.
@@ -8083,7 +8113,12 @@
             saveJamPrefs();
             try {
                 const roomId = await jamRoomId(roomName, roomPass);
-                jam.room = TrysteroJoin({ appId: 'saryas-music-thingy-jam-v1', password: roomPass }, roomId);
+                jam.code = roomId.slice(0, 6);
+                jam.room = TrysteroJoin(
+                    { appId: 'saryas-music-thingy-jam-v1', password: roomPass, relayUrls: JAM_RELAYS },
+                    roomId,
+                    (e) => { console.warn('Jam join error', e); jamSetStatus('A player has a different password for this room.'); }
+                );
             } catch (e) {
                 console.error('Jam join failed', e);
                 jam.joining = false;
@@ -8126,8 +8161,19 @@
             jamChatLog.innerHTML = '';
             jamSetChatEnabled(true);
             jamSetStatus('In \u201c' + roomName + '\u201d', true);
+            jamCodeEl.textContent = '#' + jam.code;
+            jamCodeEl.classList.remove('hidden');
             jamUpdateCount(); renderPeers();
             showMessage('Jamming in \u201c' + roomName + '\u201d.');
+            // A room with no relay carrying it looks exactly like an empty room.
+            // Check, and say so, instead of leaving them waiting on nothing.
+            setTimeout(() => {
+                if (!jam.active || !TrysteroSockets) return;
+                let open = 0;
+                try { open = Object.values(TrysteroSockets()).filter(s => s && s.readyState === 1).length; } catch (e) { return; }
+                if (open === 0) jamSetStatus('No relay reachable \u2014 check your connection, then rejoin.');
+                else jamSetStatus('In \u201c' + jam.roomName + '\u201d \u00b7 ' + open + ' relay' + (open === 1 ? '' : 's'), true);
+            }, 3000);
         }
         function leaveJam() {
             if (jam.room) { try { jam.room.leave(); } catch (e) {} }
@@ -8144,6 +8190,7 @@
             jamWarnEl.style.display = '';
             jamSetChatEnabled(false);
             jamSetStatus('Not connected');
+            jamCodeEl.classList.add('hidden');
             jamUpdateCount(); renderPeers();
         }
         jamJoinBtn.addEventListener('click', () => { jam.active ? leaveJam() : joinJam(); });
