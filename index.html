@@ -18,6 +18,7 @@
                 if (p.motion && p.motion !== 'auto') de.dataset.motion = p.motion;
                 if (p.atmo === false) de.dataset.atmo = 'off';
                 if (typeof p.hue === 'number' && p.hue !== 0) de.style.setProperty('--hue-user', p.hue);
+                if (p.forge) de.dataset.forge = p.forge;
             } catch (e) {}
         })();
     </script>
@@ -27,7 +28,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Cinzel:wght@500;600;700&family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Inter:ital,wght@0,400;0,500;0,600;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Inter:ital,wght@0,400;0,500;0,600;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
         /* ╔══════════════════════════════════════════════════════════════╗
@@ -358,6 +359,125 @@
 
             --show-flourish: 0;
         }
+
+        /* ==============================================================
+           TOKENS — THEME PACK 4: GRIMOIRE
+           Beatrix Potter by way of the occult: cream watercolour paper,
+           fine ink linework, botanical blacks, and a blood-moon crimson
+           with an inkwell blue for company. Scary, but well-mannered.
+           ============================================================== */
+        [data-theme="grimoire"] {
+            --Ah: 352; --As: 70; --Al: 44;   /* blood moon / spear gem */
+            --Bh: 212; --Bs: 42; --Bl: 42;   /* inkwell blue */
+            --on-acc: #fdf6ec;
+
+            --bg-base: #f3ead9;
+            --bg-deep: #e8dcc6;
+            --bg-elevated: #fbf6ec;
+            --surface-1: hsl(40 55% 96% / 0.72);
+            --surface-2: hsl(40 55% 97% / 0.90);
+            --surface-3: #fdfaf4;
+            --wash: hsl(352 50% 45% / 0.06);
+            --well: hsl(38 40% 88% / 0.70);
+            --well-deep: hsl(38 38% 84% / 0.85);
+
+            --stroke-soft: hsl(28 30% 30% / 0.14);
+            --stroke-mid: hsl(calc(var(--Ah) + var(--hue-user)) 40% 40% / 0.25);
+            --stroke-strong: hsl(calc(var(--Ah) + var(--hue-user)) 55% 45% / 0.45);
+            --stroke-acc: hsl(calc(var(--Ah) + var(--hue-user)) 65% 45% / 0.50);
+
+            --text-primary: #2a2320;
+            --text-secondary: #6b5c52;
+            --text-muted: #9a897a;
+            --text-acc: hsl(calc(var(--Ah) + var(--hue-user)) 60% 40%);
+            --good: #5d7a3a;
+            --rec: #c0223a;
+
+            --grad-hero: linear-gradient(94deg,
+                hsl(calc(352 + var(--hue-user)) 68% 44%) 0%,
+                hsl(calc(340 + var(--hue-user)) 38% 34%) 48%,
+                hsl(calc(212 + var(--hue-user)) 45% 38%) 100%);
+            --grad-play: linear-gradient(135deg, #5d7a3a, #8fae5e);
+            --on-play: #16210a; --play-edge: #5d7a3a; --play-glow: hsl(83 36% 35% / 0.3);
+
+            /* Watercolour blooms soaking into the paper */
+            --glow-1: hsl(calc(352 + var(--hue-user)) 70% 60% / 0.20);
+            --glow-2: hsl(calc(212 + var(--hue-user)) 55% 55% / 0.16);
+            --glow-3: hsl(calc(28 + var(--hue-user)) 60% 60% / 0.14);
+            --glow-4: hsl(calc(340 + var(--hue-user)) 45% 50% / 0.12);
+            --halo: hsl(calc(var(--Ah) + var(--hue-user)) 60% 50% / 0.10);
+            --edge-shine: hsl(0 0% 100% / 0.80);
+            --vignette: 0.16;
+            --noise-op: 0.10;
+            --paper: #fbf6ec;
+
+            --shadow-sm: 0 2px 8px hsl(25 35% 35% / 0.12);
+            --shadow-md: 0 10px 28px hsl(25 35% 30% / 0.16), 0 2px 8px hsl(25 30% 30% / 0.08);
+            --shadow-lg: 0 24px 56px hsl(25 35% 25% / 0.20), 0 4px 14px hsl(25 30% 25% / 0.10);
+            --shadow-acc: 0 6px 22px hsl(calc(var(--Ah) + var(--hue-user)) 70% 45% / 0.22);
+            --shadow-acc-strong: 0 8px 28px hsl(calc(var(--Ah) + var(--hue-user)) 70% 45% / 0.38);
+
+            --hl-a: hsl(352 70% 44%);   /* (high octave) — always red */
+            --hl-b: hsl(212 55% 42%);   /* [low octave]  — always blue */
+            --hl-pipe: hsl(28 25% 45%);
+            --scroll-thumb: hsl(calc(var(--Ah) + var(--hue-user)) 40% 50% / 0.35);
+            --scroll-thumb-hover: hsl(calc(var(--Ah) + var(--hue-user)) 45% 45% / 0.50);
+
+            --font-display: 'IM Fell English', 'EB Garamond', serif;
+            --font-label: 'Cinzel', serif;
+            --font-tagline: 'IM Fell English', serif;
+            --font-body: 'EB Garamond', Georgia, serif;
+            --label-tracking: 0.18em;
+            --title-weight: 400;
+
+            --r-sm: 5px; --r-md: 8px; --r-lg: 14px; --r-xl: 20px; --r-pill: 999px;
+
+            /* Keys: pressed paper and lace-black */
+            --key-1: #fdfaf3; --key-2: #f6eee0; --key-3: #e9dcc6;
+            --key-edge: #cbb99c; --key-ledge: #a8916f;
+            --key-inner: hsl(32 30% 55% / 0.35);
+            --key-text: #3a2f28; --key-subtext: #9a8878;
+            --key-hot-1: hsl(calc(var(--Ah) + var(--hue-user)) 75% 82%);
+            --key-hot-2: hsl(calc(var(--Ah) + var(--hue-user)) 70% 62%);
+            --key-hot-3: hsl(calc(var(--Ah) + var(--hue-user)) 68% 48%);
+            --key-hot-edge: hsl(calc(var(--Ah) + var(--hue-user)) 60% 42%);
+            --key-hot-ledge: hsl(calc(var(--Ah) + var(--hue-user)) 60% 34%);
+            --key-hot-text: #3d0710;
+            --key-hot-glowA: hsl(calc(var(--Ah) + var(--hue-user)) 70% 50% / 0.45);
+            --key-hot-glowB: hsl(calc(var(--Ah) + var(--hue-user)) 70% 45% / 0.35);
+
+            --bkey-1: #38302c; --bkey-2: #241e1b; --bkey-3: #14100e; --bkey-edge: #0d0a09;
+            --bkey-subtext: #b3a396;
+            --bkey-note: #e6d9c2;
+            --bkey-hot-1: hsl(calc(var(--Ah) + var(--hue-user)) 70% 50%);
+            --bkey-hot-2: hsl(calc(var(--Ah) + var(--hue-user)) 72% 34%);
+            --bkey-hot-3: hsl(calc(var(--Ah) + var(--hue-user)) 60% 20%);
+            --bkey-hot-edge: hsl(calc(var(--Ah) + var(--hue-user)) 60% 40%);
+            --bkey-hot-ledge: hsl(calc(var(--Ah) + var(--hue-user)) 60% 22%);
+            --bkey-hot-text: #f8ece0;
+            --bkey-hot-glowA: hsl(calc(var(--Ah) + var(--hue-user)) 70% 50% / 0.50);
+            --bkey-hot-glowB: hsl(calc(var(--Ah) + var(--hue-user)) 65% 40% / 0.35);
+
+            --tag-1: #f3e6d6; --tag-2: #e6d3bc;
+
+            --show-flourish: 1;
+        }
+        /* The grain reads as paper tooth on cream, not as glow */
+        [data-theme="grimoire"] .bg-noise { mix-blend-mode: multiply; }
+        [data-theme="grimoire"] .sconce { display: none; }
+        [data-theme="grimoire"] .htp-bind-tag { color: hsl(calc(var(--Ah) + var(--hue-user)) 60% 40%); }
+        [data-theme="grimoire"] .piano-container {
+            background: linear-gradient(180deg, #fdfaf3, #efe4d0);
+            box-shadow: var(--shadow-lg), inset 0 2px 8px hsl(30 30% 65% / 0.30);
+        }
+        [data-theme="grimoire"] #htp-view {
+            background: linear-gradient(180deg, #fdfaf3, #efe4d0);
+            box-shadow: var(--shadow-lg);
+        }
+        [data-theme="grimoire"] .octave-display { box-shadow: inset 0 2px 6px hsl(30 35% 60% / 0.22); }
+        [data-theme="grimoire"] .editor-back { box-shadow: inset 0 2px 8px hsl(30 35% 60% / 0.18); }
+        [data-theme="grimoire"] .library-song-view { box-shadow: inset 0 2px 8px hsl(30 35% 60% / 0.16); }
+        [data-theme="grimoire"] #help-overlay { background: hsl(35 45% 88% / 0.65); }
 
         /* Shared derived tokens (all themes) */
         :root {
@@ -2334,6 +2454,145 @@
             100% { transform: translateY(115vh) scaleY(1.6); opacity: 0.5; }
         }
 
+        /* ==============================================================
+           BIND PROFILES
+           ============================================================== */
+        .bind-profiles { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center; }
+        .bind-profiles .input { padding: 8px 30px 8px 12px; font-size: 0.78rem; max-width: 190px; }
+        .bind-profiles .btn { padding: 8px 12px; font-size: 0.75rem; }
+        .bind-form {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            max-width: 620px;
+            padding: 10px;
+            background: var(--well);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+        }
+        .bind-form .input { flex: 1; min-width: 180px; font-size: 0.8rem; }
+        .bind-form .btn { padding: 8px 14px; font-size: 0.75rem; }
+        .bind-form.hidden { display: none !important; }
+
+        /* ==============================================================
+           THE FORGE — user-made theme packs
+           ============================================================== */
+        .forge-cards { display: flex; flex-direction: column; gap: 8px; }
+        .forge-cards:empty { display: none; }
+        .forge-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--well);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+            cursor: pointer;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            transition: border-color 0.2s, transform 0.15s var(--ease-spring), box-shadow 0.2s;
+        }
+        .forge-card:hover { border-color: var(--stroke-mid); transform: translateY(-1px); }
+        .forge-card.is-active { border-color: var(--stroke-acc); box-shadow: var(--shadow-acc); background: var(--wash); }
+        .forge-card-name { flex: 1; min-width: 0; font-weight: 700; font-size: 0.86rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+        .forge-card-del {
+            background: none; border: none; cursor: pointer;
+            color: var(--text-muted); font-size: 1rem; line-height: 1;
+            padding: 2px 4px; border-radius: var(--r-sm); flex-shrink: 0;
+        }
+        .forge-card-del:hover { color: var(--rec); }
+        .forge-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 12px;
+            background: var(--well);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+        }
+        .forge-panel.hidden { display: none !important; }
+        .forge-row { display: flex; align-items: center; gap: 10px; }
+        .forge-row .input { flex: 1; min-width: 0; }
+        .forge-label { font-size: 0.76rem; color: var(--text-secondary); font-weight: 600; width: 78px; flex-shrink: 0; }
+        .forge-swatch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .forge-swatch {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 8px;
+            background: var(--surface-1);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-sm);
+            cursor: pointer;
+            font-size: 0.74rem;
+            color: var(--text-secondary);
+        }
+        .forge-swatch input[type="color"] {
+            width: 26px; height: 26px; padding: 0;
+            border: 1px solid var(--stroke-mid);
+            border-radius: var(--r-sm);
+            background: none;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .forge-swatch input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+        .forge-swatch input[type="color"]::-webkit-color-swatch { border: none; border-radius: 3px; }
+        .forge-actions { display: flex; gap: 8px; align-items: center; }
+
+        /* A forged theme dresses the instrument bed to match its background */
+        html[data-forge] .piano-container,
+        html[data-forge] #htp-view {
+            background: linear-gradient(180deg, var(--bg-elevated), var(--bg-deep));
+        }
+
+        /* ==============================================================
+           CREDIT LINE & EDIT MODE
+           ============================================================== */
+        .library-credit {
+            font-family: var(--font-tagline);
+            font-style: italic;
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            text-align: right;
+            padding: 2px 4px 0;
+            flex-shrink: 0;
+        }
+        [data-theme="ash"] .library-credit { font-style: normal; font-size: 0.7rem; }
+        .library-edit-banner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding: 8px 10px;
+            background: var(--wash);
+            border: 1px solid var(--stroke-acc);
+            border-radius: var(--r-md);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-acc);
+        }
+        .library-edit-banner .btn { padding: 6px 10px; font-size: 0.72rem; }
+        .library-edit-banner #library-edit-state { flex: 1; min-width: 120px; }
+        .library-edit-form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px;
+            background: var(--well);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+        }
+        .library-edit-form textarea { min-height: 150px; }
+        .library-edit-form.hidden, .library-edit-banner.hidden { display: none !important; }
+        .library-item-edit {
+            background: none; border: none; cursor: pointer;
+            color: var(--text-muted); font-size: 0.9rem; line-height: 1;
+            padding: 3px 5px; border-radius: var(--r-sm); flex-shrink: 0;
+        }
+        .library-item-edit:hover { color: var(--text-acc); }
+        .library-item-edit.is-del:hover { color: var(--rec); }
+
         /* Collapsed side panels must not contribute height to the stage row */
         #songbook-panel:not(.is-open) > *,
         #scribe-panel:not(.is-open) > * { display: none !important; }
@@ -2471,13 +2730,13 @@
 
                 <div id="doc-input-area" style="display:flex; flex-direction:column; gap:8px;">
                     <div style="display:flex; gap:8px;">
-                        <input type="text" id="songbook-url" class="input" style="flex:1;" placeholder="Paste Google Doc link…" value="https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview">
+                        <input type="text" id="songbook-url" class="input" style="flex:1;" placeholder="Paste Google Doc link…" value="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview">
                         <button id="btn-load-songbook" class="btn btn-primary" type="button">Load</button>
                     </div>
                     <p style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin:0;">Load a <span style="color:var(--text-acc);">public Google Doc</span> URL.</p>
                 </div>
 
-                <iframe id="songbook-frame" title="Songbook" src="https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview"></iframe>
+                <iframe id="songbook-frame" title="Songbook" src="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview"></iframe>
 
                 <div id="custom-notes-container" class="editor-container hidden" style="min-height:400px;">
                     <div id="customTextareaB" class="editor-layer editor-back" aria-hidden="true"></div>
@@ -2492,6 +2751,34 @@
                         <button id="btn-library-export" class="btn btn-ghost" type="button" title="Download the whole library as songs.txt">Export</button>
                     </div>
                     <div id="library-tags" class="library-tags hidden"></div>
+
+                    <div id="lock-form" class="bind-form hidden">
+                        <input type="password" id="lock-pass" class="input" placeholder="Passphrase" autocomplete="off">
+                        <button id="btn-lock-unlock" class="btn btn-primary" type="button">Unlock</button>
+                        <button id="btn-lock-cancel" class="btn btn-ghost" type="button">Cancel</button>
+                    </div>
+
+                    <div id="library-edit-banner" class="library-edit-banner hidden">
+                        <span id="library-edit-state">Edit mode</span>
+                        <button id="btn-library-add" class="btn" type="button">+ Add song</button>
+                        <button id="btn-library-discard" class="btn btn-ghost" type="button" title="Throw away local edits and go back to the published songs.txt">Discard edits</button>
+                        <button id="btn-library-lock" class="btn btn-ghost" type="button">Lock</button>
+                    </div>
+
+                    <div id="library-edit-form" class="library-edit-form hidden">
+                        <input type="text" id="edit-title" class="input" placeholder="Song title" maxlength="120">
+                        <div style="display:flex; gap:8px;">
+                            <input type="text" id="edit-artist" class="input" style="flex:1;" placeholder="Artist" maxlength="120">
+                            <input type="number" id="edit-bpm" class="input" style="width:88px;" placeholder="BPM" min="20" max="300">
+                        </div>
+                        <input type="text" id="edit-tags" class="input" placeholder="Tags, comma separated (movie, sad, easy)">
+                        <input type="text" id="edit-notes" class="input" placeholder="Performance notes (optional)">
+                        <textarea id="edit-body" class="input library-import-text" spellcheck="false" placeholder="The tab…"></textarea>
+                        <div style="display:flex; gap:8px;">
+                            <button id="btn-edit-save" class="btn btn-primary" type="button" style="flex:1;">Save song</button>
+                            <button id="btn-edit-cancel" class="btn btn-ghost" type="button">Cancel</button>
+                        </div>
+                    </div>
                     <div id="library-import-area" class="hidden" style="display:flex; flex-direction:column; gap:8px;">
                         <p class="library-hint">Each song starts with a line like <b>### Song Name - Artist</b>, followed by its tab. Paste below, load a .txt, or host a <b>songs.txt</b> next to this page and it loads on its own.</p>
                         <textarea id="library-import-text" class="input library-import-text" spellcheck="false" placeholder="### Evenstar - Lord of The Rings&#10;[6]/(3) 1 3 …"></textarea>
@@ -2516,6 +2803,7 @@
                         </div>
                         <div id="library-song-notes" class="library-notes hidden"></div>
                         <div id="library-song-body" class="library-song-view"></div>
+                        <div id="library-credit" class="library-credit"></div>
                     </div>
                 </div>
             </aside>
@@ -2563,6 +2851,25 @@
                                 <div class="dock-item" id="midi-status" title="Web MIDI controller">
                                     <div id="midi-dot" class="dot midi-dot"></div>
                                     <span class="dock-label" id="midi-label">MIDI: —</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dock-group">
+                            <span class="dock-group-label">Ambience</span>
+                            <div class="dock-group-row">
+                                <div class="dock-item" title="Background atmosphere, synthesised live">
+                                    <svg class="dock-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-1.8A7 7 0 1 0 4 14.9"/><path d="M8 19v2"/><path d="M12 17v4"/><path d="M16 19v2"/></svg>
+                                    <select id="ambience-select" class="dock-select" aria-label="Ambience">
+                                        <option value="off">No ambience</option>
+                                        <option value="rain">Rain</option>
+                                        <option value="hearth">Hearth</option>
+                                        <option value="grove">Grove</option>
+                                    </select>
+                                </div>
+                                <div class="dock-item" title="Ambience volume">
+                                    <svg class="dock-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                                    <input type="range" id="ambience-volume" class="slider" min="0" max="1" step="0.01" value="0.5" style="width:76px;" aria-label="Ambience volume">
                                 </div>
                             </div>
                         </div>
@@ -2664,10 +2971,29 @@
 
                     <div style="display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:16px; margin-top:4px;">
                         <button id="btn-edit-binds" class="btn" type="button" aria-pressed="false">Edit Binds: OFF</button>
+                        <div class="bind-profiles">
+                            <select id="bind-profile" class="input" title="Bind profile" aria-label="Bind profile"></select>
+                            <button id="btn-bind-save" class="btn" type="button" title="Save the current binds into this profile">Save</button>
+                            <button id="btn-bind-new" class="btn" type="button" title="Create a new profile from the current binds">New</button>
+                            <button id="btn-bind-share" class="btn btn-ghost" type="button" title="Copy this profile as a code, or paste someone else's">Share</button>
+                            <button id="btn-bind-delete" class="btn btn-ghost" type="button" title="Delete this profile">Delete</button>
+                        </div>
                         <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:var(--text-secondary); font-size:0.85rem;">
                             <input type="checkbox" id="octave-toggle" class="check" checked>
                             <span>Restrict Octaves (Low / Mid / High)</span>
                         </label>
+                    </div>
+
+                    <div id="bind-form" class="bind-form hidden">
+                        <input type="text" id="bind-name" class="input" placeholder="Profile name (e.g. AZERTY, Left hand)" maxlength="40">
+                        <button id="btn-bind-create" class="btn btn-primary" type="button">Create</button>
+                        <button id="btn-bind-cancel" class="btn btn-ghost" type="button">Cancel</button>
+                    </div>
+                    <div id="bind-share-form" class="bind-form hidden">
+                        <input type="text" id="bind-code" class="input" spellcheck="false" placeholder="Paste a profile code here…">
+                        <button id="btn-bind-copy" class="btn" type="button">Copy mine</button>
+                        <button id="btn-bind-import" class="btn btn-primary" type="button">Import</button>
+                        <button id="btn-bind-share-cancel" class="btn btn-ghost" type="button">Close</button>
                     </div>
 
                     <p class="hints" id="helper-text">
@@ -2814,6 +3140,16 @@
                 </span>
                 <svg class="theme-card-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </button>
+            <button class="theme-card" type="button" data-theme-pick="grimoire">
+                <span class="theme-swatches" aria-hidden="true">
+                    <span style="background:#f3ead9;"></span><span style="background:#bf2233;"></span><span style="background:#3f6699;"></span><span style="background:#2a2320;"></span>
+                </span>
+                <span>
+                    <span class="theme-card-name">Grimoire</span><br>
+                    <span class="theme-card-desc">Watercolour paper, ink botanicals, a blood moon rising.</span>
+                </span>
+                <svg class="theme-card-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
             <button class="theme-card" type="button" data-theme-pick="meadow">
                 <span class="theme-swatches" aria-hidden="true">
                     <span style="background:#fdf5ea;"></span><span style="background:#ff8aa4;"></span><span style="background:#ffc94d;"></span><span style="background:#6fb8ff;"></span>
@@ -2834,6 +3170,56 @@
                 </span>
                 <svg class="theme-card-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </button>
+        </div>
+    </div>
+
+    <div class="atelier-section">
+        <span class="atelier-heading">Your own themes</span>
+        <div class="forge-cards" id="forge-cards"></div>
+        <button id="btn-forge-open" class="btn" type="button" style="width:100%;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3"/><path d="M18.5 8.5 16.4 10.6"/><path d="M21 15h-3"/><path d="M6 15H3"/><path d="M7.6 10.6 5.5 8.5"/><path d="M12 15a3 3 0 1 0-3-3"/><path d="M9 21h6"/><path d="M10 18h4"/></svg>
+            Forge a theme
+        </button>
+
+        <div id="forge-panel" class="forge-panel hidden">
+            <label class="forge-row">
+                <span class="forge-label">Start from</span>
+                <select id="forge-base" class="input"></select>
+            </label>
+            <p class="atelier-note">The starting pack lends its materials — key faces, textures, ornament. Your colours dress everything else.</p>
+
+            <div class="forge-swatch-grid">
+                <label class="forge-swatch"><input type="color" id="forge-bg"><span>Background</span></label>
+                <label class="forge-swatch"><input type="color" id="forge-text"><span>Text</span></label>
+                <label class="forge-swatch"><input type="color" id="forge-acc"><span>Accent</span></label>
+                <label class="forge-swatch"><input type="color" id="forge-sec"><span>Secondary</span></label>
+            </div>
+
+            <label class="forge-row">
+                <span class="forge-label">Lettering</span>
+                <select id="forge-fonts" class="input">
+                    <option value="inherit">As the pack</option>
+                    <option value="gothic">Gothic — blackletter &amp; Roman caps</option>
+                    <option value="storybook">Storybook — antique press serif</option>
+                    <option value="playful">Playful — round sans</option>
+                    <option value="modern">Modern — clean grotesque</option>
+                </select>
+            </label>
+
+            <label class="forge-row">
+                <span class="forge-label">Name</span>
+                <input type="text" id="forge-name" class="input" placeholder="Sarya's own" maxlength="30">
+            </label>
+
+            <div class="forge-actions">
+                <button id="btn-forge-save" class="btn btn-primary" type="button" style="flex:1;">Save theme</button>
+                <button id="btn-forge-cancel" class="btn btn-ghost" type="button">Cancel</button>
+            </div>
+            <div class="forge-actions">
+                <input type="text" id="forge-code" class="input" spellcheck="false" placeholder="Paste a theme code…" style="flex:1; min-width:0;">
+                <button id="btn-forge-copy" class="btn" type="button">Copy</button>
+                <button id="btn-forge-import" class="btn" type="button">Import</button>
+            </div>
         </div>
     </div>
 
@@ -3031,12 +3417,35 @@
         // ║  paste it after the last one, add a comma between them, and    ║
         // ║  fill in their details.                                        ║
         // ╚═══════════════════════════════════════════════════════════════╝
+        // ╔═══════════════════════════════════════════════════════════════╗
+        // ║  CREDIT — stamped on every song view, and appended whenever    ║
+        // ║  someone copies a tab, so your name travels with it.           ║
+        // ╚═══════════════════════════════════════════════════════════════╝
+        const TABBER_CREDIT = 'Tabbed by Sarya';
+        const TABBER_URL = '';   // e.g. 'saryasmusic.com' — leave '' to use this page's address
+
+        // ╔═══════════════════════════════════════════════════════════════╗
+        // ║  EDIT LOCK                                                     ║
+        // ║  Type the trigger word anywhere on the page (not in a text     ║
+        // ║  box), then give the passphrase, and the Library's editing      ║
+        // ║  tools appear. Only the PBKDF2 hash lives here — the           ║
+        // ║  passphrase itself is nowhere in this file.                     ║
+        // ║                                                                ║
+        // ║  The passphrase is NOT written here on purpose. To set your     ║
+        // ║  own (do this — the starting one was sent to you in chat):      ║
+        // ║    1. open this page, press F12, go to the Console             ║
+        // ║    2. run:  await saryaEditHash('your new passphrase')         ║
+        // ║    3. paste what it prints over EDIT_LOCK below, and re-upload ║
+        // ╚═══════════════════════════════════════════════════════════════╝
+        const EDIT_TRIGGER = 'tabber';
+        const EDIT_LOCK = 'pbkdf2$250000$sr1RSrAaakTjEmSQ0f7xlQ==$hKm8EyJaw590ylUtGhX77vol4wfxtWzDjMhMRbnovcU=';
+
         const SONGBOOK_ARCHIVE = [
             {
                 name: "Sarya's Songbook",
                 description: "The original Tome of Melodies — game, movie & TV themes.",
                 image: "saryamusic2.png",
-                url: "https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview"
+                url: "https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview"
             }
             // , {
             //     name: "Another Tome",
@@ -3139,10 +3548,11 @@
         // attributes on <html>, persists choices, drives the ambient
         // drift, and shapes the note-particle palette per theme.
         const themeMeta = document.querySelector('meta[name="theme-color"]');
-        const THEME_ORDER = ['nocturne', 'meadow', 'ash'];
-        const THEME_LABELS = { nocturne: 'Nocturne', meadow: 'Meadow', ash: 'Ash' };
+        const THEME_ORDER = ['nocturne', 'grimoire', 'meadow', 'ash'];
+        const THEME_LABELS = { nocturne: 'Nocturne', grimoire: 'Grimoire', meadow: 'Meadow', ash: 'Ash' };
         const THEME_GREETINGS = {
             nocturne: 'The Masquerade holds. Nocturne attuned.',
+            grimoire: 'The moon runs red over the paper. Grimoire attuned.',
             meadow: 'Sunshine and songbirds. Meadow attuned.',
             ash: 'Silence and order. Ash attuned.'
         };
@@ -3152,11 +3562,13 @@
         // monochrome steel.
         const THEME_FX = {
             nocturne: { sat: 70, light: 56, hue: h => (345 + h * 0.22) % 360 },
+            // Dark pigments — anything pale would vanish into the paper
+            grimoire: { sat: 62, light: 44, hue: h => (346 + h * 0.18) % 360 },
             meadow:   { sat: 88, light: 66, hue: h => h },
             ash:      { sat: 14, light: 74, hue: () => 211 }
         };
 
-        const ATELIER_DEFAULTS = { theme: 'nocturne', hue: 0, fx: 'full', motion: 'auto', atmo: true, corners: 'theme', density: 'cozy', labels: 'full', ribbons: true };
+        const ATELIER_DEFAULTS = { theme: 'nocturne', hue: 0, fx: 'full', motion: 'auto', atmo: true, corners: 'theme', density: 'cozy', labels: 'full', ribbons: true, forge: null };
         let prefs = { ...ATELIER_DEFAULTS };
         try {
             const savedPrefs = JSON.parse(localStorage.getItem('saryaAtelier') || '{}');
@@ -3188,6 +3600,7 @@
             setAttr('atmo', prefs.atmo ? 'on' : 'off', 'on');
             if (prefs.hue) de.style.setProperty('--hue-user', prefs.hue);
             else de.style.removeProperty('--hue-user');
+            applyForge();
             // Keep the browser chrome color in step with the page background
             if (themeMeta) {
                 const bg = getComputedStyle(de).getPropertyValue('--bg-base').trim();
@@ -3228,7 +3641,8 @@
         // Theme cards
         document.querySelectorAll('[data-theme-pick]').forEach(card => {
             card.addEventListener('click', () => {
-                if (prefs.theme === card.dataset.themePick) return;
+                if (prefs.theme === card.dataset.themePick && !prefs.forge) return;
+                prefs.forge = null;
                 prefs.theme = card.dataset.themePick;
                 applyPrefs();
                 showMessage(THEME_GREETINGS[prefs.theme]);
@@ -3237,7 +3651,8 @@
 
         // Quick theme cycle on the rail
         document.getElementById('btn-cycle-theme').addEventListener('click', () => {
-            const next = THEME_ORDER[(THEME_ORDER.indexOf(prefs.theme) + 1) % THEME_ORDER.length];
+            const next = prefs.forge ? prefs.theme : THEME_ORDER[(THEME_ORDER.indexOf(prefs.theme) + 1) % THEME_ORDER.length];
+            prefs.forge = null;
             prefs.theme = next;
             applyPrefs();
             showMessage(THEME_GREETINGS[next]);
@@ -3275,8 +3690,10 @@
 
         function reflectAtelierUI() {
             document.querySelectorAll('[data-theme-pick]').forEach(c =>
-                c.classList.toggle('is-active', c.dataset.themePick === prefs.theme));
-            if (lblCycleTheme) lblCycleTheme.textContent = THEME_LABELS[prefs.theme];
+                c.classList.toggle('is-active', !prefs.forge && c.dataset.themePick === prefs.theme));
+            const wornForge = prefs.forge ? findForge(prefs.forge) : null;
+            if (lblCycleTheme) lblCycleTheme.textContent = wornForge ? wornForge.name : THEME_LABELS[prefs.theme];
+            renderForgeCards();
             hueSlider.value = prefs.hue;
             hueValue.textContent = (prefs.hue > 0 ? '+' : '') + prefs.hue + '\u00b0';
             atmoToggle.checked = !!prefs.atmo;
@@ -3291,6 +3708,273 @@
             reflectSeg('seg-labels', prefs.labels);
         }
 
+        // ==========================================
+        // 1.6 THE FORGE — themes of your own making
+        // ==========================================
+        // A forged theme borrows a pack's materials (key faces, textures,
+        // ornament) and re-dresses it with your colours and lettering. It
+        // overrides the same tokens the packs define — including the accent's
+        // H/S/L numbers, which the whole interface already derives from.
+        const FORGE_FONTS = {
+            gothic:    { display: "'Pirata One', serif", label: "'Cinzel', serif", tagline: "'IM Fell English', serif", body: "'Alegreya Sans', system-ui, sans-serif", weight: 400, track: '0.22em' },
+            storybook: { display: "'IM Fell English', serif", label: "'Cinzel', serif", tagline: "'IM Fell English', serif", body: "'EB Garamond', Georgia, serif", weight: 400, track: '0.18em' },
+            playful:   { display: "'Fredoka', sans-serif", label: "'Fredoka', sans-serif", tagline: "'Nunito', sans-serif", body: "'Nunito', system-ui, sans-serif", weight: 600, track: '0.14em' },
+            modern:    { display: "'Inter', system-ui, sans-serif", label: "'Inter', system-ui, sans-serif", tagline: "'Inter', system-ui, sans-serif", body: "'Inter', system-ui, sans-serif", weight: 800, track: '0.18em' }
+        };
+
+        let forgeThemes = [];
+        try { forgeThemes = JSON.parse(localStorage.getItem('saryaForge') || '[]'); } catch (e) {}
+        if (!Array.isArray(forgeThemes)) forgeThemes = [];
+        function saveForges() { try { localStorage.setItem('saryaForge', JSON.stringify(forgeThemes)); } catch (e) {} }
+        function findForge(id) { return forgeThemes.find(t => t.id === id) || null; }
+
+        // --- colour helpers ---
+        function hexToHsl(hex) {
+            const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(String(hex).trim());
+            if (!m) return { h: 0, s: 0, l: 50 };
+            const r = parseInt(m[1], 16) / 255, g = parseInt(m[2], 16) / 255, b = parseInt(m[3], 16) / 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h = 0, s = 0; const l = (max + min) / 2;
+            if (max !== min) {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+                else if (max === g) h = (b - r) / d + 2;
+                else h = (r - g) / d + 4;
+                h *= 60;
+            }
+            return { h: Math.round(h), s: Math.round(s * 100), l: Math.round(l * 100) };
+        }
+        function hslToHex(h, s, l) {
+            s /= 100; l /= 100;
+            const k = n => (n + h / 30) % 12;
+            const a = s * Math.min(l, 1 - l);
+            const f = n => Math.round(255 * (l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)))));
+            return '#' + [f(0), f(8), f(4)].map(v => v.toString(16).padStart(2, '0')).join('');
+        }
+        const clampL = v => Math.max(0, Math.min(100, Math.round(v)));
+        const mixL = (a, b, t) => clampL(a + (b - a) * t);
+
+        function forgeCSS(t) {
+            const bg = hexToHsl(t.bg), tx = hexToHsl(t.text);
+            const ac = hexToHsl(t.acc), se = hexToHsl(t.sec);
+            const light = bg.l > 55;
+            const H = bg.h, S = Math.min(bg.s, 40);
+            const sur = (l, a) => 'hsl(' + H + ' ' + S + '% ' + clampL(l) + '% / ' + a + ')';
+            const v = [];
+            v.push('--Ah:' + ac.h + '; --As:' + ac.s + '; --Al:' + ac.l + ';');
+            v.push('--Bh:' + se.h + '; --Bs:' + se.s + '; --Bl:' + se.l + ';');
+            v.push('--on-acc:' + (ac.l > 60 ? '#141014' : '#fbf5ec') + ';');
+            v.push('--bg-base:' + t.bg + ';');
+            v.push('--bg-deep:' + hslToHex(H, bg.s, light ? clampL(bg.l - 5) : clampL(bg.l * 0.55)) + ';');
+            v.push('--bg-elevated:' + hslToHex(H, bg.s, light ? clampL(bg.l + 5) : clampL(bg.l + 7)) + ';');
+            v.push('--surface-1:' + sur(light ? bg.l + 6 : bg.l + 3, light ? 0.72 : 0.62) + ';');
+            v.push('--surface-2:' + sur(light ? bg.l + 7 : bg.l + 6, light ? 0.9 : 0.8) + ';');
+            v.push('--surface-3:' + hslToHex(H, bg.s, light ? clampL(bg.l + 7) : clampL(bg.l + 9)) + ';');
+            v.push('--well:' + sur(light ? bg.l - 4 : bg.l - 3, light ? 0.7 : 0.5) + ';');
+            v.push('--well-deep:' + sur(light ? bg.l - 7 : bg.l - 4, light ? 0.85 : 0.7) + ';');
+            v.push('--wash:hsl(' + ac.h + ' ' + ac.s + '% ' + ac.l + '% / 0.07);');
+            v.push('--text-primary:' + t.text + ';');
+            v.push('--text-secondary:hsl(' + tx.h + ' ' + Math.round(tx.s * 0.8) + '% ' + mixL(tx.l, bg.l, 0.34) + '%);');
+            v.push('--text-muted:hsl(' + tx.h + ' ' + Math.round(tx.s * 0.6) + '% ' + mixL(tx.l, bg.l, 0.58) + '%);');
+            v.push('--text-acc:hsl(' + se.h + ' ' + se.s + '% ' + clampL(light ? se.l - 6 : se.l + 16) + '%);');
+            v.push('--stroke-soft:hsl(' + tx.h + ' ' + tx.s + '% ' + tx.l + '% / ' + (light ? 0.14 : 0.08) + ');');
+            v.push('--stroke-mid:hsl(' + ac.h + ' 45% ' + clampL(ac.l + 8) + '% / 0.25);');
+            v.push('--stroke-strong:hsl(' + ac.h + ' 55% ' + clampL(ac.l + 6) + '% / 0.45);');
+            v.push('--stroke-acc:hsl(' + ac.h + ' 65% ' + ac.l + '% / 0.5);');
+            v.push('--grad-hero:linear-gradient(94deg, hsl(' + se.h + ' ' + se.s + '% ' + clampL(se.l + 8) + '%) 0%, hsl(' + ac.h + ' ' + ac.s + '% ' + ac.l + '%) 100%);');
+            v.push('--halo:hsl(' + ac.h + ' ' + ac.s + '% ' + clampL(ac.l + 6) + '% / ' + (light ? 0.1 : 0.16) + ');');
+            v.push('--glow-1:hsl(' + ac.h + ' ' + ac.s + '% ' + clampL(ac.l + (light ? 16 : -8)) + '% / ' + (light ? 0.2 : 0.22) + ');');
+            v.push('--glow-2:hsl(' + se.h + ' ' + se.s + '% ' + clampL(se.l + (light ? 12 : -10)) + '% / ' + (light ? 0.16 : 0.18) + ');');
+            v.push('--scroll-thumb:hsl(' + ac.h + ' 40% ' + clampL(ac.l + 6) + '% / 0.3);');
+            v.push('--scroll-thumb-hover:hsl(' + ac.h + ' 45% ' + clampL(ac.l + 4) + '% / 0.5);');
+            v.push('--paper:' + hslToHex(H, Math.min(bg.s, 30), light ? clampL(bg.l + 5) : 88) + ';');
+            v.push('--key-hot-text:' + (ac.l > 55 ? '#1a0d10' : '#fdf3ea') + ';');
+            const f = FORGE_FONTS[t.fonts];
+            if (f) {
+                v.push('--font-display:' + f.display + '; --font-label:' + f.label + '; --font-tagline:' + f.tagline + '; --font-body:' + f.body + ';');
+                v.push('--title-weight:' + f.weight + '; --label-tracking:' + f.track + ';');
+            }
+            return 'html[data-forge] { ' + v.join(' ') + ' }';
+        }
+
+        let forgeStyleEl = null;
+        let forgePreview = null;   // live preview while the forge is open
+        function applyForge() {
+            const de = document.documentElement;
+            const t = forgePreview || (prefs.forge ? findForge(prefs.forge) : null);
+            if (!forgeStyleEl) {
+                forgeStyleEl = document.createElement('style');
+                document.head.appendChild(forgeStyleEl);
+            }
+            if (!t) {
+                delete de.dataset.forge;
+                forgeStyleEl.textContent = '';
+                return;
+            }
+            de.dataset.theme = t.base;
+            de.dataset.forge = t.id || 'preview';
+            forgeStyleEl.textContent = forgeCSS(t);
+        }
+        function forgeFX() {
+            const t = forgePreview || (prefs.forge ? findForge(prefs.forge) : null);
+            if (!t) return null;
+            const ac = hexToHsl(t.acc);
+            return { sat: Math.max(40, ac.s), light: hexToHsl(t.bg).l > 55 ? 44 : 60, hue: h => (ac.h + h * 0.2 + 360) % 360 };
+        }
+
+        // ---- Forge UI ----
+        const forgePanel = document.getElementById('forge-panel');
+        const forgeBase = document.getElementById('forge-base');
+        const forgeBg = document.getElementById('forge-bg');
+        const forgeText = document.getElementById('forge-text');
+        const forgeAcc = document.getElementById('forge-acc');
+        const forgeSec = document.getElementById('forge-sec');
+        const forgeFonts = document.getElementById('forge-fonts');
+        const forgeName = document.getElementById('forge-name');
+        const forgeCode = document.getElementById('forge-code');
+        let forgeEditingId = null;
+
+        THEME_ORDER.forEach(name => {
+            const o = document.createElement('option');
+            o.value = name; o.textContent = THEME_LABELS[name];
+            forgeBase.appendChild(o);
+        });
+
+        // Read a pack's own colours so the forge opens somewhere sensible
+        function packColours(base) {
+            const probe = document.createElement('div');
+            probe.dataset.theme = base;
+            probe.style.display = 'none';
+            document.body.appendChild(probe);
+            const cs = getComputedStyle(probe);
+            const num = (k, d) => { const v = parseFloat(cs.getPropertyValue(k)); return isNaN(v) ? d : v; };
+            const hex = (k, d) => { const v = cs.getPropertyValue(k).trim(); return /^#[0-9a-f]{6}$/i.test(v) ? v : d; };
+            const out = {
+                bg: hex('--bg-base', '#101014'),
+                text: hex('--text-primary', '#eeeeee'),
+                acc: hslToHex(num('--Ah', 352), num('--As', 70), num('--Al', 45)),
+                sec: hslToHex(num('--Bh', 41), num('--Bs', 46), num('--Bl', 55))
+            };
+            probe.remove();
+            return out;
+        }
+        function currentForgeDraft() {
+            return {
+                id: forgeEditingId || ('f' + Date.now().toString(36)),
+                name: forgeName.value.trim() || 'Untitled',
+                base: forgeBase.value,
+                bg: forgeBg.value, text: forgeText.value, acc: forgeAcc.value, sec: forgeSec.value,
+                fonts: forgeFonts.value
+            };
+        }
+        function previewForge() {
+            forgePreview = currentForgeDraft();
+            applyForge();
+            rebuildAmbient();
+        }
+        function fillForgeFrom(t) {
+            forgeBase.value = t.base; forgeBg.value = t.bg; forgeText.value = t.text;
+            forgeAcc.value = t.acc; forgeSec.value = t.sec; forgeFonts.value = t.fonts || 'inherit';
+            forgeName.value = t.name === 'Untitled' ? '' : (t.name || '');
+        }
+        function openForge(existing) {
+            forgeEditingId = existing ? existing.id : null;
+            if (existing) fillForgeFrom(existing);
+            else {
+                const base = prefs.forge ? ((findForge(prefs.forge) || {}).base || prefs.theme) : prefs.theme;
+                const c = packColours(base);
+                fillForgeFrom({ base, bg: c.bg, text: c.text, acc: c.acc, sec: c.sec, fonts: 'inherit', name: '' });
+            }
+            forgePanel.classList.remove('hidden');
+            previewForge();
+        }
+        function closeForge(keep) {
+            forgePreview = null;
+            forgePanel.classList.add('hidden');
+            forgeEditingId = null;
+            if (!keep) { applyPrefs(); rebuildAmbient(); }
+        }
+        document.getElementById('btn-forge-open').addEventListener('click', () => {
+            forgePanel.classList.contains('hidden') ? openForge(null) : closeForge(false);
+        });
+        [forgeBg, forgeText, forgeAcc, forgeSec].forEach(el => el.addEventListener('input', previewForge));
+        [forgeBase, forgeFonts].forEach(el => el.addEventListener('change', previewForge));
+        document.getElementById('btn-forge-cancel').addEventListener('click', () => closeForge(false));
+        document.getElementById('btn-forge-save').addEventListener('click', () => {
+            if (!forgeName.value.trim()) { showMessage('Give your theme a name first.'); forgeName.focus(); return; }
+            const t = currentForgeDraft();
+            const at = forgeThemes.findIndex(x => x.id === t.id);
+            if (at >= 0) forgeThemes[at] = t; else forgeThemes.push(t);
+            saveForges();
+            prefs.forge = t.id;
+            prefs.theme = t.base;
+            closeForge(true);
+            applyPrefs();
+            rebuildAmbient();
+            showMessage('\u201c' + t.name + '\u201d forged and worn.');
+        });
+        document.getElementById('btn-forge-copy').addEventListener('click', () => {
+            const t = forgePanel.classList.contains('hidden') ? findForge(prefs.forge) : currentForgeDraft();
+            if (!t) { showMessage('Open the forge, or wear a theme of your own first.'); return; }
+            const code = 'SMTT1:' + btoa(unescape(encodeURIComponent(JSON.stringify(t))));
+            forgeCode.value = code;
+            copyTextToClipboard(code, 'Theme code copied \u2014 send it to anyone.');
+        });
+        document.getElementById('btn-forge-import').addEventListener('click', () => {
+            const raw = forgeCode.value.trim();
+            if (!raw.startsWith('SMTT1:')) { showMessage('That code could not be read.'); return; }
+            let t;
+            try { t = JSON.parse(decodeURIComponent(escape(atob(raw.slice(6))))); } catch (e) { t = null; }
+            const hexOk = v => /^#[0-9a-f]{6}$/i.test(String(v));
+            if (!t || !THEME_ORDER.includes(t.base) || !hexOk(t.bg) || !hexOk(t.text) || !hexOk(t.acc) || !hexOk(t.sec)) {
+                showMessage('That code could not be read.');
+                return;
+            }
+            t.id = 'f' + Date.now().toString(36);
+            t.name = String(t.name || 'Imported').slice(0, 30);
+            if (!FORGE_FONTS[t.fonts]) t.fonts = 'inherit';
+            forgeThemes.push(t);
+            saveForges();
+            prefs.forge = t.id;
+            prefs.theme = t.base;
+            forgeCode.value = '';
+            closeForge(true);
+            applyPrefs();
+            rebuildAmbient();
+            showMessage('\u201c' + t.name + '\u201d imported and worn.');
+        });
+
+        function renderForgeCards() {
+            const wrap = document.getElementById('forge-cards');
+            if (!wrap) return;
+            wrap.innerHTML = '';
+            forgeThemes.forEach(t => {
+                const card = document.createElement('div');
+                card.className = 'forge-card' + (prefs.forge === t.id ? ' is-active' : '');
+                card.innerHTML = '<span class="theme-swatches" aria-hidden="true">'
+                    + [t.bg, t.acc, t.sec, t.text].map(c => '<span style="background:' + c + ';"></span>').join('')
+                    + '</span><button type="button" class="forge-card-name">' + escapeHtml(t.name) + '</button>'
+                    + '<button type="button" class="forge-card-del" title="Edit">\u270e</button>'
+                    + '<button type="button" class="forge-card-del" title="Delete">\u00d7</button>';
+                const btns = card.querySelectorAll('button');
+                btns[0].addEventListener('click', () => {
+                    prefs.forge = t.id; prefs.theme = t.base;
+                    applyPrefs(); rebuildAmbient();
+                    showMessage('\u201c' + t.name + '\u201d worn.');
+                });
+                btns[1].addEventListener('click', () => openForge(t));
+                btns[2].addEventListener('click', () => {
+                    forgeThemes = forgeThemes.filter(x => x.id !== t.id);
+                    saveForges();
+                    if (prefs.forge === t.id) prefs.forge = null;
+                    applyPrefs(); rebuildAmbient();
+                    showMessage('\u201c' + t.name + '\u201d melted down.');
+                });
+                wrap.appendChild(card);
+            });
+        }
+
         // ---- Ambient drift: embers (Nocturne) / notes & blossoms (Meadow) ----
         const ambientCanvas = document.getElementById('ambient-canvas');
         const aCtx = ambientCanvas.getContext('2d');
@@ -3301,6 +3985,7 @@
             if (hauntedOn && motionAllowed()) return { count: Math.round(20 * Math.max(fxMult(), 0.5)), kind: 'spirit' };
             if (!prefs.atmo || !motionAllowed() || fxMult() <= 0) return { count: 0 };
             if (prefs.theme === 'nocturne') return { count: Math.round(26 * Math.min(fxMult(), 2)), kind: 'ember' };
+            if (prefs.theme === 'grimoire') return { count: Math.round(14 * Math.min(fxMult(), 2)), kind: 'petal' };
             if (prefs.theme === 'meadow') return { count: Math.round(16 * Math.min(fxMult(), 2)), kind: 'glyph' };
             return { count: 0 };
         }
@@ -3313,6 +3998,7 @@
         resizeAmbient();
 
         const MEADOW_GLYPHS = ['\u266a', '\u266b', '\u2740', '\u273f'];
+        const PETAL_GLYPHS = ['\u2740', '\u273f', '\u2741', '\u2724'];
         const MEADOW_HUES = [350, 44, 150, 205, 285];
 
         function makeMote(kind, seed) {
@@ -3324,6 +4010,18 @@
                     size: Math.random() * 3 + 2,
                     hue: 110 + Math.random() * 40,
                     alpha: Math.random() * 0.35 + 0.3, phase: Math.random() * Math.PI * 2
+                };
+            }
+            if (kind === 'petal') {
+                return {
+                    kind, x: Math.random() * W, y: seed ? Math.random() * H : -20,
+                    vx: (Math.random() - 0.5) * 0.28, vy: Math.random() * 0.26 + 0.1,
+                    size: Math.random() * 9 + 10,
+                    hue: (348 + Math.random() * 22 + userHue() + 360) % 360,
+                    sat: 48, light: 40,
+                    alpha: Math.random() * 0.22 + 0.12, phase: Math.random() * Math.PI * 2,
+                    glyph: PETAL_GLYPHS[Math.floor(Math.random() * PETAL_GLYPHS.length)],
+                    spin: (Math.random() - 0.5) * 0.01, rot: Math.random() * Math.PI * 2
                 };
             }
             if (kind === 'ember') {
@@ -3389,7 +4087,7 @@
                 } else {
                     m.rot += m.spin;
                     aCtx.globalAlpha = m.alpha;
-                    aCtx.fillStyle = 'hsl(' + Math.round(m.hue) + ', 75%, 60%)';
+                    aCtx.fillStyle = 'hsl(' + Math.round(m.hue) + ', ' + (m.sat || 75) + '%, ' + (m.light || 60) + '%)';
                     aCtx.save();
                     aCtx.translate(m.x, m.y);
                     aCtx.rotate(m.rot);
@@ -3397,7 +4095,7 @@
                     aCtx.textAlign = 'center';
                     aCtx.fillText(m.glyph, 0, 0);
                     aCtx.restore();
-                    if (m.y > H + 26 || m.x < -30 || m.x > W + 30) ambientMotes[i] = makeMote('glyph', false);
+                    if (m.y > H + 26 || m.x < -30 || m.x > W + 30) ambientMotes[i] = makeMote(m.kind, false);
                 }
             }
             aCtx.globalAlpha = 1;
@@ -3514,7 +4212,7 @@
             libraryContainer.classList.add('hidden');
             songbookFrame.classList.remove('hidden');
 
-            songbookUrlInput.value = 'https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview';
+            songbookUrlInput.value = 'https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview';
             loadSongbookUrl();
         });
 
@@ -3634,6 +4332,10 @@
                     + '</button>'
                     + '<button type="button" class="library-star' + (fav ? ' is-fav' : '') + '" aria-label="Toggle favorite" title="'
                     + (fav ? 'Remove from favorites' : 'Add to favorites') + '">' + (fav ? '\u2605' : '\u2606') + '</button>'
+                    + (editMode
+                        ? '<button type="button" class="library-item-edit" data-act="edit" title="Edit this song">\u270e</button>'
+                        + '<button type="button" class="library-item-edit is-del" data-act="del" title="Delete this song">\u00d7</button>'
+                        : '')
                     + '<span class="library-item-go" aria-hidden="true">\u203a</span>';
                 row.addEventListener('click', (e) => {
                     if (e.target.closest('.library-star')) {
@@ -3641,21 +4343,33 @@
                         renderLibraryList();
                         return;
                     }
+                    const tool = e.target.closest('.library-item-edit');
+                    if (tool) {
+                        if (tool.dataset.act === 'edit') openEditForm(s, s.source);
+                        else deleteSong(s, s.source);
+                        return;
+                    }
                     openLibrarySong(s);
                 });
                 libraryList.appendChild(row);
             };
-            const favsFirst = (arr) => arr.slice().sort((a, b) =>
-                (isFav(songSlug(b.title)) ? 1 : 0) - (isFav(songSlug(a.title)) ? 1 : 0));
-            const baseItems = favsFirst(items.filter(s => s.source !== 'import'));
-            const importItems = favsFirst(items.filter(s => s.source === 'import'));
+            // "Song 2" sorts before "Song 10"; case and punctuation are ignored.
+            const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base', ignorePunctuation: true });
+            const sortSongs = (arr) => arr.slice().sort((a, b) => {
+                const favDelta = (isFav(songSlug(b.title)) ? 1 : 0) - (isFav(songSlug(a.title)) ? 1 : 0);
+                if (favDelta) return favDelta;
+                const byTitle = collator.compare(a.title, b.title);
+                return byTitle || collator.compare(a.artist || '', b.artist || '');
+            });
+            const baseItems = sortSongs(items.filter(s => s.source !== 'import'));
+            const importItems = sortSongs(items.filter(s => s.source === 'import'));
             if (baseItems.length && importItems.length) {
                 addHeader('Songbook');
                 baseItems.forEach(addItem);
                 addHeader('Your imports');
                 importItems.forEach(addItem);
             } else {
-                favsFirst(items).forEach(addItem);
+                sortSongs(items).forEach(addItem);
             }
         }
 
@@ -3677,6 +4391,8 @@
                 songNotesBox.classList.add('hidden');
                 songNotesBox.innerHTML = '';
             }
+            const creditEl = document.getElementById('library-credit');
+            if (creditEl) creditEl.textContent = creditLine();
             updateSongFavStar();
             updateLibraryPinBtn();
             try {
@@ -3701,7 +4417,7 @@
         }
 
         function rebuildLibrary() {
-            librarySongs = hostedSongs.map(s => ({ ...s, source: 'base' }))
+            librarySongs = (libraryDraft || hostedSongs).map(s => ({ ...s, source: 'base' }))
                 .concat(importedSongs.map(s => ({ ...s, source: 'import' })));
             renderLibraryList();
             tryOpenDeepSong();
@@ -3710,7 +4426,7 @@
         function fetchHostedSongs() {
             fetch('songs.txt', { cache: 'no-store' })
                 .then(r => (r.ok ? r.text() : null))
-                .then(t => { if (t) { hostedSongs = parseSongLibrary(t); rebuildLibrary(); } })
+                .then(t => { if (t) { hostedSongs = parseSongLibrary(t); rebuildLibrary(); if (typeof updateEditBanner === 'function') updateEditBanner(); } })
                 .catch(() => {});
         }
 
@@ -3777,8 +4493,16 @@
 
         document.getElementById('btn-library-back').addEventListener('click', closeLibrarySong);
 
+        // The credit rides along with anything anyone copies
+        function creditLine() {
+            const where = TABBER_URL || (location.hostname || '');
+            return TABBER_CREDIT + (where ? ' \u2014 ' + where : '');
+        }
         document.getElementById('btn-library-copy').addEventListener('click', () => {
-            if (currentLibrarySong) copyTextToClipboard(currentLibrarySong.body, 'Song copied to clipboard!');
+            if (!currentLibrarySong) return;
+            const s = currentLibrarySong;
+            const head = s.title + (s.artist ? ' - ' + s.artist : '');
+            copyTextToClipboard(head + '\n' + s.body + '\n\n' + creditLine(), 'Song copied \u2014 with your credit attached.');
         });
 
         // ==========================================
@@ -3840,6 +4564,197 @@
             card.addEventListener('click', () => openArchiveBook(book));
             archiveCards.appendChild(card);
         });
+
+        // ==========================================
+        // 2.12 THE EDIT LOCK — the tabber's tools
+        // ==========================================
+        // Type EDIT_TRIGGER anywhere on the page, give the passphrase, and the
+        // Library's editing tools appear. Only a PBKDF2 hash ships in this
+        // file, so reading the source reveals nothing. Note what this is and
+        // isn't: edits live in this browser and become a songs.txt you upload
+        // yourself — the published file is the source of truth and no visitor
+        // can touch it. The lock keeps the UI clean and prevents accidents.
+        var editMode = false;
+        var libraryDraft = null;   // local working copy of the published songbook
+        try {
+            const d = localStorage.getItem('saryaLibraryDraft');
+            if (d) {
+                libraryDraft = parseSongLibrary(d);
+                rebuildLibrary();   // the library already rendered above; show the draft
+            }
+        } catch (e) {}
+
+        const lockForm = document.getElementById('lock-form');
+        const lockPass = document.getElementById('lock-pass');
+        const editBanner = document.getElementById('library-edit-banner');
+        const editForm = document.getElementById('library-edit-form');
+        const editTitle = document.getElementById('edit-title');
+        const editArtist = document.getElementById('edit-artist');
+        const editBpm = document.getElementById('edit-bpm');
+        const editTags = document.getElementById('edit-tags');
+        const editNotes = document.getElementById('edit-notes');
+        const editBody = document.getElementById('edit-body');
+        let editingSlug = null;      // which song is open in the form
+        let editingSource = 'base';  // 'base' (your songbook) or 'import'
+
+        function b64ToBytes(b64) {
+            const bin = atob(b64);
+            const out = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+            return out;
+        }
+        function bytesToB64(bytes) {
+            let s = '';
+            bytes.forEach(b => { s += String.fromCharCode(b); });
+            return btoa(s);
+        }
+        async function pbkdf2(pass, salt, iters) {
+            const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveBits']);
+            const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations: iters, hash: 'SHA-256' }, key, 256);
+            return new Uint8Array(bits);
+        }
+        // Console helper for changing the passphrase — see EDIT_LOCK up top
+        window.saryaEditHash = async function (pass) {
+            const iters = 250000;
+            const salt = crypto.getRandomValues(new Uint8Array(16));
+            const hash = await pbkdf2(pass, salt, iters);
+            const lock = 'pbkdf2$' + iters + '$' + bytesToB64(salt) + '$' + bytesToB64(hash);
+            console.log('%cPaste this over EDIT_LOCK in index.html:', 'font-weight:bold');
+            console.log(lock);
+            return lock;
+        };
+        async function checkPassphrase(pass) {
+            if (!window.crypto || !crypto.subtle) return null;   // needs https
+            const parts = String(EDIT_LOCK).split('$');
+            if (parts.length !== 4 || parts[0] !== 'pbkdf2') return false;
+            const hash = await pbkdf2(pass, b64ToBytes(parts[2]), parseInt(parts[1], 10));
+            return bytesToB64(hash) === parts[3];
+        }
+
+        function setEditMode(on) {
+            editMode = on;
+            document.body.classList.toggle('edit-mode', on);
+            editBanner.classList.toggle('hidden', !on);
+            if (!on) { editForm.classList.add('hidden'); editingSlug = null; }
+            try { on ? sessionStorage.setItem('saryaEdit', '1') : sessionStorage.removeItem('saryaEdit'); } catch (e) {}
+            renderLibraryList();
+            updateEditBanner();
+        }
+        function updateEditBanner() {
+            const state = document.getElementById('library-edit-state');
+            if (!state) return;
+            const base = libraryDraft || hostedSongs;
+            state.textContent = libraryDraft
+                ? 'Editing locally \u2014 ' + base.length + ' songs. Export songs.txt and upload it to publish.'
+                : 'Edit mode \u2014 ' + base.length + ' songs, matching the published file.';
+            document.getElementById('btn-library-discard').classList.toggle('hidden', !libraryDraft);
+        }
+        function ensureDraft() {
+            if (!libraryDraft) libraryDraft = hostedSongs.map(s => ({ ...s, tags: (s.tags || []).slice() }));
+            return libraryDraft;
+        }
+        function saveDraft() {
+            try { localStorage.setItem('saryaLibraryDraft', serializeLibrary(libraryDraft)); } catch (e) {}
+            rebuildLibrary();
+            updateEditBanner();
+        }
+
+        // The trigger word — same trick as the Masquerade egg, quieter
+        let trigBuf = '';
+        window.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey || e.altKey || editMode) return;
+            const t = e.target;
+            if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+            if (e.key.length !== 1 || !/[a-z]/i.test(e.key)) return;
+            trigBuf = (trigBuf + e.key.toLowerCase()).slice(-EDIT_TRIGGER.length);
+            if (trigBuf !== EDIT_TRIGGER) return;
+            trigBuf = '';
+            openSongbookLibraryTab();
+            closeLibrarySong();
+            lockForm.classList.remove('hidden');
+            lockPass.value = '';
+            lockPass.focus();
+        });
+        document.getElementById('btn-lock-cancel').addEventListener('click', () => lockForm.classList.add('hidden'));
+        async function tryUnlock() {
+            const ok = await checkPassphrase(lockPass.value);
+            if (ok === null) { showMessage('Editing needs a secure (https) connection.'); return; }
+            if (!ok) { showMessage('That passphrase is not right.'); lockPass.select(); return; }
+            lockForm.classList.add('hidden');
+            lockPass.value = '';
+            setEditMode(true);
+            showMessage('Welcome back, tabber. The Library is yours.');
+        }
+        document.getElementById('btn-lock-unlock').addEventListener('click', tryUnlock);
+        lockPass.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); tryUnlock(); } });
+        try { if (sessionStorage.getItem('saryaEdit') === '1') setEditMode(true); } catch (e) {}
+
+        document.getElementById('btn-library-lock').addEventListener('click', () => {
+            setEditMode(false);
+            showMessage('Library locked.');
+        });
+        document.getElementById('btn-library-discard').addEventListener('click', () => {
+            libraryDraft = null;
+            try { localStorage.removeItem('saryaLibraryDraft'); } catch (e) {}
+            rebuildLibrary();
+            updateEditBanner();
+            showMessage('Local edits discarded \u2014 back to the published songs.');
+        });
+
+        function openEditForm(song, source) {
+            editingSlug = song ? songSlug(song.title) : null;
+            editingSource = source || 'base';
+            editTitle.value = song ? song.title : '';
+            editArtist.value = song ? (song.artist || '') : '';
+            editBpm.value = song && song.bpm ? song.bpm : '';
+            editTags.value = song ? (song.tags || []).join(', ') : '';
+            editNotes.value = song ? (song.notes || '') : '';
+            editBody.value = song ? song.body : '';
+            editForm.classList.remove('hidden');
+            editTitle.focus();
+        }
+        document.getElementById('btn-library-add').addEventListener('click', () => {
+            editForm.classList.contains('hidden') ? openEditForm(null, 'base') : editForm.classList.add('hidden');
+        });
+        document.getElementById('btn-edit-cancel').addEventListener('click', () => {
+            editForm.classList.add('hidden');
+            editingSlug = null;
+        });
+        document.getElementById('btn-edit-save').addEventListener('click', () => {
+            const title = editTitle.value.trim();
+            if (!title) { showMessage('A title is required.'); editTitle.focus(); return; }
+            if (!editBody.value.trim()) { showMessage('The tab is empty.'); editBody.focus(); return; }
+            const bpmVal = parseInt(editBpm.value, 10);
+            const entry = {
+                title,
+                artist: editArtist.value.trim(),
+                bpm: (bpmVal >= 20 && bpmVal <= 300) ? bpmVal : 0,
+                tags: editTags.value.split(',').map(x => x.trim()).filter(Boolean),
+                notes: editNotes.value.trim(),
+                body: editBody.value.trim()
+            };
+            const list = editingSource === 'import' ? importedSongs : ensureDraft();
+            const at = editingSlug ? list.findIndex(s => songSlug(s.title) === editingSlug) : -1;
+            if (at >= 0) list[at] = entry;
+            else list.push(entry);
+            if (editingSource === 'import') { persistImportedSongs(); rebuildLibrary(); }
+            else saveDraft();
+            editForm.classList.add('hidden');
+            editingSlug = null;
+            showMessage('\u201c' + title + '\u201d saved. Export songs.txt when you\u2019re ready to publish.');
+        });
+        function deleteSong(song, source) {
+            const slug = songSlug(song.title);
+            if (source === 'import') {
+                importedSongs = importedSongs.filter(s => songSlug(s.title) !== slug);
+                persistImportedSongs();
+                rebuildLibrary();
+            } else {
+                libraryDraft = ensureDraft().filter(s => songSlug(s.title) !== slug);
+                saveDraft();
+            }
+            showMessage('\u201c' + song.title + '\u201d removed.');
+        }
 
         // ==========================================
         // 2.4 PINNED SONG — teleprompter above the piano
@@ -4051,8 +4966,8 @@
 
         // On stacked (mobile/tablet) layouts, opening a panel scrolls to it
         function nudgePanel(panel) {
-            if (window.innerWidth <= 1200 && panel.classList.contains('is-open')) {
-                setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+            if (window.innerWidth <= 1200 && panel.classList.contains('is-open') && panel.scrollIntoView) {
+                setTimeout(() => { try { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {} }, 120);
             }
         }
         btnToggleSongbook.addEventListener('click', () => nudgePanel(songbookPanel));
@@ -4114,7 +5029,7 @@
         });
 
         document.getElementById('btn-library-export').addEventListener('click', () => {
-            const all = hostedSongs.concat(importedSongs);
+            const all = (libraryDraft || hostedSongs).concat(importedSongs);
             if (all.length === 0) { showMessage('The library is empty \u2014 nothing to export.'); return; }
             const header = "Sarya's Music Thingy \u2014 Song Library\n"
                 + 'Host this file as songs.txt next to index.html and it loads automatically.\n'
@@ -4503,7 +5418,7 @@
 
             // Each note-offset nudges the hue so consecutive notes paint a visible pattern.
             // The active theme shapes the palette (Ember: full rainbow; Bloodlines: blood-to-gold).
-            const fx = THEME_FX[currentThemeName()] || THEME_FX.nocturne;
+            const fx = forgeFX() || THEME_FX[currentThemeName()] || THEME_FX.nocturne;
             const hueShift = (typeof offset === 'number') ? NOTE_HUES[((offset % 12) + 12) % 12] : null;
             const color = hueShift !== null
                 ? `hsl(${Math.round((fx.hue(hueShift) + userHue() + 360) % 360)}, ${fx.sat}%, ${fx.light}%)`
@@ -4537,7 +5452,7 @@
             if (ribbons.some(r => r.id === rid && r.held)) return;
             const rect = keyEl.getBoundingClientRect();
             const cRect = particleCanvas.getBoundingClientRect();
-            const fx = THEME_FX[currentThemeName()] || THEME_FX.nocturne;
+            const fx = forgeFX() || THEME_FX[currentThemeName()] || THEME_FX.nocturne;
             const hueShift = NOTE_HUES[(((offset || 0) % 12) + 12) % 12];
             ribbons.push({
                 id: rid,
@@ -5232,6 +6147,304 @@
                 el.textContent = getFormattedBindString(bindings.notes[i], currentOctave);
             });
         }
+
+        // ==========================================
+        // 3.4 AMBIENCE — soundscapes synthesised from noise
+        // ==========================================
+        // No audio files: rain, fire and a summer grove are all filtered
+        // noise plus a few scheduled transients. It runs on its own gain, so
+        // the master volume and Silence leave the weather alone.
+        let ambNoiseBuffer = null;
+        let ambGain = null;
+        let ambNodes = [];
+        let ambTimer = null;
+        let ambienceKind = 'off';
+        const ambienceSelect = document.getElementById('ambience-select');
+        const ambienceVolume = document.getElementById('ambience-volume');
+
+        function noiseBuffer(kind) {
+            const len = audioCtx.sampleRate * 3;
+            const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+            const d = buf.getChannelData(0);
+            if (kind === 'brown') {
+                let last = 0;
+                for (let i = 0; i < len; i++) {
+                    const w = Math.random() * 2 - 1;
+                    last = (last + 0.02 * w) / 1.02;
+                    d[i] = last * 3.5;
+                }
+            } else {
+                for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+            }
+            return buf;
+        }
+        function whiteBuf() { return ambNoiseBuffer || (ambNoiseBuffer = noiseBuffer('white')); }
+        function ambSource(kind) {
+            const src = audioCtx.createBufferSource();
+            src.buffer = kind === 'brown' ? noiseBuffer('brown') : whiteBuf();
+            src.loop = true;
+            ambNodes.push(src);
+            return src;
+        }
+        function stopAmbience() {
+            if (ambTimer) { clearInterval(ambTimer); ambTimer = null; }
+            ambNodes.forEach(n => { try { n.stop(); } catch (e) {} try { n.disconnect(); } catch (e) {} });
+            ambNodes = [];
+        }
+        function buildRain() {
+            const src = ambSource('white');
+            const hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 420;
+            const lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 5200;
+            const g = audioCtx.createGain(); g.gain.value = 0.5;
+            src.connect(hp); hp.connect(lp); lp.connect(g); g.connect(ambGain);
+            const lfo = audioCtx.createOscillator(); lfo.frequency.value = 0.06;   // slow gusts
+            const lfoG = audioCtx.createGain(); lfoG.gain.value = 0.18;
+            lfo.connect(lfoG); lfoG.connect(g.gain);
+            lfo.start(); ambNodes.push(lfo);
+            src.start();
+        }
+        function buildHearth() {
+            const src = ambSource('brown');
+            const lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 780;
+            const g = audioCtx.createGain(); g.gain.value = 0.9;
+            src.connect(lp); lp.connect(g); g.connect(ambGain);
+            src.start();
+            ambTimer = setInterval(() => {   // crackles
+                if (ambienceKind !== 'hearth' || document.hidden) return;
+                const n = Math.random() < 0.35 ? 2 : 1;
+                for (let i = 0; i < n; i++) {
+                    const t = audioCtx.currentTime + Math.random() * 0.4;
+                    const c = audioCtx.createBufferSource(); c.buffer = whiteBuf();
+                    const bp = audioCtx.createBiquadFilter();
+                    bp.type = 'bandpass'; bp.frequency.value = 900 + Math.random() * 2600; bp.Q.value = 6;
+                    const cg = audioCtx.createGain();
+                    cg.gain.setValueAtTime(0.0001, t);
+                    cg.gain.exponentialRampToValueAtTime(0.12 + Math.random() * 0.3, t + 0.005);
+                    cg.gain.exponentialRampToValueAtTime(0.0001, t + 0.05 + Math.random() * 0.08);
+                    c.connect(bp); bp.connect(cg); cg.connect(ambGain);
+                    c.start(t); c.stop(t + 0.2);
+                }
+            }, 420);
+        }
+        function buildGrove() {
+            const src = ambSource('white');
+            const lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 480;
+            const g = audioCtx.createGain(); g.gain.value = 0.6;
+            src.connect(lp); lp.connect(g); g.connect(ambGain);
+            const lfo = audioCtx.createOscillator(); lfo.frequency.value = 0.08;   // breeze
+            const lfoG = audioCtx.createGain(); lfoG.gain.value = 0.3;
+            lfo.connect(lfoG); lfoG.connect(g.gain);
+            lfo.start(); ambNodes.push(lfo);
+            src.start();
+            ambTimer = setInterval(() => {   // birdsong, politely spaced
+                if (ambienceKind !== 'grove' || document.hidden || Math.random() > 0.4) return;
+                const t0 = audioCtx.currentTime + Math.random() * 0.5;
+                const chirps = 2 + Math.floor(Math.random() * 3);
+                for (let i = 0; i < chirps; i++) {
+                    const t = t0 + i * (0.07 + Math.random() * 0.06);
+                    const o = audioCtx.createOscillator(); o.type = 'sine';
+                    const f = 1900 + Math.random() * 1500;
+                    o.frequency.setValueAtTime(f, t);
+                    o.frequency.exponentialRampToValueAtTime(f * (1 + (Math.random() - 0.4) * 0.5), t + 0.09);
+                    const bg = audioCtx.createGain();
+                    bg.gain.setValueAtTime(0.0001, t);
+                    bg.gain.exponentialRampToValueAtTime(0.06, t + 0.02);
+                    bg.gain.exponentialRampToValueAtTime(0.0001, t + 0.1);
+                    o.connect(bg); bg.connect(ambGain);
+                    o.start(t); o.stop(t + 0.14);
+                }
+            }, 2600);
+        }
+        function setAmbience(kind) {
+            ambienceKind = kind;
+            try { localStorage.setItem('saryaAmbience', kind); } catch (e) {}
+            if (kind === 'off') { stopAmbience(); showMessage('Silence returns.'); return; }
+            initAudio();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            if (!ambGain) {
+                ambGain = audioCtx.createGain();
+                ambGain.gain.value = parseFloat(ambienceVolume.value) * 0.5;
+                ambGain.connect(audioCtx.destination);
+            }
+            stopAmbience();
+            if (kind === 'rain') buildRain();
+            else if (kind === 'hearth') buildHearth();
+            else if (kind === 'grove') buildGrove();
+            showMessage(kind === 'rain' ? 'Rain on the windows.'
+                : kind === 'hearth' ? 'The hearth is lit.'
+                : 'The grove wakes up.');
+        }
+        ambienceSelect.addEventListener('change', (e) => setAmbience(e.target.value));
+        ambienceVolume.addEventListener('input', (e) => {
+            if (ambGain) ambGain.gain.setTargetAtTime(parseFloat(e.target.value) * 0.5, audioCtx.currentTime, 0.02);
+            try { localStorage.setItem('saryaAmbienceVol', e.target.value); } catch (e2) {}
+        });
+        try {
+            const savedVol = localStorage.getItem('saryaAmbienceVol');
+            if (savedVol !== null) ambienceVolume.value = savedVol;
+            // The choice is restored in the UI but stays silent until you touch
+            // something: browsers won't let a page start audio on its own.
+            const savedAmb = localStorage.getItem('saryaAmbience');
+            if (savedAmb && savedAmb !== 'off') {
+                ambienceSelect.value = savedAmb;
+                const wake = () => { if (ambienceSelect.value !== 'off' && ambienceKind === 'off') setAmbience(ambienceSelect.value); };
+                window.addEventListener('pointerdown', wake, { once: true });
+                window.addEventListener('keydown', wake, { once: true });
+            }
+        } catch (e) {}
+
+        // ==========================================
+        // 3.5 BIND PROFILES — named sets of key bindings
+        // ==========================================
+        // A profile is just a snapshot of `bindings`. The built-in Default is
+        // immutable and always present; everything else lives in localStorage
+        // and travels between people as a short base64 code.
+        const DEFAULT_BINDINGS = {
+            notes: ['Digit1', 'F1', 'Digit2', 'F2', 'Digit3', 'Digit4', 'F4', 'Digit5', 'F5', 'Digit6', 'F6', 'Digit7', 'Digit8'],
+            octaveDown: 'KeyQ', octaveUp: 'KeyE'
+        };
+        const bindProfileSelect = document.getElementById('bind-profile');
+        const bindForm = document.getElementById('bind-form');
+        const bindShareForm = document.getElementById('bind-share-form');
+        const bindNameInput = document.getElementById('bind-name');
+        const bindCodeInput = document.getElementById('bind-code');
+
+        let bindProfiles = [];
+        let activeProfile = 'Default';
+        try { bindProfiles = JSON.parse(localStorage.getItem('saryaBindProfiles') || '[]'); } catch (e) {}
+        try { activeProfile = localStorage.getItem('saryaBindProfileActive') || 'Default'; } catch (e) {}
+        if (!Array.isArray(bindProfiles)) bindProfiles = [];
+
+        function saveProfiles() {
+            try {
+                localStorage.setItem('saryaBindProfiles', JSON.stringify(bindProfiles));
+                localStorage.setItem('saryaBindProfileActive', activeProfile);
+            } catch (e) {}
+        }
+        function validBindings(b) {
+            return !!(b && Array.isArray(b.notes) && b.notes.length === notes.length
+                && b.notes.every(c => typeof c === 'string' && c)
+                && typeof b.octaveDown === 'string' && typeof b.octaveUp === 'string');
+        }
+        function cloneBindings(b) {
+            return { notes: b.notes.slice(), octaveDown: b.octaveDown, octaveUp: b.octaveUp };
+        }
+        function applyBindings(b) {
+            bindings = cloneBindings(b);
+            saveBinds();
+            lblOctDown.textContent = `[ ${formatKey(bindings.octaveDown)} ]`;
+            lblOctUp.textContent = `[ ${formatKey(bindings.octaveUp)} ]`;
+            updateOctave(0); // repaints every key's bind label
+        }
+        function renderProfileSelect() {
+            bindProfileSelect.innerHTML = '';
+            const add = (name) => {
+                const o = document.createElement('option');
+                o.value = name; o.textContent = name;
+                if (name === activeProfile) o.selected = true;
+                bindProfileSelect.appendChild(o);
+            };
+            add('Default');
+            bindProfiles.forEach(p => add(p.name));
+            const isDefault = activeProfile === 'Default';
+            document.getElementById('btn-bind-save').disabled = isDefault;
+            document.getElementById('btn-bind-delete').disabled = isDefault;
+        }
+        function findProfile(name) { return bindProfiles.find(p => p.name === name); }
+
+        // Boot: restore whichever profile was last worn
+        (function initProfiles() {
+            const p = findProfile(activeProfile);
+            if (activeProfile !== 'Default' && !p) activeProfile = 'Default';
+            renderProfileSelect();
+        })();
+
+        bindProfileSelect.addEventListener('change', (e) => {
+            const name = e.target.value;
+            activeProfile = name;
+            saveProfiles();
+            renderProfileSelect();
+            applyBindings(name === 'Default' ? DEFAULT_BINDINGS : findProfile(name).bindings);
+            showMessage(name === 'Default' ? 'Default binds restored.' : '\u201c' + name + '\u201d binds loaded.');
+        });
+
+        document.getElementById('btn-bind-save').addEventListener('click', () => {
+            const p = findProfile(activeProfile);
+            if (!p) return;
+            p.bindings = cloneBindings(bindings);
+            saveProfiles();
+            showMessage('\u201c' + p.name + '\u201d updated with your current binds.');
+        });
+
+        document.getElementById('btn-bind-new').addEventListener('click', () => {
+            bindShareForm.classList.add('hidden');
+            bindForm.classList.toggle('hidden');
+            if (!bindForm.classList.contains('hidden')) bindNameInput.focus();
+        });
+        document.getElementById('btn-bind-cancel').addEventListener('click', () => bindForm.classList.add('hidden'));
+        document.getElementById('btn-bind-create').addEventListener('click', () => {
+            const name = bindNameInput.value.trim();
+            if (!name) { showMessage('Give the profile a name first.'); bindNameInput.focus(); return; }
+            if (name === 'Default' || findProfile(name)) { showMessage('That name is already taken.'); return; }
+            bindProfiles.push({ name, bindings: cloneBindings(bindings) });
+            activeProfile = name;
+            saveProfiles();
+            renderProfileSelect();
+            bindForm.classList.add('hidden');
+            bindNameInput.value = '';
+            showMessage('\u201c' + name + '\u201d saved. Rebind freely \u2014 press Save to update it.');
+        });
+
+        document.getElementById('btn-bind-delete').addEventListener('click', () => {
+            if (activeProfile === 'Default') return;
+            const gone = activeProfile;
+            bindProfiles = bindProfiles.filter(p => p.name !== gone);
+            activeProfile = 'Default';
+            saveProfiles();
+            renderProfileSelect();
+            applyBindings(DEFAULT_BINDINGS);
+            showMessage('\u201c' + gone + '\u201d deleted; back to Default.');
+        });
+
+        function encodeProfile(name, b) {
+            const payload = JSON.stringify({ n: name, b: [b.notes.join(','), b.octaveDown, b.octaveUp].join('|') });
+            return 'SMT1:' + btoa(unescape(encodeURIComponent(payload)));
+        }
+        function decodeProfile(code) {
+            const raw = String(code || '').trim();
+            if (!raw.startsWith('SMT1:')) return null;
+            try {
+                const o = JSON.parse(decodeURIComponent(escape(atob(raw.slice(5)))));
+                const parts = String(o.b).split('|');
+                const b = { notes: parts[0].split(','), octaveDown: parts[1], octaveUp: parts[2] };
+                return validBindings(b) ? { name: String(o.n || 'Imported'), bindings: b } : null;
+            } catch (e) { return null; }
+        }
+        document.getElementById('btn-bind-share').addEventListener('click', () => {
+            bindForm.classList.add('hidden');
+            bindShareForm.classList.toggle('hidden');
+            if (!bindShareForm.classList.contains('hidden')) bindCodeInput.focus();
+        });
+        document.getElementById('btn-bind-share-cancel').addEventListener('click', () => bindShareForm.classList.add('hidden'));
+        document.getElementById('btn-bind-copy').addEventListener('click', () => {
+            const code = encodeProfile(activeProfile, bindings);
+            bindCodeInput.value = code;
+            copyTextToClipboard(code, 'Profile code copied \u2014 send it to anyone.');
+        });
+        document.getElementById('btn-bind-import').addEventListener('click', () => {
+            const parsed = decodeProfile(bindCodeInput.value);
+            if (!parsed) { showMessage('That code could not be read.'); return; }
+            let name = parsed.name;
+            while (name === 'Default' || findProfile(name)) name += ' (2)';
+            bindProfiles.push({ name, bindings: parsed.bindings });
+            activeProfile = name;
+            saveProfiles();
+            renderProfileSelect();
+            applyBindings(parsed.bindings);
+            bindShareForm.classList.add('hidden');
+            bindCodeInput.value = '';
+            showMessage('\u201c' + name + '\u201d imported and worn.');
+        });
 
         btnEditBinds.addEventListener('click', () => {
             isRemappingMode = !isRemappingMode;
