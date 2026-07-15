@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="grimoire">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#070408">
+    <meta name="theme-color" content="#f3ead9">
     <script>
         // Apply saved theme pack + Atelier customizations before first paint (no flash).
         (function () {
@@ -11,7 +11,7 @@
                 var raw = localStorage.getItem('saryaAtelier');
                 var p = raw ? JSON.parse(raw) : {};
                 var de = document.documentElement;
-                if (p.theme && p.theme !== 'nocturne') de.dataset.theme = p.theme;
+                if (p.theme) de.dataset.theme = p.theme;   // the default, 'grimoire', is already on <html>
                 if (p.corners && p.corners !== 'theme') de.dataset.corners = p.corners;
                 if (p.density && p.density !== 'cozy') de.dataset.density = p.density;
                 if (p.labels && p.labels !== 'full') de.dataset.labels = p.labels;
@@ -1518,7 +1518,7 @@
         /* ==============================================================
            SIDE PANELS — Songbook / Scribe (push layout)
            ============================================================== */
-        #songbook-panel, #scribe-panel {
+        #songbook-panel, #scribe-panel, #jam-panel {
             position: relative;
             height: auto;
             max-height: calc(100vh - 130px);
@@ -1544,7 +1544,7 @@
             box-shadow: var(--shadow-lg);
             transition: flex 0.4s var(--ease-spring), width 0.4s var(--ease-spring), max-width 0.4s var(--ease-spring), opacity 0.3s ease, padding 0.4s var(--ease-spring), margin 0.4s var(--ease-spring), border-width 0.4s;
         }
-        #songbook-panel.is-open, #scribe-panel.is-open {
+        #songbook-panel.is-open, #scribe-panel.is-open, #jam-panel.is-open {
             flex: 1 1 600px;
             width: 100%;
             max-width: 700px;
@@ -1554,8 +1554,9 @@
             visibility: visible;
         }
         #songbook-panel.is-open { margin-right: 18px; }
-        #scribe-panel.is-open { margin-left: 18px; }
-        #songbook-panel.hidden, #scribe-panel.hidden { display: flex !important; }
+        #scribe-panel.is-open, #jam-panel.is-open { margin-left: 18px; }
+        #jam-panel.is-open { max-width: 460px; }
+        #songbook-panel.hidden, #scribe-panel.hidden, #jam-panel.hidden { display: flex !important; }
 
         .drawer-header {
             display: flex;
@@ -1923,7 +1924,7 @@
             #help-overlay .help-card { padding: 20px; }
             .stage { flex-direction: column; align-items: center; }
             #center-panel { width: 100%; margin: 0 0 14px 0; order: 1; }
-            #songbook-panel.is-open, #scribe-panel.is-open {
+            #songbook-panel.is-open, #scribe-panel.is-open, #jam-panel.is-open {
                 width: 100%;
                 max-width: 100%;
                 flex: none;
@@ -2037,13 +2038,13 @@
         /* An open panel is sized by the stage row (the piano column beside it),
            never by its own contents — so a long song list scrolls inside the
            panel instead of stretching it and the page. */
-        #songbook-panel.is-open, #scribe-panel.is-open {
+        #songbook-panel.is-open, #scribe-panel.is-open, #jam-panel.is-open {
             contain: size;
             max-height: calc(100vh - 36px);
         }
         @media (max-width: 1200px) {
             /* Stacked: no piano beside it to borrow height from, so state it. */
-            #songbook-panel.is-open, #scribe-panel.is-open { max-height: 80vh; height: min(620px, 78vh); }
+            #songbook-panel.is-open, #scribe-panel.is-open, #jam-panel.is-open { max-height: 80vh; height: min(620px, 78vh); }
         }
 
         /* ==============================================================
@@ -2593,9 +2594,143 @@
         .library-item-edit:hover { color: var(--text-acc); }
         .library-item-edit.is-del:hover { color: var(--rec); }
 
+
+        /* ==============================================================
+           JAM — live rooms  [merged from Lynie's fork]
+           ============================================================== */
+        .rail-icon-wrap { position: relative; display: flex; }
+        .rail-badge {
+            position: absolute;
+            top: -5px; right: -8px;
+            min-width: 15px; height: 15px;
+            padding: 0 3px;
+            border-radius: var(--r-pill);
+            background: var(--good);
+            color: var(--bg-base);
+            font-family: var(--font-mono);
+            font-size: 0.58rem;
+            font-weight: 700;
+            line-height: 15px;
+            text-align: center;
+            box-shadow: 0 0 8px var(--good);
+        }
+        .rail-badge.hidden { display: none; }
+        #btn-toggle-jam.is-live { color: var(--good); }
+
+        .jam-join { display: flex; flex-direction: column; gap: 8px; }
+        .jam-row { display: flex; gap: 8px; align-items: center; }
+        .jam-row .input { flex: 1; min-width: 0; }
+        #jam-color {
+            width: 38px; height: 38px; padding: 2px;
+            border: 1px solid var(--stroke-mid);
+            border-radius: var(--r-md);
+            background: none; cursor: pointer; flex-shrink: 0;
+        }
+        #jam-color::-webkit-color-swatch-wrapper { padding: 2px; }
+        #jam-color::-webkit-color-swatch { border: none; border-radius: calc(var(--r-md) - 3px); }
+
+        .jam-statusbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .jam-status { font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); }
+        .jam-status.is-live { color: var(--good); }
+        .jam-count { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); }
+        .jam-warn {
+            margin: 0;
+            padding: 9px 11px;
+            font-size: 0.72rem;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            background: var(--wash);
+            border-left: 3px solid var(--sec);
+            border-radius: 0 var(--r-sm) var(--r-sm) 0;
+        }
+        .jam-section-label {
+            font-family: var(--font-label);
+            font-size: 0.6rem;
+            letter-spacing: var(--label-tracking);
+            text-transform: uppercase;
+            color: var(--text-acc);
+            font-weight: 600;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--stroke-soft);
+        }
+        .jam-peers { display: flex; flex-direction: column; gap: 6px; max-height: 190px; overflow-y: auto; }
+        .jam-empty, .jam-chat-empty {
+            margin: 0; padding: 14px 8px;
+            font-family: var(--font-tagline);
+            font-style: italic;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        .jam-peer {
+            display: flex; align-items: center; gap: 8px;
+            padding: 7px 10px;
+            background: var(--well);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .jam-peer.is-playing { border-color: currentColor; box-shadow: 0 0 12px -2px currentColor; }
+        .jam-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+        .jam-pname {
+            flex: 1; min-width: 0;
+            font-size: 0.8rem; font-weight: 700;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .jam-as { font-size: 0.62rem; color: var(--text-muted); flex-shrink: 0; }
+        .jam-instr {
+            width: 92px; flex-shrink: 0;
+            background: var(--surface-1);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-sm);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.7rem;
+            padding: 3px 4px;
+            outline: none;
+        }
+        .jam-instr option, .jam-instr optgroup { background: var(--bg-elevated); color: var(--text-primary); }
+        .jam-vol { width: 56px; flex-shrink: 0; }
+        .jam-mute {
+            background: none; border: none; cursor: pointer;
+            color: var(--text-muted); padding: 2px; line-height: 0;
+            border-radius: var(--r-sm); flex-shrink: 0;
+        }
+        .jam-mute:hover { color: var(--text-primary); }
+        .jam-mute.is-on { color: var(--rec); }
+
+        .jam-chat-log {
+            flex: 1;
+            min-height: 110px;
+            overflow-y: auto;
+            padding: 8px 10px;
+            background: var(--well-deep);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+            font-size: 0.76rem;
+            line-height: 1.5;
+            user-select: text;
+            -webkit-user-select: text;
+        }
+        .jam-chat-msg { margin-bottom: 3px; word-wrap: break-word; }
+        .jam-chat-time { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.64rem; }
+        .jam-chat-name { font-weight: 700; }
+        .jam-chat-sys { color: var(--text-muted); font-style: italic; }
+
+        /* A key lit by a remote player wears that player's colour */
+        .piano-key.net-lit, .htp-white.net-lit, .htp-black.net-lit {
+            box-shadow: inset 0 0 0 2px var(--net-c), 0 0 18px -2px var(--net-c);
+        }
+
+        /* Credits in the help scroll */
+        .help-credits { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--stroke-soft); }
+        .credit-line { margin: 0 0 6px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+        .credit-line b { color: var(--text-acc); font-weight: 700; }
+
         /* Collapsed side panels must not contribute height to the stage row */
         #songbook-panel:not(.is-open) > *,
-        #scribe-panel:not(.is-open) > * { display: none !important; }
+        #scribe-panel:not(.is-open) > *,
+        #jam-panel:not(.is-open) > * { display: none !important; }
     </style>
 </head>
 
@@ -2639,6 +2774,14 @@
         <button id="btn-toggle-scribe" class="rail-btn" type="button" aria-label="Toggle Scribe" aria-expanded="false">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             <span class="rail-label" id="lbl-toggle-scribe">Scribe</span>
+        </button>
+
+        <button id="btn-toggle-jam" class="rail-btn" type="button" aria-label="Toggle Jam — play with others" aria-expanded="false">
+            <span class="rail-icon-wrap">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <span id="jam-badge" class="rail-badge hidden">0</span>
+            </span>
+            <span class="rail-label">Jam</span>
         </button>
 
         <button id="btn-toggle-archive" class="rail-btn" type="button" aria-label="Open the Songbook Archive" aria-expanded="false">
@@ -3086,6 +3229,50 @@
                 </div>
             </aside>
 
+            <!-- RIGHT PANEL: JAM (merged from Lynie's fork) -->
+            <aside id="jam-panel" class="hidden" aria-label="Jam — play with others">
+                <div class="drawer-header">
+                    <div>
+                        <h2 class="drawer-title">Jam</h2>
+                        <p class="drawer-subtitle">Play together, wherever you are.</p>
+                    </div>
+                    <button id="btn-close-jam" class="btn btn-icon btn-ghost" aria-label="Close Jam" type="button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+
+                <div class="jam-join">
+                    <div class="jam-row">
+                        <input type="color" id="jam-color" value="#bf2233" title="Your colour" aria-label="Your colour">
+                        <input type="text" id="jam-name" class="input" placeholder="Your name" maxlength="24" autocomplete="off">
+                    </div>
+                    <div class="jam-row">
+                        <input type="text" id="jam-room" class="input" placeholder="Room name" maxlength="40" autocomplete="off">
+                        <input type="password" id="jam-pass" class="input" placeholder="Password" maxlength="60" autocomplete="off">
+                    </div>
+                    <button id="jam-join" class="btn btn-primary" type="button">Join</button>
+                </div>
+
+                <div class="jam-statusbar">
+                    <span id="jam-status" class="jam-status">Not connected</span>
+                    <span id="jam-count" class="jam-count">offline</span>
+                </div>
+
+                <p id="jam-warn" class="jam-warn">
+                    Playing together connects you directly to the other players, which means they can see your IP address. Only jam with people you trust — and pick a password nobody else will guess.
+                </p>
+
+                <div class="jam-section-label">Players</div>
+                <div id="jam-peers" class="jam-peers"></div>
+
+                <div class="jam-section-label">Chat</div>
+                <div id="jam-chat-log" class="jam-chat-log"><p class="jam-chat-empty">Join a room to chat.</p></div>
+                <div class="jam-row">
+                    <input type="text" id="jam-chat-text" class="input" placeholder="Join a room to chat…" maxlength="300" autocomplete="off" disabled>
+                    <button id="jam-chat-send" class="btn" type="button" disabled>Send</button>
+                </div>
+            </aside>
+
         </main>
 
     </div><!-- /.main -->
@@ -3341,6 +3528,12 @@
             </div>
         </div>
 
+        <div class="help-credits">
+            <div class="help-section-title" style="margin-bottom:10px;">Credits</div>
+            <p class="credit-line"><b>Sarya</b> — the instrument, the songbook, and every tab in it.</p>
+            <p class="credit-line"><b>Lynie</b> — live Jam rooms and chat. Built in her own fork of this project, merged back here with thanks.</p>
+            <p class="credit-line"><b>Powerina</b> — the tab format the Scribe writes. <b>Jenpai</b> — the spreadsheet export.</p>
+        </div>
         <div class="help-footer">Crafted with ember and ink. For exclusive use of everyone.</div>
     </div>
 </div>
@@ -3568,7 +3761,7 @@
             ash:      { sat: 14, light: 74, hue: () => 211 }
         };
 
-        const ATELIER_DEFAULTS = { theme: 'nocturne', hue: 0, fx: 'full', motion: 'auto', atmo: true, corners: 'theme', density: 'cozy', labels: 'full', ribbons: true, forge: null };
+        const ATELIER_DEFAULTS = { theme: 'grimoire', hue: 0, fx: 'full', motion: 'auto', atmo: true, corners: 'theme', density: 'cozy', labels: 'full', ribbons: true, forge: null };
         let prefs = { ...ATELIER_DEFAULTS };
         try {
             const savedPrefs = JSON.parse(localStorage.getItem('saryaAtelier') || '{}');
@@ -3592,7 +3785,7 @@
         function applyPrefs() {
             const de = document.documentElement;
             const setAttr = (k, v, def) => { if (v === def) delete de.dataset[k]; else de.dataset[k] = v; };
-            setAttr('theme', prefs.theme, 'nocturne');
+            de.dataset.theme = prefs.theme;   // never stripped: :root holds Nocturne's tokens
             setAttr('corners', prefs.corners, 'theme');
             setAttr('density', prefs.density, 'cozy');
             setAttr('labels', prefs.labels, 'full');
@@ -5644,13 +5837,18 @@
             }
         }
 
-        function playNote(offset, octave, elementId) {
+        // instrumentOverride / outBus (both optional) are used by Jam: a remote
+        // player is rendered with the instrument this listener picked for them,
+        // through their own gain bus so it can be mixed and muted. Everything
+        // else calls this exactly as before. [merge: Lynie]
+        function playNote(offset, octave, elementId, instrumentOverride, outBus) {
             initAudio();
             if (activeNodes[elementId]) return;
 
             const midiNote = 12 * (octave + 1) + offset;
             const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
-            const instrumentMode = synthSelect.value;
+            const instrumentMode = instrumentOverride || synthSelect.value;
+            const dest = outBus || masterGainNode;
 
             // Trigger Particle Magic
             spawnParticles(elementId, instrumentMode, offset);
@@ -5720,7 +5918,7 @@
                         gainNode.gain.exponentialRampToValueAtTime(Math.max(0.001, baseGain * susGain), now + dly + atk + hld + dec);
 
                         source.connect(gainNode);
-                        gainNode.connect(masterGainNode);
+                        gainNode.connect(dest);
                         source.start(now + dly);
 
                         sources.push(source);
@@ -5775,7 +5973,7 @@
                 }
 
                 osc1.connect(filterNode); osc2.connect(filterNode);
-                filterNode.connect(gainNode); gainNode.connect(masterGainNode);
+                filterNode.connect(gainNode); gainNode.connect(dest);
                 osc1.start(); osc2.start();
 
                 activeNodes[elementId] = { osc1, osc2, gainNode, mode: instrumentMode };
@@ -6933,8 +7131,8 @@
         // We wrap the originals — monkey-patch style — to avoid touching the core audio code.
         const _origPlayNote = playNote;
         const _origStopNote = stopNote;
-        playNote = function(offset, octave, elementId) {
-            _origPlayNote(offset, octave, elementId);
+        playNote = function(offset, octave, elementId, instrumentOverride, outBus) {
+            _origPlayNote(offset, octave, elementId, instrumentOverride, outBus);
             if (isRecording && !elementId.startsWith('pb-')) {
                 recordEvent('down', offset, octave, elementId);
             }
@@ -7536,6 +7734,484 @@
             XLSXLib.writeFile(wb, `${baseFileName}.xlsx`);
             showScribeMessage("Spreadsheet successfully exported!");
         });
+
+        // ==========================================
+        // 7. JAM — live rooms (peer-to-peer)
+        // ==========================================
+        // Merged from Lynie's fork, adapted to this project's panels and audio.
+        // Peers exchange nothing but tiny note-on/off events over a serverless
+        // WebRTC mesh (Trystero). You always hear yourself instantly from your
+        // own synth; a remote player is rendered with an instrument YOU choose
+        // for them, so nobody needs to own the same SoundFonts.
+        const jam = {
+            room: null, active: false, joining: false,
+            sendNote: null, sendId: null, sendChat: null,
+            roomName: '', selfName: 'Player', selfColor: '#bf2233',
+            peers: new Map()   // peerId -> { name, color, instrument, volume, muted, bus, active:Set }
+        };
+        const jamLocalNotes = new Map();   // our elementId -> midi, to pair our own note-off
+        const jamLit = new Map();          // keyElementId -> Map(peerId -> colour)
+
+        const jamPanel      = document.getElementById('jam-panel');
+        const btnToggleJam  = document.getElementById('btn-toggle-jam');
+        const jamBadge      = document.getElementById('jam-badge');
+        const jamNameInput  = document.getElementById('jam-name');
+        const jamColorInput = document.getElementById('jam-color');
+        const jamRoomInput  = document.getElementById('jam-room');
+        const jamPassInput  = document.getElementById('jam-pass');
+        const jamJoinBtn    = document.getElementById('jam-join');
+        const jamStatusEl   = document.getElementById('jam-status');
+        const jamCountEl    = document.getElementById('jam-count');
+        const jamPeersEl    = document.getElementById('jam-peers');
+        const jamWarnEl     = document.getElementById('jam-warn');
+        const jamChatLog    = document.getElementById('jam-chat-log');
+        const jamChatText   = document.getElementById('jam-chat-text');
+        const jamChatSend   = document.getElementById('jam-chat-send');
+        let isJamOpen = false;
+
+        // Trystero is fetched only when someone actually opens Jam — the page
+        // costs nothing for the majority who never use it.
+        let TrysteroJoin = null;
+        let trysteroReady = null;
+        function loadTrystero() {
+            if (!trysteroReady) {
+                // The nostr strategy specifically — Lynie's choice, and the right
+                // one: its relays are far more dependable than torrent trackers,
+                // and peers must use the same strategy to find each other at all.
+                trysteroReady = import('https://esm.sh/trystero@0.21/nostr')
+                    .then(m => { TrysteroJoin = m.joinRoom; })
+                    .catch(e => { console.error('Trystero failed to load', e); TrysteroJoin = null; });
+            }
+            return trysteroReady;
+        }
+
+        try {
+            const saved = JSON.parse(localStorage.getItem('saryaJamId') || 'null');
+            if (saved) {
+                if (saved.name)  { jam.selfName  = saved.name;  jamNameInput.value  = saved.name; }
+                if (saved.color) { jam.selfColor = saved.color; jamColorInput.value = saved.color; }
+            }
+        } catch (e) {}
+        const saveJamPrefs = () => {
+            try { localStorage.setItem('saryaJamId', JSON.stringify({ name: jam.selfName, color: jam.selfColor })); } catch (e) {}
+        };
+
+        const jamSetStatus = (txt, live) => {
+            jamStatusEl.textContent = txt;
+            jamStatusEl.classList.toggle('is-live', !!live);
+        };
+        function jamUpdateCount() {
+            jamCountEl.textContent = jam.active ? (jam.peers.size + (jam.peers.size === 1 ? ' other player' : ' other players')) : 'offline';
+            const n = jam.active ? jam.peers.size : 0;
+            jamBadge.textContent = n;
+            jamBadge.classList.toggle('hidden', !jam.active);
+        }
+        const isLocalUserId = (id) => typeof id === 'string' &&
+            (id.startsWith('gw2-key-') || id.startsWith('htp-key-') || id.startsWith('midi-note-'));
+
+        // Never let a peer's "colour" reach an inline style unless it is literally
+        // a hex colour — otherwise it's a CSS injection hole.  [Lynie]
+        const jamSafeColor = (c) => (typeof c === 'string' && /^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(c)) ? c : '#9aa0a6';
+
+        // The channel id is a hash of room + password, so the room name never
+        // reaches a relay and nobody without the password can even find the
+        // channel, let alone join it.  [Lynie]
+        async function jamRoomId(roomName, pass) {
+            const enc = new TextEncoder().encode('saryamusic\x00' + roomName.toLowerCase() + '\x00' + pass);
+            const buf = await crypto.subtle.digest('SHA-256', enc);
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 40);
+        }
+
+        // At most 10 chat messages per second per peer, so a flood can't churn
+        // the UI. Notes are never throttled.  [Lynie]
+        const jamChatRate = new Map();
+        function jamChatAllowed(pid) {
+            const now = performance.now();
+            let r = jamChatRate.get(pid);
+            if (!r || now - r.t >= 1000) { r = { t: now, n: 0 }; jamChatRate.set(pid, r); }
+            r.n++;
+            return r.n <= 10;
+        }
+
+        // --- Chat (built with textContent — names and messages can never inject HTML) ---
+        function jamTimeSpan() {
+            const d = new Date();
+            const s = document.createElement('span');
+            s.className = 'jam-chat-time';
+            s.textContent = '[' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0') + '] ';
+            return s;
+        }
+        function jamChatAppendRow(build) {
+            const empty = jamChatLog.querySelector('.jam-chat-empty');
+            if (empty) empty.remove();
+            const atBottom = jamChatLog.scrollHeight - jamChatLog.scrollTop - jamChatLog.clientHeight < 30;
+            const wrap = document.createElement('div');
+            wrap.className = 'jam-chat-msg';
+            build(wrap);
+            jamChatLog.appendChild(wrap);
+            while (jamChatLog.children.length > 200) jamChatLog.removeChild(jamChatLog.firstChild);
+            if (atBottom) jamChatLog.scrollTop = jamChatLog.scrollHeight;
+        }
+        function jamAddChatMessage(name, color, text) {
+            jamChatAppendRow(wrap => {
+                const nm = document.createElement('span');
+                nm.className = 'jam-chat-name';
+                nm.textContent = (name || 'Player') + ': ';
+                nm.style.color = jamSafeColor(color);
+                const tx = document.createElement('span');
+                tx.textContent = text;
+                wrap.append(jamTimeSpan(), nm, tx);
+            });
+        }
+        function jamAddSystemMessage(text) {
+            jamChatAppendRow(wrap => {
+                wrap.classList.add('jam-chat-sys');
+                const tx = document.createElement('span');
+                tx.textContent = text;
+                wrap.append(jamTimeSpan(), tx);
+            });
+        }
+        function jamSetChatEnabled(on) {
+            jamChatText.disabled = !on;
+            jamChatText.placeholder = on ? 'Message…' : 'Join a room to chat…';
+            jamChatSend.disabled = !on;
+            if (!on) jamChatLog.innerHTML = '<p class="jam-chat-empty">Join a room to chat.</p>';
+        }
+        function jamSendChat() {
+            if (!jam.active || !jam.sendChat) return;
+            const text = (jamChatText.value || '').trim().slice(0, 300);
+            if (!text) return;
+            try { jam.sendChat({ text }); } catch (e) {}
+            jamAddChatMessage(jam.selfName, jam.selfColor, text);   // Trystero doesn't echo to us
+            jamChatText.value = '';
+        }
+        jamChatSend.addEventListener('click', jamSendChat);
+        jamChatText.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); jamSendChat(); } });
+
+        // --- Remote notes light the keys in that player's colour ---
+        function midiToVisibleKeyId(midi) {
+            const offset = ((midi % 12) + 12) % 12, octave = Math.floor(midi / 12) - 1;
+            if (currentViewMode === 'heartopia') {
+                const id = `htp-key-${octave}-${offset}`;
+                return document.getElementById(id) ? id : null;
+            }
+            if (octave !== currentOctave) return null;
+            const idx = notes.findIndex(n => n.offset === offset);
+            return idx >= 0 ? `gw2-key-${idx}` : null;
+        }
+        function jamLitAdd(keyId, peer) {
+            let m = jamLit.get(keyId);
+            if (!m) { m = new Map(); jamLit.set(keyId, m); }
+            m.set(peer.id, peer.color);
+            const el = document.getElementById(keyId);
+            if (el) { el.style.setProperty('--net-c', peer.color); el.classList.add('net-lit'); }
+        }
+        function jamLitRemove(keyId, peer) {
+            const m = jamLit.get(keyId);
+            if (!m) return;
+            m.delete(peer.id);
+            const el = document.getElementById(keyId);
+            if (m.size === 0) {
+                jamLit.delete(keyId);
+                if (el) { el.classList.remove('net-lit'); el.style.removeProperty('--net-c'); }
+            } else if (el) {
+                el.style.setProperty('--net-c', Array.from(m.values()).pop());
+            }
+        }
+
+        // --- Peers ---
+        function ensurePeer(pid) {
+            let p = jam.peers.get(pid);
+            if (!p) {
+                p = { id: pid, name: 'Player', color: '#9aa0a6', instrument: 'lute', volume: 1,
+                      muted: false, bus: null, active: new Set(), lit: new Map(),
+                      rowEl: null, pulseTimer: null, announced: false };
+                jam.peers.set(pid, p);
+            }
+            return p;
+        }
+        function ensurePeerBus(p) {
+            if (!p.bus && audioCtx && masterGainNode) {
+                p.bus = audioCtx.createGain();
+                p.bus.gain.value = p.muted ? 0 : p.volume;
+                p.bus.connect(masterGainNode);
+            }
+            return p.bus;
+        }
+        function applyPeerBus(p) {
+            if (!p.bus) return;
+            const target = p.muted ? 0 : p.volume;
+            if (audioCtx) {
+                const now = audioCtx.currentTime;
+                p.bus.gain.cancelScheduledValues(now);
+                p.bus.gain.setTargetAtTime(target, now, 0.015);   // short ramp, no click
+            } else p.bus.gain.value = target;
+        }
+        function stopPeerVoices(p) {
+            p.active.forEach(midi => { try { _origStopNote('net_' + p.id + '_' + midi); } catch (e) {} });
+            p.lit.forEach((kid) => jamLitRemove(kid, p));
+            p.active.clear(); p.lit.clear();
+        }
+        function removePeer(pid) {
+            const p = jam.peers.get(pid);
+            if (!p) return;
+            stopPeerVoices(p);
+            if (p.bus) { try { p.bus.disconnect(); } catch (e) {} }
+            if (p.pulseTimer) clearTimeout(p.pulseTimer);
+            jam.peers.delete(pid);
+            jamChatRate.delete(pid);
+        }
+
+        // Remote notes go through the CORE playNote, bypassing the recorder and
+        // broadcast wrappers — so they're never re-sent nor recorded as yours.
+        const JAM_MAX_VOICES = 24;   // per-peer flood cap  [Lynie]
+        function jamRemoteOn(p, midi) {
+            if (!p.active.has(midi) && p.active.size >= JAM_MAX_VOICES) return;
+            initAudio();
+            ensurePeerBus(p);
+            const offset = ((midi % 12) + 12) % 12, octave = Math.floor(midi / 12) - 1;
+            const id = 'net_' + p.id + '_' + midi;
+            try { _origStopNote(id); } catch (e) {}
+            _origPlayNote(offset, octave, id, p.instrument, p.bus || undefined);
+            p.active.add(midi);
+            const kid = midiToVisibleKeyId(midi);
+            // Remember exactly which key we lit, so the note-off clears it even
+            // if the octave or view changed while the note was held.  [Lynie]
+            if (kid) { jamLitAdd(kid, p); p.lit.set(midi, kid); }
+            jamPulsePeer(p);
+        }
+        function jamRemoteOff(p, midi) {
+            try { _origStopNote('net_' + p.id + '_' + midi); } catch (e) {}
+            p.active.delete(midi);
+            const kid = p.lit.get(midi);
+            if (kid) { jamLitRemove(kid, p); p.lit.delete(midi); }
+        }
+        function jamPulsePeer(p) {
+            const row = (p.rowEl && p.rowEl.isConnected) ? p.rowEl : null;
+            if (!row) return;
+            row.classList.add('is-playing');
+            if (p.pulseTimer) clearTimeout(p.pulseTimer);
+            p.pulseTimer = setTimeout(() => row.classList.remove('is-playing'), 220);
+        }
+
+        // --- Player list ---
+        function jamFillInstrSelect(sel, p) {
+            sel.innerHTML = synthSelect.innerHTML;
+            if (!Array.from(sel.options).some(o => o.value === p.instrument)) p.instrument = 'lute';
+            sel.value = p.instrument;
+        }
+        function renderPeers() {
+            jam.peers.forEach(p => { p.rowEl = null; });
+            if (!jam.active) { jamPeersEl.innerHTML = '<p class="jam-empty">Join a room to play together.</p>'; return; }
+            if (jam.peers.size === 0) {
+                jamPeersEl.innerHTML = '<p class="jam-empty">Waiting for friends to join \u201c' + escapeHtml(jam.roomName) + '\u201d\u2026</p>';
+                return;
+            }
+            jamPeersEl.innerHTML = Array.from(jam.peers.values()).map(p =>
+                '<div class="jam-peer' + (p.active.size ? ' is-playing' : '') + '" data-pid="' + escapeHtml(p.id) + '" style="color:' + jamSafeColor(p.color) + '">'
+                + '<span class="jam-dot" style="background:' + jamSafeColor(p.color) + '"></span>'
+                + '<span class="jam-pname" title="' + escapeHtml(p.name) + '">' + escapeHtml(p.name) + '</span>'
+                + '<span class="jam-as">hear as</span>'
+                + '<select class="jam-instr" aria-label="Instrument for this player"></select>'
+                + '<input class="jam-vol slider" type="range" min="0" max="100" value="' + Math.round(p.volume * 100) + '" title="Volume for this player">'
+                + '<button class="jam-mute' + (p.muted ? ' is-on' : '') + '" title="' + (p.muted ? 'Unmute' : 'Mute') + '" aria-label="' + (p.muted ? 'Unmute' : 'Mute') + '">'
+                + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>'
+                + (p.muted ? '<line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>' : '<path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>')
+                + '</svg></button></div>'
+            ).join('');
+            jamPeersEl.querySelectorAll('.jam-peer').forEach(row => {
+                const p = jam.peers.get(row.dataset.pid);
+                if (!p) return;
+                p.rowEl = row;
+                jamFillInstrSelect(row.querySelector('.jam-instr'), p);
+            });
+        }
+        // Patch a row in place rather than rebuilding — a rebuild would close an
+        // open instrument menu or interrupt a volume drag.  [Lynie]
+        function updatePeerRow(p) {
+            const row = (p.rowEl && p.rowEl.isConnected) ? p.rowEl : null;
+            if (!row) { renderPeers(); return; }
+            row.style.color = jamSafeColor(p.color);
+            const dot = row.querySelector('.jam-dot');
+            if (dot) dot.style.background = jamSafeColor(p.color);
+            const nm = row.querySelector('.jam-pname');
+            if (nm) { nm.textContent = p.name; nm.title = p.name; }
+        }
+        jamPeersEl.addEventListener('change', (e) => {
+            const row = e.target.closest('.jam-peer'); if (!row) return;
+            const p = jam.peers.get(row.dataset.pid); if (!p) return;
+            if (e.target.classList.contains('jam-instr')) p.instrument = e.target.value;
+        });
+        jamPeersEl.addEventListener('input', (e) => {
+            const row = e.target.closest('.jam-peer'); if (!row) return;
+            const p = jam.peers.get(row.dataset.pid); if (!p) return;
+            if (e.target.classList.contains('jam-vol')) { p.volume = (+e.target.value || 0) / 100; applyPeerBus(p); }
+        });
+        jamPeersEl.addEventListener('click', (e) => {
+            const btn = e.target.closest('.jam-mute'); if (!btn) return;
+            const p = jam.peers.get(e.target.closest('.jam-peer').dataset.pid); if (!p) return;
+            p.muted = !p.muted;
+            applyPeerBus(p);
+            renderPeers();
+        });
+
+        // --- Join / leave ---
+        function handleRemoteNote(pid, d) {
+            if (!d) return;
+            const p = ensurePeer(pid);
+            if (d.t === 'sus') { p.sustain = !!d.s; return; }
+            if (!Number.isInteger(d.n) || d.n < 0 || d.n > 127) return;   // reject junk pitches  [Lynie]
+            if (d.t === 'on') jamRemoteOn(p, d.n);
+            else if (d.t === 'off') jamRemoteOff(p, d.n);
+        }
+        async function joinJam() {
+            if (jam.active || jam.joining) return;
+            const roomName = (jamRoomInput.value || '').trim();
+            if (!roomName) { jamSetStatus('Enter a room name first.'); jamRoomInput.focus(); return; }
+            const roomPass = jamPassInput.value;
+            if (!roomPass) { jamSetStatus('A password is required.'); jamPassInput.focus(); return; }
+            // The hashed channel and the encrypted signalling both need SubtleCrypto,
+            // which only exists in a secure context.
+            if (!window.isSecureContext) { jamSetStatus('Jam needs https (or localhost).'); return; }
+            jam.joining = true;
+            jamSetStatus('Connecting\u2026');
+            await loadTrystero();
+            if (!TrysteroJoin) { jam.joining = false; jamSetStatus('Jam unavailable — the network library did not load.'); return; }
+            if (jam.room) leaveJam();
+            jam.selfName = (jamNameInput.value || '').trim() || 'Player';
+            jam.selfColor = jamColorInput.value || '#bf2233';
+            saveJamPrefs();
+            try {
+                const roomId = await jamRoomId(roomName, roomPass);
+                jam.room = TrysteroJoin({ appId: 'saryas-music-thingy-jam-v1', password: roomPass }, roomId);
+            } catch (e) {
+                console.error('Jam join failed', e);
+                jam.joining = false;
+                jamSetStatus('Could not join that room.');
+                return;
+            }
+            const [sendNote, getNote] = jam.room.makeAction('note');
+            const [sendId, getId]     = jam.room.makeAction('id');
+            const [sendChat, getChat] = jam.room.makeAction('chat');
+            jam.sendNote = sendNote; jam.sendId = sendId; jam.sendChat = sendChat;
+            getNote((d, pid) => handleRemoteNote(pid, d));
+            getChat((d, pid) => {
+                if (!d || typeof d.text !== 'string') return;
+                if (!jamChatAllowed(pid)) return;
+                const p = jam.peers.get(pid);
+                jamAddChatMessage(p ? p.name : 'Player', p ? p.color : '#9aa0a6', d.text.slice(0, 300));
+            });
+            getId((d, pid) => {
+                const known = jam.peers.has(pid);
+                const p = ensurePeer(pid);
+                if (d && typeof d.name === 'string') p.name = d.name.slice(0, 24) || 'Player';
+                if (d && typeof d.color === 'string') p.color = jamSafeColor(d.color);
+                if (!p.announced) { p.announced = true; jamAddSystemMessage(p.name + ' joined the room.'); }
+                if (known) updatePeerRow(p); else { renderPeers(); jamUpdateCount(); }
+            });
+            jam.room.onPeerJoin(pid => {
+                ensurePeer(pid);
+                sendId({ name: jam.selfName, color: jam.selfColor }, pid);
+                renderPeers(); jamUpdateCount();
+            });
+            jam.room.onPeerLeave(pid => {
+                const lp = jam.peers.get(pid);
+                if (lp && lp.announced) jamAddSystemMessage(lp.name + ' left the room.');
+                removePeer(pid); renderPeers(); jamUpdateCount();
+            });
+            jam.active = true; jam.joining = false; jam.roomName = roomName;
+            jamJoinBtn.textContent = 'Leave';
+            btnToggleJam.classList.add('is-live');
+            jamWarnEl.style.display = 'none';        // the privacy note only matters before joining
+            jamChatLog.innerHTML = '';
+            jamSetChatEnabled(true);
+            jamSetStatus('In \u201c' + roomName + '\u201d', true);
+            jamUpdateCount(); renderPeers();
+            showMessage('Jamming in \u201c' + roomName + '\u201d.');
+        }
+        function leaveJam() {
+            if (jam.room) { try { jam.room.leave(); } catch (e) {} }
+            jam.room = null; jam.active = false; jam.joining = false;
+            jam.sendNote = jam.sendId = jam.sendChat = null;
+            jam.peers.forEach(p => {
+                stopPeerVoices(p);
+                if (p.bus) { try { p.bus.disconnect(); } catch (e) {} }
+                if (p.pulseTimer) clearTimeout(p.pulseTimer);
+            });
+            jam.peers.clear(); jamLocalNotes.clear(); jamChatRate.clear();
+            jamJoinBtn.textContent = 'Join';
+            btnToggleJam.classList.remove('is-live');
+            jamWarnEl.style.display = '';
+            jamSetChatEnabled(false);
+            jamSetStatus('Not connected');
+            jamUpdateCount(); renderPeers();
+        }
+        jamJoinBtn.addEventListener('click', () => { jam.active ? leaveJam() : joinJam(); });
+        jamRoomInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !jam.active) joinJam(); });
+        jamPassInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !jam.active) joinJam(); });
+        jamNameInput.addEventListener('change', () => {
+            jam.selfName = (jamNameInput.value || '').trim() || 'Player';
+            saveJamPrefs();
+            if (jam.active && jam.sendId) jam.sendId({ name: jam.selfName, color: jam.selfColor });
+        });
+        jamColorInput.addEventListener('change', () => {
+            jam.selfColor = jamColorInput.value || '#bf2233';
+            saveJamPrefs();
+            if (jam.active && jam.sendId) jam.sendId({ name: jam.selfName, color: jam.selfColor });
+        });
+
+        // --- The drawer, same sliding pattern as the Scribe ---
+        function setJamOpen(open) {
+            isJamOpen = open;
+            jamPanel.classList.toggle('is-open', open);
+            btnToggleJam.classList.toggle('active', open);
+            btnToggleJam.setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (open) {
+                loadTrystero();   // warm the library while they type a room name
+                setTimeout(() => { jamChatLog.scrollTop = jamChatLog.scrollHeight; }, 60);
+            }
+        }
+        btnToggleJam.addEventListener('click', () => {
+            const next = !isJamOpen;
+            if (next && isScribeOpen) btnToggleScribe.click();   // one panel per side
+            setJamOpen(next);
+            nudgePanel(jamPanel);
+        });
+        document.getElementById('btn-close-jam').addEventListener('click', () => setJamOpen(false));
+        btnToggleScribe.addEventListener('click', () => { if (isJamOpen) setJamOpen(false); });
+
+        // Leave cleanly on tab close so peers see us drop rather than time out.
+        window.addEventListener('beforeunload', () => {
+            if (jam.room) { try { jam.room.leave(); } catch (e) {} }
+        });
+
+        // --- Broadcast our own playing ---
+        // Wrapped AFTER the recorder's wrapper. Remote notes call the core
+        // directly, so they are never re-broadcast or recorded.  [Lynie]
+        const _netPlay = playNote, _netStop = stopNote;
+        playNote = function (offset, octave, elementId, instrumentOverride, outBus) {
+            _netPlay(offset, octave, elementId, instrumentOverride, outBus);
+            if (!isLocalUserId(elementId)) return;
+            const midi = 12 * (octave + 1) + offset;
+            jamLocalNotes.set(elementId, midi);
+            if (jam.active && jam.sendNote) {
+                try { jam.sendNote({ t: 'on', n: midi }); } catch (e) {}
+            }
+        };
+        stopNote = function (elementId) {
+            if (isLocalUserId(elementId)) {
+                const midi = jamLocalNotes.get(elementId);
+                if (midi != null) {
+                    jamLocalNotes.delete(elementId);
+                    if (jam.active && jam.sendNote) { try { jam.sendNote({ t: 'off', n: midi }); } catch (e) {} }
+                }
+            }
+            _netStop(elementId);
+        };
+
+        jamSetChatEnabled(false);
+        renderPeers();
+        jamUpdateCount();
 
     </script>
 
