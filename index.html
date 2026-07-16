@@ -1128,6 +1128,14 @@
         [data-density="compact"] .dock-group { padding: 7px 9px 9px; }
         .dock-group--sound { flex: 1 1 360px; max-width: 640px; }
         .dock-group-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            transition: color 0.2s;
             font-family: var(--font-label);
             font-size: 0.68rem;
             letter-spacing: var(--label-tracking);
@@ -1136,6 +1144,23 @@
             font-weight: 600;
             line-height: 1;
         }
+        .dock-group-label:hover { color: var(--text-primary); }
+        .dock-group-label:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-radius: 2px; }
+        .dock-caret::before { content: '\25BE'; font-size: 0.7em; opacity: 0.7; }
+        .dock-group.is-closed .dock-caret::before { content: '\25B8'; }
+        .dock-group.is-closed .dock-group-row { display: none; }
+        .dock-group.is-closed { padding-top: 0; padding-bottom: 0; justify-content: center; }
+        /* A closed group that is still doing something says so, so nothing is
+           ever hidden AND forgotten. */
+        .dock-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--good);
+            box-shadow: 0 0 5px var(--good);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .dock-group.is-closed .dock-dot.on { opacity: 1; }
         .dock-group-row {
             display: flex;
             flex-wrap: wrap;
@@ -1534,7 +1559,7 @@
         /* ==============================================================
            SIDE PANELS — Songbook / Scribe (push layout)
            ============================================================== */
-        #songbook-panel, #scribe-panel, #jam-panel {
+        #songbook-panel, #scribe-panel, #jam-panel, #takes-panel {
             position: relative;
             height: auto;
             max-height: calc(100vh - 130px);
@@ -1560,25 +1585,28 @@
             box-shadow: var(--shadow-lg);
             transition: flex 0.4s var(--ease-spring), width 0.4s var(--ease-spring), max-width 0.4s var(--ease-spring), opacity 0.3s ease, padding 0.4s var(--ease-spring), margin 0.4s var(--ease-spring), border-width 0.4s;
         }
-        #songbook-panel.is-open, #scribe-panel.is-open, #jam-panel.is-open {
+        #songbook-panel.is-open, #scribe-panel.is-open, #jam-panel.is-open, #takes-panel.is-open {
             flex: 1 1 600px;
             width: 100%;
             max-width: 700px;
-        }
-        /* Songs and tabs want width, and the centre only ever needs the piano —
-           so the leftovers belong to whatever you're reading. */
-        #songbook-panel.is-open, #scribe-panel.is-open {
-            flex: 1 1 900px;
-            max-width: 1050px;
+            min-width: 300px;   /* never squeezed to a sliver — see #center-panel */
             padding: 22px;
             opacity: 1;
             border-width: 1px;
             visibility: visible;
         }
+        /* Songs and tabs want width, and the centre only ever needs the piano —
+           so the leftovers belong to whatever you're reading. Width only: every
+           other property above must stay shared, or a panel opens invisible. */
+        #songbook-panel.is-open, #scribe-panel.is-open {
+            flex: 1 1 900px;
+            max-width: 1050px;
+        }
         #songbook-panel.is-open { margin-right: 18px; }
-        #scribe-panel.is-open, #jam-panel.is-open { margin-left: 18px; }
+        #scribe-panel.is-open, #jam-panel.is-open, #takes-panel.is-open { margin-left: 18px; }
+        #takes-panel.is-open { flex: 0 1 520px; max-width: 540px; }
         #jam-panel.is-open { flex: 0 1 440px; max-width: 460px; }
-        #songbook-panel.hidden, #scribe-panel.hidden, #jam-panel.hidden { display: flex !important; }
+        #songbook-panel.hidden, #scribe-panel.hidden, #jam-panel.hidden, #takes-panel.hidden { display: flex !important; }
 
         .drawer-header {
             display: flex;
@@ -1946,7 +1974,7 @@
             #help-overlay .help-card { padding: 20px; }
             .stage { flex-direction: column; align-items: center; }
             #center-panel { width: 100%; margin: 0 0 14px 0; order: 1; }
-            #songbook-panel.is-open, #scribe-panel.is-open, #jam-panel.is-open {
+            #songbook-panel.is-open, #scribe-panel.is-open, #jam-panel.is-open, #takes-panel.is-open {
                 width: 100%;
                 max-width: 100%;
                 flex: none;
@@ -2060,13 +2088,13 @@
         /* An open panel is sized by the stage row (the piano column beside it),
            never by its own contents — so a long song list scrolls inside the
            panel instead of stretching it and the page. */
-        #songbook-panel.is-open, #scribe-panel.is-open, #jam-panel.is-open {
+        #songbook-panel.is-open, #scribe-panel.is-open, #jam-panel.is-open, #takes-panel.is-open {
             contain: size;
             max-height: calc(100vh - 36px);
         }
         @media (max-width: 1200px) {
             /* Stacked: no piano beside it to borrow height from, so state it. */
-            #songbook-panel.is-open, #scribe-panel.is-open, #jam-panel.is-open { max-height: 80vh; height: min(620px, 78vh); }
+            #songbook-panel.is-open, #scribe-panel.is-open, #jam-panel.is-open, #takes-panel.is-open { max-height: 80vh; height: min(620px, 78vh); }
         }
 
         /* ==============================================================
@@ -2667,6 +2695,21 @@
         }
         .rail-badge.hidden { display: none; }
         #btn-toggle-jam.is-live { color: var(--good); }
+        /* Jam stands out in the rail: a quiet tint at rest, the full accent when
+           the panel is open, and green while a room is live. */
+        #btn-toggle-jam {
+            background: var(--wash);
+            border-color: var(--stroke-mid);
+            color: var(--text-acc);
+        }
+        #btn-toggle-jam .rail-label { color: var(--text-acc); }
+        #btn-toggle-jam:hover { border-color: var(--stroke-strong); }
+        #btn-toggle-jam.is-live {
+            border-color: var(--good);
+            box-shadow: 0 0 14px -3px var(--good);
+        }
+        #btn-toggle-jam.is-live .rail-label { color: var(--good); }
+        #btn-toggle-jam.active, #btn-toggle-jam.active .rail-label { color: var(--on-acc); }
 
         .jam-join { display: flex; flex-direction: column; gap: 8px; }
         .jam-row { display: flex; gap: 8px; align-items: center; }
@@ -2844,10 +2887,125 @@
         .drop-veil-card span { font-family: var(--font-label); font-size: 1rem; font-weight: 600; letter-spacing: 0.04em; }
         .drop-veil-card small { font-size: 0.8rem; color: var(--text-muted); }
 
+        /* Scale guide: a quiet dot on every key of the scale, gold on the root.
+           Sits under .active, so playing still reads normally.  [Lynie] */
+        .piano-key.in-scale::after,
+        .htp-white.in-scale::after,
+        .htp-black.in-scale::after {
+            content: '';
+            position: absolute;
+            left: 50%; bottom: 8px;
+            transform: translateX(-50%);
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--good);
+            box-shadow: 0 0 6px var(--good);
+            pointer-events: none;
+            z-index: 5;
+        }
+        .piano-key.in-scale-root::after,
+        .htp-white.in-scale-root::after,
+        .htp-black.in-scale-root::after {
+            background: var(--sec);
+            box-shadow: 0 0 8px var(--sec);
+        }
+        .htp-black.in-scale::after { bottom: 4px; width: 5px; height: 5px; }
+        .htp-white.in-scale::after { bottom: 6px; }
+
+        /* A readout that follows the thumb of any slider while you drag  [Lynie] */
+        #slider-bubble {
+            position: fixed;
+            z-index: 210;
+            transform: translate(-50%, -140%);
+            padding: 3px 8px;
+            border-radius: var(--r-sm);
+            background: var(--surface-3);
+            border: 1px solid var(--stroke-mid);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 600;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.12s ease;
+            box-shadow: var(--shadow-md);
+        }
+        #slider-bubble.on { opacity: 1; }
+        .dock-item.is-disabled { opacity: 0.45; }
+
+        /* Sustain lock is a mode you can leave on by accident, so it wears the
+           record colour rather than the ordinary accent. */
+        #sustain-lock.active {
+            background: var(--rec);
+            border-color: var(--rec);
+            color: #fff;
+            box-shadow: 0 0 16px -2px var(--rec);
+        }
+        #sustain-lock.active .dock-icon { color: #fff; }
+
+        /* ==============================================================
+           TAKES — the looper  [Lynie]
+           ============================================================== */
+        .takes-bar { display: flex; gap: 6px; flex-wrap: wrap; }
+        .takes-bar .btn { padding: 8px 12px; font-size: 0.78rem; }
+        .takes-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .takes-empty {
+            margin: 0; padding: 24px 12px;
+            font-family: var(--font-tagline);
+            font-style: italic;
+            font-size: 0.86rem;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.6;
+        }
+        .takes-empty b { color: var(--text-acc); font-style: normal; }
+        .take {
+            background: var(--well);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+            padding: 8px 10px;
+            flex-shrink: 0;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .take.is-playing { border-color: var(--play-edge); box-shadow: 0 0 14px -4px var(--play-glow); }
+        .take-row { display: flex; align-items: center; gap: 8px; }
+        .take-play { width: 30px; height: 30px; flex-shrink: 0; font-size: 0.7rem; }
+        .take.is-playing .take-play { background: var(--grad-play); color: var(--on-play); border-color: var(--play-edge); }
+        .take-name {
+            flex: 1; min-width: 0;
+            padding: 5px 8px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            background: transparent;
+            border-color: transparent;
+        }
+        .take-name:hover { border-color: var(--stroke-soft); }
+        .take-dur { font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); flex-shrink: 0; }
+        .take-more { width: 26px; height: 26px; flex-shrink: 0; }
+        .take-head {
+            height: 5px;
+            margin-top: 7px;
+            background: var(--well-deep);
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .take-head-fill { height: 100%; width: 0; background: var(--grad-acc-computed); transition: width 0.05s linear; }
+        .take-extra { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+        .take-extra.hidden { display: none; }
+        .take-extra-row { display: flex; align-items: center; gap: 6px; }
+        .take-extra-row .btn { padding: 5px 9px; font-size: 0.72rem; min-width: 28px; }
+        .take-vol { flex: 1; min-width: 60px; }
+        .take-instr { flex: 1; min-width: 0; padding: 4px 8px; font-size: 0.74rem; }
+        .take-lbl { font-size: 0.72rem; color: var(--text-muted); }
+        .take-tval { font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-acc); min-width: 22px; text-align: center; }
+
         /* Collapsed side panels must not contribute height to the stage row */
         #songbook-panel:not(.is-open) > *,
         #scribe-panel:not(.is-open) > *,
-        #jam-panel:not(.is-open) > * { display: none !important; }
+        #jam-panel:not(.is-open) > *,
+        #takes-panel:not(.is-open) > * { display: none !important; }
     </style>
 </head>
 
@@ -2891,6 +3049,14 @@
         <button id="btn-toggle-scribe" class="rail-btn" type="button" aria-label="Toggle Scribe" aria-expanded="false">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             <span class="rail-label" id="lbl-toggle-scribe">Scribe</span>
+        </button>
+
+        <button id="btn-toggle-takes" class="rail-btn" type="button" aria-label="Toggle Takes" aria-expanded="false">
+            <span class="rail-icon-wrap">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                <span id="takes-badge" class="rail-badge hidden">0</span>
+            </span>
+            <span class="rail-label">Takes</span>
         </button>
 
         <button id="btn-toggle-jam" class="rail-btn" type="button" aria-label="Toggle Jam — play with others" aria-expanded="false">
@@ -3083,7 +3249,7 @@
                     <div class="dock-groups">
 
                         <div class="dock-group dock-group--sound">
-                            <span class="dock-group-label">Sound</span>
+                            <button class="dock-group-label" type="button" data-group="sound" aria-expanded="true" title="Show or hide sound"><span class="dock-caret" aria-hidden="true"></span>Sound<span class="dock-dot" aria-hidden="true"></span></button>
                             <div class="dock-group-row">
                                 <div class="dock-item dock-item--grow" title="Instrument">
                                     <select id="synth-select" class="dock-select" aria-label="Instrument">
@@ -3091,7 +3257,8 @@
                                             <option value="lute">Lute</option>
                                             <option value="brass">Brass</option>
                                             <option value="flute">Flute</option>
-                                            <option value="crystal">Crystal</option>
+                                            <option value="piano">Piano</option>
+                                    <option value="crystal">Crystal</option>
                                         </optgroup>
                                     </select>
                                 </div>
@@ -3099,6 +3266,11 @@
                                 <div class="dock-item" title="Master volume">
                                     <svg class="dock-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
                                     <input type="range" id="master-volume" class="slider" min="0" max="1.2" step="0.01" value="0.8" style="width:100px;" aria-label="Master volume" title="Master volume — can be pushed past 100%">
+                                </div>
+
+                                <div class="dock-item" title="Reverb — how much room the instrument sits in">
+                                    <svg class="dock-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2c1 0 1.5-2 2.5-2s1.5 4 2.5 4 1.5-6 2.5-6 1.5 8 2.5 8 1.5-4 2.5-4 1.5 2 2.5 2h2"/></svg>
+                                    <input type="range" id="fx-reverb" class="slider" min="0" max="1" step="0.01" value="0.12" style="width:70px;" aria-label="Reverb">
                                 </div>
 
                                 <label for="sf2-upload" class="dock-item dock-item--btn" title="Load SoundFonts (.sf2) — or just drop files or a folder anywhere on the page">
@@ -3112,11 +3284,49 @@
                                     <div id="midi-dot" class="dot midi-dot"></div>
                                     <span class="dock-label" id="midi-label">MIDI: —</span>
                                 </div>
+                                <label class="dock-item dock-item--toggle" id="midi-out-item" title="Send what you play to another instrument or a DAW">
+                                    <input type="checkbox" id="midi-out-toggle" class="check">
+                                    <span class="dock-label">MIDI Out</span>
+                                </label>
+                                <div class="dock-item dock-item--grow" id="midi-out-portitem" title="Which MIDI output to send to">
+                                    <select id="midi-out-port" class="dock-select" aria-label="MIDI output port" disabled>
+                                        <option value="">No MIDI outputs</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
                         <div class="dock-group">
-                            <span class="dock-group-label">Ambience</span>
+                            <button class="dock-group-label" type="button" data-group="scale" aria-expanded="true" title="Show or hide scale"><span class="dock-caret" aria-hidden="true"></span>Scale<span class="dock-dot" aria-hidden="true"></span></button>
+                            <div class="dock-group-row">
+                                <div class="dock-item" title="Marks every key in a scale with a dot — brighter on the root">
+                                    <select id="scale-root" class="dock-select" aria-label="Scale root">
+                                        <option value="0">C</option><option value="1">C#</option><option value="2">D</option>
+                                        <option value="3">D#</option><option value="4">E</option><option value="5">F</option>
+                                        <option value="6">F#</option><option value="7">G</option><option value="8">G#</option>
+                                        <option value="9">A</option><option value="10">A#</option><option value="11">B</option>
+                                    </select>
+                                </div>
+                                <div class="dock-item">
+                                    <select id="scale-type" class="dock-select" aria-label="Scale">
+                                        <option value="off">No guide</option>
+                                        <option value="major">Major</option>
+                                        <option value="minor">Minor</option>
+                                        <option value="harmonic">Harmonic minor</option>
+                                        <option value="melodic">Melodic minor</option>
+                                        <option value="pentaMajor">Pentatonic major</option>
+                                        <option value="pentaMinor">Pentatonic minor</option>
+                                        <option value="blues">Blues</option>
+                                        <option value="dorian">Dorian</option>
+                                        <option value="mixolydian">Mixolydian</option>
+                                        <option value="chromatic">Chromatic</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dock-group">
+                            <button class="dock-group-label" type="button" data-group="ambience" aria-expanded="true" title="Show or hide ambience"><span class="dock-caret" aria-hidden="true"></span>Ambience<span class="dock-dot" aria-hidden="true"></span></button>
                             <div class="dock-group-row">
                                 <div class="dock-item" title="Background atmosphere, synthesised live">
                                     <svg class="dock-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-1.8A7 7 0 1 0 4 14.9"/><path d="M8 19v2"/><path d="M12 17v4"/><path d="M16 19v2"/></svg>
@@ -3135,7 +3345,7 @@
                         </div>
 
                         <div class="dock-group">
-                            <span class="dock-group-label">Tempo</span>
+                            <button class="dock-group-label" type="button" data-group="tempo" aria-expanded="true" title="Show or hide tempo"><span class="dock-caret" aria-hidden="true"></span>Tempo<span class="dock-dot" aria-hidden="true"></span></button>
                             <div class="dock-group-row">
                                 <label class="dock-item dock-item--toggle" title="Metronome">
                                     <input type="checkbox" id="metronome-toggle" class="check">
@@ -3149,12 +3359,19 @@
                         </div>
 
                         <div class="dock-group">
-                            <span class="dock-group-label">Performance</span>
+                            <button class="dock-group-label" type="button" data-group="performance" aria-expanded="true" title="Show or hide performance"><span class="dock-caret" aria-hidden="true"></span>Performance<span class="dock-dot" aria-hidden="true"></span></button>
                             <div class="dock-group-row">
-                                <label class="dock-item dock-item--toggle" title="Hold notes longer (sustain pedal)">
-                                    <input type="checkbox" id="sustain-toggle" class="check">
+                                <button id="sustain-btn" class="dock-item dock-item--btn" type="button" title="Sustain — hold this, hold Shift, or press a MIDI pedal">
+                                    <svg class="dock-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v12"/><circle cx="6" cy="18" r="3"/><path d="M18 3v12"/><circle cx="18" cy="18" r="3"/><path d="M6 9h12"/></svg>
                                     <span class="dock-label">Sustain</span>
-                                </label>
+                                </button>
+                                <button id="sustain-lock" class="dock-item dock-item--btn" type="button" aria-pressed="false" title="Keep sustain on">
+                                    <svg class="dock-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                </button>
+                                <div class="dock-item" title="How hard your keyboard and mouse strike the keys">
+                                    <svg class="dock-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg>
+                                    <input type="range" id="velocity-slider" class="slider" min="0.2" max="1" step="0.01" value="1" style="width:66px;" aria-label="Velocity">
+                                </div>
                                 <button id="btn-panic" class="dock-item dock-item--btn" type="button" title="Instantly release every ringing note">
                                     <svg class="dock-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
                                     <span class="dock-label">Silence</span>
@@ -3167,7 +3384,7 @@
                         </div>
 
                         <div class="dock-group dock-group--recorder">
-                            <span class="dock-group-label">Recorder</span>
+                            <button class="dock-group-label" type="button" data-group="recorder" aria-expanded="true" title="Show or hide recorder"><span class="dock-caret" aria-hidden="true"></span>Recorder<span class="dock-dot" aria-hidden="true"></span></button>
                             <div class="dock-group-row">
                                 <button id="btn-record" class="dock-item dock-item--btn dock-item--rec" type="button" title="Record (R)">
                                     <div id="rec-dot" class="dot rec-dot"></div>
@@ -3344,6 +3561,28 @@
                     <div id="textareaB" class="editor-layer editor-back" aria-hidden="true"></div>
                     <textarea id="textareaA" spellcheck="false" class="editor-layer editor-front"></textarea>
                 </div>
+            </aside>
+
+            <!-- RIGHT PANEL: TAKES — the looper (merged from Lynie's fork) -->
+            <aside id="takes-panel" class="hidden" aria-label="Takes">
+                <div class="drawer-header">
+                    <div>
+                        <h2 class="drawer-title">Takes</h2>
+                        <p class="drawer-subtitle">Keep every pass. Stack them up.</p>
+                    </div>
+                    <button id="btn-close-takes" class="btn btn-icon btn-ghost" aria-label="Close Takes" type="button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+
+                <div class="takes-bar">
+                    <button id="btn-take-save" class="btn btn-primary" type="button" title="Keep whatever is in the Recorder as a take">Keep recording</button>
+                    <button id="btn-takes-playall" class="btn" type="button" title="Play every unmuted take together">&#9654; All</button>
+                    <button id="btn-takes-stopall" class="btn btn-ghost" type="button">Stop</button>
+                    <button id="btn-takes-merge" class="btn btn-ghost" type="button" title="Fold every take into one new take">Merge</button>
+                </div>
+
+                <div id="takes-list" class="takes-list"></div>
             </aside>
 
             <!-- RIGHT PANEL: JAM (merged from Lynie's fork) -->
@@ -3659,6 +3898,7 @@
                 <div class="help-item"><span class="kbd">R</span> Toggle recording</div>
                 <div class="help-item"><span class="kbd">Space</span> Play / stop recording</div>
                 <div class="help-item"><span class="kbd">Enter</span> Scroll the pinned song</div>
+                <div class="help-item"><span class="kbd">Shift</span> Sustain (hold, like a pedal)</div>
                 <div class="help-item"><span class="kbd">?</span> Toggle this overlay</div>
                 <div class="help-item"><span class="kbd">Esc</span> Close overlay or panel</div>
             </div>
@@ -3828,7 +4068,40 @@
         let audioCtx;
         let masterGainNode;
         let activeNodes = {};
-        let isSustainEnabled = false;
+        // Sustain has four sources: hold the button, hold Shift, press a MIDI
+        // pedal, or pin it with the lock. Any one of them is enough.  [Lynie]
+        let sustainKeyHeld = false, sustainMouseHeld = false, sustainPedalHeld = false, sustainLocked = false;
+        const sustainOn = () => sustainKeyHeld || sustainMouseHeld || sustainPedalHeld || sustainLocked;
+
+        // A parallel reverb hung off the master bus, built from a procedural
+        // impulse response — a room, with no file to download.  [Lynie]
+        let reverbSend, reverbConvolver, metroBus;
+        let fxReverb = 0.12;
+        let keyboardVel = 1;
+        try {
+            const savedFx = JSON.parse(localStorage.getItem('saryaFx') || 'null');
+            if (savedFx) {
+                if (typeof savedFx.reverb === 'number') fxReverb = Math.max(0, Math.min(1, savedFx.reverb));
+                if (typeof savedFx.vel === 'number') keyboardVel = Math.max(0.2, Math.min(1, savedFx.vel));
+            }
+        } catch (e) {}
+        const saveFx = () => { try { localStorage.setItem('saryaFx', JSON.stringify({ reverb: fxReverb, vel: keyboardVel })); } catch (e) {} };
+        const keyboardVelocity = () => keyboardVel;
+
+        function makeReverbImpulse(ctx, seconds, decay) {
+            const rate = ctx.sampleRate, len = Math.max(1, Math.floor(rate * seconds));
+            const buf = ctx.createBuffer(2, len, rate);
+            for (let ch = 0; ch < 2; ch++) {
+                const d = buf.getChannelData(ch);
+                for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
+            }
+            return buf;
+        }
+        function setReverbAmount(v) {
+            fxReverb = Math.max(0, Math.min(1, v));
+            if (reverbSend && audioCtx) reverbSend.gain.setTargetAtTime(fxReverb, audioCtx.currentTime, 0.02);
+            saveFx();
+        }
 
         let metronomeInterval;
         let nextNoteTime = 0;
@@ -3866,7 +4139,10 @@
         const lblOctUp = document.getElementById('lbl-oct-up');
         const synthSelect = document.getElementById('synth-select');
         const octaveToggle = document.getElementById('octave-toggle');
-        const sustainToggle = document.getElementById('sustain-toggle');
+        const sustainBtn = document.getElementById('sustain-btn');
+        const sustainLockBtn = document.getElementById('sustain-lock');
+        const velocitySlider = document.getElementById('velocity-slider');
+        const fxReverbSlider = document.getElementById('fx-reverb');
 
         let isSongbookOpen = false;
         let isScribeOpen = false;
@@ -5951,7 +6227,27 @@
                 const volSlider = document.getElementById('master-volume');
                 masterGainNode.gain.value = volSlider.value;
                 masterGainNode.connect(audioCtx.destination);
-                volSlider.addEventListener('input', (e) => masterGainNode.gain.setValueAtTime(e.target.value, audioCtx.currentTime));
+
+                // Reverb hangs off the master, so every voice — and every Jam
+                // peer, who all route through it — shares one room.
+                reverbSend = audioCtx.createGain();
+                reverbSend.gain.value = fxReverb;
+                reverbConvolver = audioCtx.createConvolver();
+                reverbConvolver.buffer = makeReverbImpulse(audioCtx, 2.4, 2.6);
+                masterGainNode.connect(reverbSend);
+                reverbSend.connect(reverbConvolver);
+                reverbConvolver.connect(audioCtx.destination);
+
+                // The metronome stays bone dry — a click in a cathedral is
+                // useless for keeping time.  [Lynie]
+                metroBus = audioCtx.createGain();
+                metroBus.gain.value = volSlider.value;
+                metroBus.connect(audioCtx.destination);
+
+                volSlider.addEventListener('input', (e) => {
+                    masterGainNode.gain.setValueAtTime(e.target.value, audioCtx.currentTime);
+                    if (metroBus) metroBus.gain.setValueAtTime(e.target.value, audioCtx.currentTime);
+                });
             }
             if (audioCtx.state === 'suspended') audioCtx.resume();
         }
@@ -6001,7 +6297,7 @@
         // player is rendered with the instrument this listener picked for them,
         // through their own gain bus so it can be mixed and muted. Everything
         // else calls this exactly as before. [merge: Lynie]
-        function playNote(offset, octave, elementId, instrumentOverride, outBus) {
+        function playNote(offset, octave, elementId, instrumentOverride, outBus, velocity) {
             initAudio();
             if (activeNodes[elementId]) return;
 
@@ -6009,6 +6305,10 @@
             const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
             const instrumentMode = instrumentOverride || synthSelect.value;
             const dest = outBus || masterGainNode;
+            // A MIDI keyboard and a Jam peer send how hard the note was struck.
+            // Clicks and computer keys can't, so they borrow the velocity slider.
+            const hasVel = (typeof velocity === 'number' && isFinite(velocity));
+            const vel = hasVel ? Math.max(0.05, Math.min(1, velocity)) : keyboardVelocity();
 
             // Trigger Particle Magic
             spawnParticles(elementId, instrumentMode, offset);
@@ -6021,10 +6321,10 @@
                 const preset = font && font.presets[parseInt(bits[2])];
                 if (!preset) return;
 
-                const velocity = 100;
+                const sfVel = hasVel ? Math.round(vel * 127) : 100;
                 let matchedZones = preset.zones.filter(z =>
                     midiNote >= z.keyRange.low && midiNote <= z.keyRange.high &&
-                    velocity >= z.velRange.low && velocity <= z.velRange.high
+                    sfVel >= z.velRange.low && sfVel <= z.velRange.high
                 );
 
                 if (matchedZones.length === 0) matchedZones = preset.zones.filter(z => midiNote >= z.keyRange.low && midiNote <= z.keyRange.high);
@@ -6098,6 +6398,7 @@
                 const osc1 = audioCtx.createOscillator();
                 const osc2 = audioCtx.createOscillator();
                 const filterNode = audioCtx.createBiquadFilter();
+                const extraOscs = [];
 
                 if (instrumentMode === 'lute') {
                     osc1.type = 'sawtooth'; osc2.type = 'triangle';
@@ -6106,39 +6407,63 @@
                     filterNode.frequency.setValueAtTime(4000, audioCtx.currentTime);
                     filterNode.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.5);
                     gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.8, audioCtx.currentTime + 0.01);
-                    gainNode.gain.exponentialRampToValueAtTime(0.1, audioCtx.currentTime + 1.2);
+                    gainNode.gain.linearRampToValueAtTime(0.8 * vel, audioCtx.currentTime + 0.01);
+                    gainNode.gain.exponentialRampToValueAtTime(Math.max(0.0001, 0.1 * vel), audioCtx.currentTime + 1.2);
                 } else if (instrumentMode === 'brass') {
                     osc1.type = 'square'; osc2.type = 'sine';
                     osc1.frequency.value = freq; osc2.frequency.value = freq * 0.998;
                     filterNode.type = 'lowpass';
                     filterNode.frequency.setValueAtTime(1000, audioCtx.currentTime);
-                    filterNode.frequency.linearRampToValueAtTime(2500, audioCtx.currentTime + 0.1);
+                    filterNode.frequency.linearRampToValueAtTime(1200 + 1300 * vel, audioCtx.currentTime + 0.1);
                     gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.6, audioCtx.currentTime + 0.1);
-                    gainNode.gain.setTargetAtTime(0.4, audioCtx.currentTime + 0.1, 0.3);
+                    gainNode.gain.linearRampToValueAtTime(0.6 * vel, audioCtx.currentTime + 0.1);
+                    gainNode.gain.setTargetAtTime(0.4 * vel, audioCtx.currentTime + 0.1, 0.3);
                 } else if (instrumentMode === 'flute') {
                     osc1.type = 'sine'; osc2.type = 'sine';
                     osc1.frequency.value = freq; osc2.frequency.value = freq * 1.005;
                     filterNode.type = 'lowpass'; filterNode.frequency.setValueAtTime(2000, audioCtx.currentTime);
                     gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.15);
-                    gainNode.gain.setTargetAtTime(0.4, audioCtx.currentTime + 0.15, 0.2);
+                    gainNode.gain.linearRampToValueAtTime(0.5 * vel, audioCtx.currentTime + 0.15);
+                    gainNode.gain.setTargetAtTime(0.4 * vel, audioCtx.currentTime + 0.15, 0.2);
+                } else if (instrumentMode === 'piano') {
+                    // A piano has several strings per note, tuned a hair apart —
+                    // that pair is the warmth. Its overtones sit slightly sharp
+                    // (inharmonicity), the high ones die first, and the hammer
+                    // gives a hard attack over a long ringing tail.  [Lynie]
+                    const now = audioCtx.currentTime;
+                    osc1.type = 'triangle'; osc2.type = 'triangle';
+                    osc1.frequency.value = freq; osc2.frequency.value = freq * 1.003;
+                    [{ mul: 2.00, gain: 0.50 }, { mul: 3.01, gain: 0.26 },
+                     { mul: 4.02, gain: 0.13 }, { mul: 6.05, gain: 0.06 }].forEach(p => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.type = 'sine'; o.frequency.value = freq * p.mul; g.gain.value = p.gain * vel;
+                        o.connect(g); g.connect(filterNode);
+                        o.start(now);
+                        extraOscs.push(o);
+                    });
+                    filterNode.type = 'lowpass'; filterNode.Q.value = 0.7;
+                    filterNode.frequency.setValueAtTime(3200 + 6500 * vel, now);   // harder = brighter
+                    filterNode.frequency.exponentialRampToValueAtTime(900, now + 0.7);
+                    gainNode.gain.setValueAtTime(0, now);
+                    gainNode.gain.linearRampToValueAtTime(0.9 * vel, now + 0.004);
+                    gainNode.gain.exponentialRampToValueAtTime(Math.max(0.0001, 0.30 * vel), now + 0.16);
+                    gainNode.gain.exponentialRampToValueAtTime(Math.max(0.0001, 0.0008 * vel), now + 7.0);
                 } else if (instrumentMode === 'crystal') {
                     osc1.type = 'triangle'; osc2.type = 'sine';
                     osc1.frequency.value = freq; osc2.frequency.value = freq * 2;
                     filterNode.type = 'bandpass'; filterNode.frequency.setValueAtTime(freq * 2, audioCtx.currentTime);
                     filterNode.Q.value = 5;
                     gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.02);
-                    gainNode.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + 2.0);
+                    gainNode.gain.linearRampToValueAtTime(0.5 * vel, audioCtx.currentTime + 0.02);
+                    gainNode.gain.exponentialRampToValueAtTime(Math.max(0.0001, 0.05 * vel), audioCtx.currentTime + 2.0);
                 }
 
                 osc1.connect(filterNode); osc2.connect(filterNode);
                 filterNode.connect(gainNode); gainNode.connect(dest);
                 osc1.start(); osc2.start();
 
-                activeNodes[elementId] = { osc1, osc2, gainNode, mode: instrumentMode };
+                activeNodes[elementId] = { osc1, osc2, gainNode, mode: instrumentMode, extraOscs };
             }
 
             const keyEl = document.getElementById(elementId);
@@ -6163,7 +6488,7 @@
                     let zone = zones[i];
 
                     let rel = timecentsToSecs(zone.volEnv.release);
-                    rel = Math.max(rel, isSustainEnabled ? 5.0 : 1.5);
+                    rel = Math.max(rel, sustainOn() ? 5.0 : 1.5);
 
                     gainNode.gain.cancelScheduledValues(now);
                     gainNode.gain.setValueAtTime(gainNode.gain.value, now);
@@ -6171,15 +6496,16 @@
                     source.stop(now + rel + 0.1);
                 }
             } else {
-                const { osc1, osc2, gainNode } = node;
-                let baseRelease = (mode === 'crystal') ? 2.5 : (mode === 'brass' ? 1.5 : 1.5);
-                let releaseTime = isSustainEnabled ? baseRelease * 3 : baseRelease;
+                const { osc1, osc2, gainNode, extraOscs } = node;
+                let baseRelease = (mode === 'crystal') ? 2.5 : (mode === 'piano' ? 0.4 : 1.5);
+                let releaseTime = sustainOn() ? baseRelease * (mode === 'piano' ? 8 : 3) : baseRelease;
 
                 gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
                 gainNode.gain.setValueAtTime(gainNode.gain.value, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + releaseTime);
                 osc1.stop(audioCtx.currentTime + releaseTime);
                 osc2.stop(audioCtx.currentTime + releaseTime);
+                if (extraOscs) extraOscs.forEach(o => { try { o.stop(audioCtx.currentTime + releaseTime); } catch (e) {} });
             }
 
             delete activeNodes[elementId];
@@ -6344,6 +6670,7 @@
 
         // --- Safety: release every held note when focus is lost or tab hidden ---
         function releaseAllNotes() {
+            if (typeof allNotesOffMidiOut === 'function') allNotesOffMidiOut();
             for (const id of Object.keys(activeNodes)) stopNote(id);
             pointerKeyMap.clear();
         }
@@ -6818,7 +7145,30 @@
         });
 
         octaveToggle.addEventListener('change', (e) => { octaveMode = e.target.checked ? 'restricted' : 'full'; updateOctave(0); });
-        sustainToggle.addEventListener('change', (e) => isSustainEnabled = e.target.checked);
+        function reflectSustain() {
+            sustainBtn.classList.toggle('active', sustainOn());
+            sustainLockBtn.classList.toggle('active', sustainLocked);
+            sustainLockBtn.setAttribute('aria-pressed', sustainLocked ? 'true' : 'false');
+        }
+        sustainBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); sustainMouseHeld = true; reflectSustain(); });
+        window.addEventListener('pointerup', () => { if (sustainMouseHeld) { sustainMouseHeld = false; reflectSustain(); } });
+        sustainLockBtn.addEventListener('click', () => {
+            sustainLocked = !sustainLocked;
+            reflectSustain();
+            showMessage(sustainLocked ? 'Sustain locked on.' : 'Sustain released.');
+        });
+        // Shift is the pedal for anyone who hasn't got one
+        window.addEventListener('keydown', (e) => { if (e.key === 'Shift' && !sustainKeyHeld) { sustainKeyHeld = true; reflectSustain(); } });
+        window.addEventListener('keyup', (e) => { if (e.key === 'Shift' && sustainKeyHeld) { sustainKeyHeld = false; reflectSustain(); } });
+        window.addEventListener('blur', () => {   // alt-tabbing away must not leave it stuck down
+            if (sustainKeyHeld || sustainMouseHeld) { sustainKeyHeld = sustainMouseHeld = false; reflectSustain(); }
+        });
+
+        velocitySlider.value = keyboardVel;
+        velocitySlider.addEventListener('input', (e) => { keyboardVel = +e.target.value; saveFx(); });
+        fxReverbSlider.value = fxReverb;
+        fxReverbSlider.addEventListener('input', (e) => setReverbAmount(+e.target.value));
+        reflectSustain();
 
         // ==========================================
         // 3.5 RESTORED METRONOME & NATIVE SF2 PARSER
@@ -6841,7 +7191,7 @@
             envelope.gain.exponentialRampToValueAtTime(0.001, time + 0.1);
 
             osc.connect(envelope);
-            envelope.connect(masterGainNode);
+            envelope.connect(metroBus || masterGainNode);
 
             osc.start(time);
             osc.stop(time + 0.1);
@@ -7178,7 +7528,7 @@
             if (activeNodes[elementId]) return;
             // playNote is wrapped by the recorder below, so this is captured automatically —
             // no explicit recordEvent here (it used to double-record every MIDI note).
-            playNote(offset, octave, elementId);
+            playNote(offset, octave, elementId, undefined, undefined, (velocity || 100) / 127);   // MIDI carries the strike  [Lynie]
             // Also light up the on-screen key if visible in the current view
             lightCorrespondingKey(offset, octave, true);
         }
@@ -7213,9 +7563,9 @@
             const cmd = status & 0xf0;
             if (cmd === 0x90 && velocity > 0) midiNoteOn(note, velocity);
             else if (cmd === 0x80 || (cmd === 0x90 && velocity === 0)) midiNoteOff(note);
-            else if (cmd === 0xb0 && note === 64) { // CC64 = sustain pedal
-                isSustainEnabled = velocity >= 64;
-                if (sustainToggle) sustainToggle.checked = isSustainEnabled; // keep UI in sync
+            else if (cmd === 0xb0 && note === 64) { // CC64 = sustain pedal  [Lynie]
+                sustainPedalHeld = velocity >= 64;
+                reflectSustain();
             }
         }
 
@@ -7232,13 +7582,16 @@
             }
         }
 
+        let midiAccessRef = null;
         function attachMidiListeners(access) {
+            midiAccessRef = access;
             const names = [];
             for (const input of access.inputs.values()) {
                 input.onmidimessage = handleMidiMessage;
                 names.push(input.name || 'MIDI device');
             }
             updateMidiIndicator(names);
+            if (typeof refreshMidiOutputs === 'function') refreshMidiOutputs();
         }
 
         if (navigator.requestMIDIAccess) {
@@ -7282,12 +7635,17 @@
             }
         } catch(e) {}
 
-        function recordEvent(type, offset, octave, elementId) {
+        // A take must sound like it did when you played it, so every note keeps
+        // its own instrument and velocity rather than borrowing whatever happens
+        // to be selected at playback time.  [Lynie]
+        function recordEvent(type, offset, octave, elementId, velocity) {
             if (!isRecording) return;
-            recordedEvents.push({
-                t: performance.now() - recordStartTime,
-                type, offset, octave, elementId
-            });
+            const ev = { t: performance.now() - recordStartTime, type, offset, octave, elementId };
+            if (type === 'down') {
+                ev.i = synthSelect.value;
+                ev.v = (typeof velocity === 'number' && isFinite(velocity)) ? velocity : keyboardVelocity();
+            }
+            recordedEvents.push(ev);
         }
 
         function startRecording() {
@@ -7335,7 +7693,7 @@
                     if (!isPlayingBack) return;
                     if (ev.type === 'down') {
                         // Use a synthetic element id so playback doesn't collide with live input
-                        playNote(ev.offset, ev.octave, 'pb-' + ev.elementId);
+                        playNote(ev.offset, ev.octave, 'pb-' + ev.elementId, ev.i || undefined, undefined, ev.v);
                         lightCorrespondingKey(ev.offset, ev.octave, true);
                     } else {
                         stopNote('pb-' + ev.elementId);
@@ -7390,15 +7748,17 @@
         // We wrap the originals — monkey-patch style — to avoid touching the core audio code.
         const _origPlayNote = playNote;
         const _origStopNote = stopNote;
-        playNote = function(offset, octave, elementId, instrumentOverride, outBus) {
-            _origPlayNote(offset, octave, elementId, instrumentOverride, outBus);
-            if (isRecording && !elementId.startsWith('pb-')) {
-                recordEvent('down', offset, octave, elementId);
+        playNote = function(offset, octave, elementId, instrumentOverride, outBus, velocity) {
+            _origPlayNote(offset, octave, elementId, instrumentOverride, outBus, velocity);
+            // Playback and takes call the core directly, so a take can never be
+            // re-recorded into the take that is playing it.
+            if (isRecording && !elementId.startsWith('pb-') && !elementId.startsWith('tk-')) {
+                recordEvent('down', offset, octave, elementId, velocity);
             }
         };
         stopNote = function(elementId) {
             // Find what note this elementId represented at record-time (we stored offset+octave at down)
-            if (isRecording && !elementId.startsWith('pb-')) {
+            if (isRecording && !elementId.startsWith('pb-') && !elementId.startsWith('tk-')) {
                 const lastDown = [...recordedEvents].reverse().find(
                     e => e.type === 'down' && e.elementId === elementId
                 );
@@ -8297,14 +8657,17 @@
         // Remote notes go through the CORE playNote, bypassing the recorder and
         // broadcast wrappers — so they're never re-sent nor recorded as yours.
         const JAM_MAX_VOICES = 24;   // per-peer flood cap  [Lynie]
-        function jamRemoteOn(p, midi) {
+        function jamRemoteOn(p, midi, v) {
             if (!p.active.has(midi) && p.active.size >= JAM_MAX_VOICES) return;
             initAudio();
             ensurePeerBus(p);
             const offset = ((midi % 12) + 12) % 12, octave = Math.floor(midi / 12) - 1;
             const id = 'net_' + p.id + '_' + midi;
+            // Trust nothing off the wire: a velocity outside 0..1 is dropped and
+            // the note simply plays at full strength.
+            const vel = (typeof v === 'number' && isFinite(v) && v > 0 && v <= 1) ? v : undefined;
             try { _origStopNote(id); } catch (e) {}
-            _origPlayNote(offset, octave, id, p.instrument, p.bus || undefined);
+            _origPlayNote(offset, octave, id, p.instrument, p.bus || undefined, vel);
             p.active.add(midi);
             const kid = midiToVisibleKeyId(midi);
             // Remember exactly which key we lit, so the note-off clears it even
@@ -8393,7 +8756,7 @@
             const p = ensurePeer(pid);
             if (d.t === 'sus') { p.sustain = !!d.s; return; }
             if (!Number.isInteger(d.n) || d.n < 0 || d.n > 127) return;   // reject junk pitches  [Lynie]
-            if (d.t === 'on') jamRemoteOn(p, d.n);
+            if (d.t === 'on') jamRemoteOn(p, d.n, d.v);
             else if (d.t === 'off') jamRemoteOff(p, d.n);
         }
         async function joinJam() {
@@ -8534,6 +8897,8 @@
         // --- The drawer, same sliding pattern as the Scribe ---
         function setJamOpen(open) {
             isJamOpen = open;
+            if (open) jamPanel.classList.remove('hidden');
+            else setTimeout(() => { if (!isJamOpen) jamPanel.classList.add('hidden'); }, 450);   // after the slide
             jamPanel.classList.toggle('is-open', open);
             btnToggleJam.classList.toggle('active', open);
             btnToggleJam.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -8560,13 +8925,16 @@
         // Wrapped AFTER the recorder's wrapper. Remote notes call the core
         // directly, so they are never re-broadcast or recorded.  [Lynie]
         const _netPlay = playNote, _netStop = stopNote;
-        playNote = function (offset, octave, elementId, instrumentOverride, outBus) {
-            _netPlay(offset, octave, elementId, instrumentOverride, outBus);
+        playNote = function (offset, octave, elementId, instrumentOverride, outBus, velocity) {
+            _netPlay(offset, octave, elementId, instrumentOverride, outBus, velocity);
             if (!isLocalUserId(elementId)) return;
             const midi = 12 * (octave + 1) + offset;
             jamLocalNotes.set(elementId, midi);
             if (jam.active && jam.sendNote) {
-                try { jam.sendNote({ t: 'on', n: midi }); } catch (e) {}
+                // Send how hard we struck it, so the others hear the dynamics
+                // and not a wall of forte.  [Lynie]
+                const v = (typeof velocity === 'number' && isFinite(velocity)) ? velocity : keyboardVelocity();
+                try { jam.sendNote({ t: 'on', n: midi, v: Math.max(0.05, Math.min(1, v)) }); } catch (e) {}
             }
         };
         stopNote = function (elementId) {
@@ -8633,6 +9001,12 @@
                     box.classList.remove('hidden');
                     box.title = n === 1 ? 'You are the only one here right now'
                                         : n + ' people have this open right now';
+                }, (err) => {
+                    // The one failure that looks like "nothing happened": the
+                    // database rules refuse the read. Say so plainly.
+                    box.classList.add('hidden');
+                    console.warn('[presence] cannot read /connections:', err && err.message,
+                        '\nFix: Firebase console \u2192 Realtime Database \u2192 Rules, allow read on "connections" for auth != null, and enable Authentication \u2192 Anonymous.');
                 });
             } catch (e) {
                 // Blocked by an extension, offline, or rules not set: say nothing.
@@ -8656,6 +9030,517 @@
         //     "$other": { ".read": false, ".write": false }
         //   }
         // }
+
+        // ==========================================
+        // 3.7 SCALE GUIDE — which keys belong  [Lynie]
+        // ==========================================
+        // Marks every key of the chosen scale with a dot, the root brighter.
+        // Pure decoration over the keys: nothing is blocked, nothing is forced.
+        const SCALES = {
+            major:      [0, 2, 4, 5, 7, 9, 11],
+            minor:      [0, 2, 3, 5, 7, 8, 10],
+            harmonic:   [0, 2, 3, 5, 7, 8, 11],
+            melodic:    [0, 2, 3, 5, 7, 9, 11],
+            pentaMajor: [0, 2, 4, 7, 9],
+            pentaMinor: [0, 3, 5, 7, 10],
+            blues:      [0, 3, 5, 6, 7, 10],
+            dorian:     [0, 2, 3, 5, 7, 9, 10],
+            mixolydian: [0, 2, 4, 5, 7, 9, 10],
+            chromatic:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+        };
+        const scaleRootSel = document.getElementById('scale-root');
+        const scaleTypeSel = document.getElementById('scale-type');
+
+        function applyScaleHighlight() {
+            document.querySelectorAll('.in-scale, .in-scale-root')
+                .forEach(el => el.classList.remove('in-scale', 'in-scale-root'));
+            const type = scaleTypeSel.value;
+            if (type === 'off' || !SCALES[type]) return;
+            const root = parseInt(scaleRootSel.value, 10) || 0;
+            const set = new Set(SCALES[type].map(i => (root + i) % 12));
+            const mark = (el, pc) => {
+                if (!el || !set.has(pc)) return;
+                el.classList.add('in-scale');
+                if (pc === root) el.classList.add('in-scale-root');
+            };
+            // Both keyboards, straight off the ids the keys already carry
+            notes.forEach((n, i) => mark(document.getElementById('gw2-key-' + i), ((n.offset % 12) + 12) % 12));
+            document.querySelectorAll('[id^="htp-key-"]').forEach(el => {
+                const off = parseInt(el.id.split('-')[3], 10);
+                if (!isNaN(off)) mark(el, ((off % 12) + 12) % 12);
+            });
+            try { localStorage.setItem('saryaScale', JSON.stringify({ root, type })); } catch (e) {}
+        }
+        try {
+            const sv = JSON.parse(localStorage.getItem('saryaScale') || 'null');
+            if (sv && SCALES[sv.type]) { scaleRootSel.value = String(sv.root || 0); scaleTypeSel.value = sv.type; }
+        } catch (e) {}
+        scaleRootSel.addEventListener('change', applyScaleHighlight);
+        scaleTypeSel.addEventListener('change', applyScaleHighlight);
+        applyScaleHighlight();
+
+        // ==========================================
+        // 3.8 MIDI OUT — play something else with these keys  [Lynie]
+        // ==========================================
+        const midiOutToggle = document.getElementById('midi-out-toggle');
+        const midiOutSelect = document.getElementById('midi-out-port');
+        const midiOutItem = document.getElementById('midi-out-item');
+        let midiOutEnabled = false;
+        let midiOutPort = null;
+        let midiOutSavedPortId = '';
+        try {
+            const saved = JSON.parse(localStorage.getItem('saryaMidiOut') || 'null');
+            if (saved) { midiOutEnabled = !!saved.enabled; midiOutSavedPortId = saved.portId || ''; }
+        } catch (e) {}
+        midiOutToggle.checked = midiOutEnabled;
+        const saveMidiOut = () => {
+            try { localStorage.setItem('saryaMidiOut', JSON.stringify({ enabled: midiOutEnabled, portId: midiOutSelect.value })); } catch (e) {}
+        };
+
+        function refreshMidiOutputs() {
+            const prev = midiOutSelect.value || midiOutSavedPortId;
+            const outs = midiAccessRef ? Array.from(midiAccessRef.outputs.values()) : [];
+            midiOutSelect.innerHTML = '';
+            if (!outs.length) {
+                const o = document.createElement('option');
+                o.value = ''; o.textContent = 'No MIDI outputs';
+                midiOutSelect.appendChild(o);
+            } else {
+                outs.forEach(out => {
+                    const o = document.createElement('option');
+                    o.value = out.id; o.textContent = out.name || 'Output';
+                    midiOutSelect.appendChild(o);
+                });
+                if (prev && outs.some(o => o.id === prev)) midiOutSelect.value = prev;
+            }
+            // Greys out while there's nothing to send to, and comes back on its
+            // own the moment a port appears (a DAW opening, say).  [Lynie]
+            midiOutToggle.disabled = !outs.length;
+            midiOutItem.classList.toggle('is-disabled', !outs.length);
+            applyMidiOutSelection();
+        }
+        function applyMidiOutSelection() {
+            const has = !!(midiAccessRef && midiAccessRef.outputs && midiAccessRef.outputs.size);
+            midiOutSelect.disabled = !midiOutEnabled || !has;
+            const prevPort = midiOutPort;
+            midiOutPort = (midiAccessRef && midiOutEnabled && midiOutSelect.value)
+                ? (midiAccessRef.outputs.get(midiOutSelect.value) || null) : null;
+            if (midiOutPort !== prevPort && midiOutPort && sustainOn()) midiOutSendSustain(true);
+        }
+        function midiOutSend(midi, vel, on) {
+            if (!midiOutEnabled || !midiOutPort) return;
+            const v = Math.max(1, Math.min(127, Math.round((vel || 1) * 127)));
+            try { midiOutPort.send([on ? 0x90 : 0x80, midi & 0x7f, on ? v : 0]); } catch (e) {}
+        }
+        function midiOutSendSustain(on) {
+            if (!midiOutEnabled || !midiOutPort) return;
+            try { midiOutPort.send([0xB0, 64, on ? 127 : 0]); } catch (e) {}
+        }
+        function allNotesOffMidiOut() {
+            if (!midiOutPort) return;
+            try {
+                for (let ch = 0; ch < 16; ch++) {
+                    midiOutPort.send([0xB0 | ch, 123, 0]);   // all notes off
+                    midiOutPort.send([0xB0 | ch, 64, 0]);    // and lift the pedal
+                }
+            } catch (e) {}
+        }
+        midiOutToggle.addEventListener('change', (e) => {
+            midiOutEnabled = e.target.checked;
+            if (!midiOutEnabled) allNotesOffMidiOut();
+            applyMidiOutSelection();
+            saveMidiOut();
+            showMessage(midiOutEnabled ? 'MIDI Out on.' : 'MIDI Out off.');
+        });
+        midiOutSelect.addEventListener('change', () => {
+            allNotesOffMidiOut();   // never strand a note on the port we're leaving
+            applyMidiOutSelection();
+            saveMidiOut();
+        });
+        window.addEventListener('beforeunload', allNotesOffMidiOut);
+        refreshMidiOutputs();
+
+        // Mirror the pedal out as CC64, and send our notes. Wrapped last, so
+        // remote and playback notes (which call the core directly) never echo out.
+        const _prevReflectSustain = reflectSustain;
+        reflectSustain = function () {
+            _prevReflectSustain();
+            const on = sustainOn();
+            if (on !== midiOutSendSustain._last) { midiOutSendSustain(on); midiOutSendSustain._last = on; }
+        };
+        const _moPlay = playNote, _moStop = stopNote;
+        playNote = function (offset, octave, elementId, instrumentOverride, outBus, velocity) {
+            _moPlay(offset, octave, elementId, instrumentOverride, outBus, velocity);
+            if (!isLocalUserId(elementId)) return;
+            const v = (typeof velocity === 'number' && isFinite(velocity)) ? velocity : keyboardVelocity();
+            midiOutSend(12 * (octave + 1) + offset, v, true);
+        };
+        stopNote = function (elementId) {
+            if (isLocalUserId(elementId)) {
+                const midi = jamLocalNotes.get(elementId);
+                if (midi != null) midiOutSend(midi, 0, false);
+            }
+            _moStop(elementId);
+        };
+
+        // ==========================================
+        // 3.9 SLIDER BUBBLE — what am I actually setting?  [Lynie]
+        // ==========================================
+        const sliderBubble = document.createElement('div');
+        sliderBubble.id = 'slider-bubble';
+        document.body.appendChild(sliderBubble);
+        function sliderText(el) {
+            const v = +el.value;
+            if (el.id === 'pin-speed') return v.toFixed(2) + '\u00d7';
+            if (+el.max <= 1.25) return Math.round(v * 100) + '%';
+            return String(Math.round(v));
+        }
+        function showSliderBubble(el) {
+            const r = el.getBoundingClientRect();
+            const min = +el.min || 0, max = (+el.max || 100);
+            const pct = max === min ? 0 : (+el.value - min) / (max - min);
+            sliderBubble.textContent = sliderText(el);
+            sliderBubble.style.left = (r.left + 8 + pct * (r.width - 16)) + 'px';
+            sliderBubble.style.top = r.top + 'px';
+            sliderBubble.classList.add('on');
+        }
+        const isRange = (t) => t && t.tagName === 'INPUT' && t.type === 'range';
+        document.addEventListener('pointerdown', (e) => { if (isRange(e.target)) showSliderBubble(e.target); }, true);
+        document.addEventListener('input', (e) => { if (isRange(e.target)) showSliderBubble(e.target); }, true);
+        window.addEventListener('pointerup', () => sliderBubble.classList.remove('on'));
+        window.addEventListener('pointercancel', () => sliderBubble.classList.remove('on'));
+        document.addEventListener('focusout', (e) => { if (isRange(e.target)) sliderBubble.classList.remove('on'); }, true);
+
+        // ==========================================
+        // 3.95 THE CONSOLE FOLDS AWAY
+        // ==========================================
+        // Six groups is a lot to look at when you only wanted a piano. Each one
+        // folds to its label; a closed group that is still doing something keeps
+        // a lit dot, so nothing is ever hidden and forgotten.
+        const DOCK_OPEN_DEFAULT = { sound: true, scale: false, ambience: false, tempo: false, performance: true, recorder: true };
+        let dockOpen = { ...DOCK_OPEN_DEFAULT };
+        try {
+            const saved = JSON.parse(localStorage.getItem('saryaDock') || 'null');
+            if (saved) Object.keys(dockOpen).forEach(k => { if (typeof saved[k] === 'boolean') dockOpen[k] = saved[k]; });
+        } catch (e) {}
+
+        function applyDockGroups() {
+            document.querySelectorAll('.dock-group-label').forEach(btn => {
+                const g = btn.dataset.group;
+                const open = dockOpen[g] !== false;
+                btn.closest('.dock-group').classList.toggle('is-closed', !open);
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+            updateDockDots();
+        }
+        function updateDockDots() {
+            const busy = {
+                sound: sf2Fonts.length > 0,
+                scale: scaleTypeSel.value !== 'off',
+                ambience: ambienceKind !== 'off',
+                tempo: metronomeToggle.checked,
+                performance: sustainLocked,
+                recorder: typeof isRecording !== 'undefined' && isRecording
+            };
+            document.querySelectorAll('.dock-group-label').forEach(btn => {
+                const dot = btn.querySelector('.dock-dot');
+                if (dot) dot.classList.toggle('on', !!busy[btn.dataset.group]);
+            });
+        }
+        document.querySelectorAll('.dock-group-label').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const g = btn.dataset.group;
+                dockOpen[g] = dockOpen[g] === false;
+                try { localStorage.setItem('saryaDock', JSON.stringify(dockOpen)); } catch (e) {}
+                applyDockGroups();
+            });
+        });
+        // Anything that changes a group's "busy" state repaints the dots
+        [scaleTypeSel, ambienceSelect, metronomeToggle].forEach(el => el.addEventListener('change', updateDockDots));
+        sustainLockBtn.addEventListener('click', () => setTimeout(updateDockDots, 0));
+        document.getElementById('btn-record').addEventListener('click', () => setTimeout(updateDockDots, 0));
+        applyDockGroups();
+
+        // ==========================================
+        // 9. TAKES — the looper  [Lynie]
+        // ==========================================
+        // Every take is a little tape: its own notes (each remembering the
+        // instrument and velocity that played it), its own gain bus, and its own
+        // clock. Stack them, mute them, transpose them, loop them together.
+        const takesPanel = document.getElementById('takes-panel');
+        const btnToggleTakes = document.getElementById('btn-toggle-takes');
+        const takesBadge = document.getElementById('takes-badge');
+        const takesListEl = document.getElementById('takes-list');
+        let takes = [];
+        let isTakesOpen = false;
+        let takeRaf = null;
+
+        try {
+            const saved = JSON.parse(localStorage.getItem('saryaTakes') || '[]');
+            if (Array.isArray(saved)) takes = saved.map(t => ({ ...t, playing: false, startedAt: 0, timers: [], bus: null }));
+        } catch (e) {}
+        function saveTakes() {
+            try {
+                localStorage.setItem('saryaTakes', JSON.stringify(takes.map(t => ({
+                    id: t.id, name: t.name, events: t.events, dur: t.dur, vol: t.vol,
+                    muted: t.muted, solo: t.solo, loop: t.loop, transpose: t.transpose, instrument: t.instrument
+                }))));
+            } catch (e) { showMessage('Could not save takes — storage is full.'); }
+        }
+        const fmtTime = (ms) => {
+            const s = Math.max(0, Math.round(ms / 1000));
+            return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+        };
+        const takeById = (id) => takes.find(t => t.id === id);
+
+        function newTake(events, name) {
+            const dur = events.length ? events[events.length - 1].t + 250 : 0;
+            return {
+                id: 'tk' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
+                name: name || ('Take ' + (takes.length + 1)),
+                events: JSON.parse(JSON.stringify(events)),
+                dur, vol: 1, muted: false, solo: false, loop: false, transpose: 0, instrument: '',
+                playing: false, startedAt: 0, timers: [], bus: null
+            };
+        }
+
+        // ── Audio ──
+        function takeBus(t) {
+            if (!t.bus && audioCtx && masterGainNode) {
+                t.bus = audioCtx.createGain();
+                t.bus.connect(masterGainNode);
+            }
+            if (t.bus) t.bus.gain.value = takeAudible(t) ? t.vol : 0;
+            return t.bus;
+        }
+        // Solo is exclusive: the moment anything is soloed, everything else drops.
+        const anySolo = () => takes.some(t => t.solo);
+        const takeAudible = (t) => !t.muted && (!anySolo() || t.solo);
+        function applyTakeGains() {
+            takes.forEach(t => {
+                if (!t.bus) return;
+                const target = takeAudible(t) ? t.vol : 0;
+                if (audioCtx) t.bus.gain.setTargetAtTime(target, audioCtx.currentTime, 0.02);
+                else t.bus.gain.value = target;
+            });
+        }
+
+        function stopTake(t, silent) {
+            t.timers.forEach(clearTimeout);
+            t.timers = [];
+            // Release anything this take left ringing, whatever the key
+            t.events.forEach(ev => { try { _origStopNote('tk-' + t.id + '-' + ev.elementId); } catch (e) {} });
+            t.playing = false;
+            if (!silent) renderTakes();
+            if (!takes.some(x => x.playing) && takeRaf) { cancelAnimationFrame(takeRaf); takeRaf = null; }
+        }
+        function playTake(t, fromMs) {
+            stopTake(t, true);
+            if (!t.events.length) return;
+            initAudio();
+            takeBus(t);
+            const from = Math.max(0, fromMs || 0);
+            t.playing = true;
+            t.startedAt = performance.now() - from;
+            t.events.forEach(ev => {
+                const at = ev.t - from;
+                if (at < -1) return;   // already gone by the time we start
+                t.timers.push(setTimeout(() => {
+                    if (!t.playing) return;
+                    const id = 'tk-' + t.id + '-' + ev.elementId;
+                    // Transpose in semitones, then split back into octave + offset
+                    const midi = 12 * (ev.octave + 1) + ev.offset + (t.transpose || 0);
+                    const oct = Math.floor(midi / 12) - 1, off = ((midi % 12) + 12) % 12;
+                    if (ev.type === 'down') {
+                        _origPlayNote(off, oct, id, t.instrument || ev.i || undefined, t.bus || undefined, ev.v);
+                    } else {
+                        _origStopNote(id);
+                    }
+                }, Math.max(0, at)));
+            });
+            t.timers.push(setTimeout(() => {
+                if (!t.playing) return;
+                if (t.loop) playTake(t, 0);
+                else { stopTake(t); }
+            }, Math.max(10, t.dur - from)));
+            if (!takeRaf) takeRaf = requestAnimationFrame(tickTakes);
+            renderTakes();
+        }
+        // One rAF drives every playhead, and only while something is playing.
+        function tickTakes() {
+            takeRaf = null;
+            let any = false;
+            takes.forEach(t => {
+                if (!t.playing) return;
+                any = true;
+                const el = takesListEl.querySelector('[data-take="' + t.id + '"] .take-head-fill');
+                if (el && t.dur) {
+                    const pct = Math.min(100, ((performance.now() - t.startedAt) / t.dur) * 100);
+                    el.style.width = pct + '%';
+                }
+            });
+            if (any) takeRaf = requestAnimationFrame(tickTakes);
+        }
+        const stopAllTakes = () => takes.forEach(t => stopTake(t, true)) || renderTakes();
+
+        // ── The list ──
+        function renderTakes() {
+            takesBadge.textContent = takes.length;
+            takesBadge.classList.toggle('hidden', takes.length === 0);
+            if (!takes.length) {
+                takesListEl.innerHTML = '<p class="takes-empty">Record something, then press <b>Keep recording</b> and it lands here.</p>';
+                return;
+            }
+            const instrOptions = synthSelect.innerHTML;
+            takesListEl.innerHTML = takes.map(t => `
+                <div class="take" data-take="${escapeHtml(t.id)}">
+                    <div class="take-row">
+                        <button class="take-play btn btn-icon" title="${t.playing ? 'Stop' : 'Play'}">${t.playing ? '&#9632;' : '&#9654;'}</button>
+                        <input class="take-name input" value="${escapeHtml(t.name)}" maxlength="40" aria-label="Take name">
+                        <span class="take-dur">${fmtTime(t.dur)}</span>
+                        <button class="take-more btn btn-ghost btn-icon" title="More" aria-expanded="false">&#8943;</button>
+                    </div>
+                    <div class="take-head" title="Click to skip to a point"><div class="take-head-fill"></div></div>
+                    <div class="take-extra hidden">
+                        <div class="take-extra-row">
+                            <button class="take-mute btn btn-ghost${t.muted ? ' active' : ''}" title="Mute">M</button>
+                            <button class="take-solo btn btn-ghost${t.solo ? ' active' : ''}" title="Solo">S</button>
+                            <button class="take-loop btn btn-ghost${t.loop ? ' active' : ''}" title="Loop">&#8635;</button>
+                            <input class="take-vol slider" type="range" min="0" max="1" step="0.01" value="${t.vol}" title="Volume" aria-label="Take volume">
+                        </div>
+                        <div class="take-extra-row">
+                            <span class="take-lbl">Shift</span>
+                            <button class="take-tdown btn btn-ghost" title="Down a semitone">&minus;</button>
+                            <span class="take-tval">${t.transpose > 0 ? '+' : ''}${t.transpose}</span>
+                            <button class="take-tup btn btn-ghost" title="Up a semitone">+</button>
+                            <select class="take-instr input" title="Play this take with…" aria-label="Take instrument">
+                                <option value="">As recorded</option>
+                            </select>
+                        </div>
+                        <div class="take-extra-row">
+                            <button class="take-dupe btn btn-ghost" type="button">Duplicate</button>
+                            <button class="take-del btn btn-ghost" type="button">Delete</button>
+                        </div>
+                    </div>
+                </div>`).join('');
+            // Fill the instrument menus from the live list, keeping each choice
+            takesListEl.querySelectorAll('.take').forEach(el => {
+                const t = takeById(el.dataset.take);
+                const sel = el.querySelector('.take-instr');
+                sel.insertAdjacentHTML('beforeend', instrOptions);
+                if (t.instrument && Array.from(sel.options).some(o => o.value === t.instrument)) sel.value = t.instrument;
+                else { t.instrument = ''; sel.value = ''; }
+                if (t.playing) el.classList.add('is-playing');
+            });
+        }
+
+        takesListEl.addEventListener('click', (e) => {
+            const wrap = e.target.closest('.take'); if (!wrap) return;
+            const t = takeById(wrap.dataset.take); if (!t) return;
+            const hit = (c) => e.target.closest(c);
+            if (hit('.take-play')) { t.playing ? stopTake(t) : playTake(t, 0); return; }
+            if (hit('.take-more')) {
+                const x = wrap.querySelector('.take-extra');
+                x.classList.toggle('hidden');
+                hit('.take-more').setAttribute('aria-expanded', x.classList.contains('hidden') ? 'false' : 'true');
+                return;
+            }
+            if (hit('.take-mute')) { t.muted = !t.muted; applyTakeGains(); saveTakes(); renderTakes(); return; }
+            if (hit('.take-solo')) { t.solo = !t.solo; applyTakeGains(); saveTakes(); renderTakes(); return; }
+            if (hit('.take-loop')) { t.loop = !t.loop; saveTakes(); renderTakes(); return; }
+            if (hit('.take-tdown')) { t.transpose = Math.max(-24, t.transpose - 1); saveTakes(); renderTakes(); return; }
+            if (hit('.take-tup')) { t.transpose = Math.min(24, t.transpose + 1); saveTakes(); renderTakes(); return; }
+            if (hit('.take-dupe')) {
+                const copy = newTake(t.events, t.name + ' copy');
+                copy.vol = t.vol; copy.transpose = t.transpose; copy.instrument = t.instrument; copy.loop = t.loop;
+                takes.push(copy); saveTakes(); renderTakes();
+                showMessage('\u201c' + t.name + '\u201d duplicated.');
+                return;
+            }
+            if (hit('.take-del')) {
+                stopTake(t, true);
+                takes = takes.filter(x => x.id !== t.id);
+                saveTakes(); renderTakes();
+                showMessage('\u201c' + t.name + '\u201d deleted.');
+                return;
+            }
+            const head = hit('.take-head');
+            if (head) {   // click the bar to skip
+                const r = head.getBoundingClientRect();
+                playTake(t, ((e.clientX - r.left) / r.width) * t.dur);
+            }
+        });
+        takesListEl.addEventListener('input', (e) => {
+            const wrap = e.target.closest('.take'); if (!wrap) return;
+            const t = takeById(wrap.dataset.take); if (!t) return;
+            if (e.target.classList.contains('take-vol')) { t.vol = +e.target.value; applyTakeGains(); saveTakes(); }
+            if (e.target.classList.contains('take-name')) { t.name = e.target.value.slice(0, 40) || 'Take'; saveTakes(); }
+        });
+        takesListEl.addEventListener('change', (e) => {
+            const wrap = e.target.closest('.take'); if (!wrap) return;
+            const t = takeById(wrap.dataset.take); if (!t) return;
+            if (e.target.classList.contains('take-instr')) { t.instrument = e.target.value; saveTakes(); }
+        });
+
+        document.getElementById('btn-take-save').addEventListener('click', () => {
+            if (isRecording) stopRecording();
+            if (!recordedEvents.length) { showMessage('Nothing in the Recorder yet — press Record first.'); return; }
+            takes.push(newTake(recordedEvents));
+            saveTakes(); renderTakes();
+            showMessage('Kept as \u201c' + takes[takes.length - 1].name + '\u201d.');
+        });
+        document.getElementById('btn-takes-playall').addEventListener('click', () => {
+            if (!takes.length) return;
+            stopPlayback();
+            takes.forEach(t => { if (takeAudible(t)) playTake(t, 0); });
+        });
+        document.getElementById('btn-takes-stopall').addEventListener('click', stopAllTakes);
+        document.getElementById('btn-takes-merge').addEventListener('click', () => {
+            if (takes.length < 2) { showMessage('Two takes at least, to merge.'); return; }
+            const merged = [];
+            takes.forEach(t => {
+                if (t.muted) return;   // a muted take is not part of the mix
+                t.events.forEach(ev => {
+                    const midi = 12 * (ev.octave + 1) + ev.offset + (t.transpose || 0);
+                    merged.push({
+                        ...ev,
+                        octave: Math.floor(midi / 12) - 1,
+                        offset: ((midi % 12) + 12) % 12,
+                        elementId: t.id + '_' + ev.elementId,   // keep each take's notes distinct
+                        i: t.instrument || ev.i,
+                        v: (typeof ev.v === 'number' ? ev.v : 1) * (t.vol != null ? t.vol : 1)
+                    });
+                });
+            });
+            if (!merged.length) { showMessage('Nothing audible to merge.'); return; }
+            merged.sort((a, b) => a.t - b.t);
+            takes.push(newTake(merged, 'Merged'));
+            saveTakes(); renderTakes();
+            showMessage('Merged into one take.');
+        });
+
+        // ── The drawer ──
+        function setTakesOpen(open) {
+            isTakesOpen = open;
+            if (open) takesPanel.classList.remove('hidden');
+            else setTimeout(() => { if (!isTakesOpen) takesPanel.classList.add('hidden'); }, 450);
+            takesPanel.classList.toggle('is-open', open);
+            btnToggleTakes.classList.toggle('active', open);
+            btnToggleTakes.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+        btnToggleTakes.addEventListener('click', () => {
+            const next = !isTakesOpen;
+            if (next) {                                   // one panel per side
+                if (isScribeOpen) btnToggleScribe.click();
+                if (isJamOpen) setJamOpen(false);
+            }
+            setTakesOpen(next);
+            nudgePanel(takesPanel);
+        });
+        document.getElementById('btn-close-takes').addEventListener('click', () => setTakesOpen(false));
+        [btnToggleScribe, btnToggleJam].forEach(b => b.addEventListener('click', () => { if (isTakesOpen) setTakesOpen(false); }));
+        window.addEventListener('beforeunload', () => takes.forEach(t => stopTake(t, true)));
+        renderTakes();
 
     </script>
 
