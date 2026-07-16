@@ -598,6 +598,22 @@
             font-weight: 600;
         }
         .font-mono { font-family: var(--font-mono); }
+        .online-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-left: 10px;
+            padding-left: 10px;
+            border-left: 1px solid var(--stroke-soft);
+            color: var(--text-secondary);
+        }
+        .online-count.hidden { display: none; }
+        .online-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--good);
+            box-shadow: 0 0 6px var(--good);
+        }
 
         /* ==============================================================
            APP FRAME — rail | main
@@ -2922,7 +2938,7 @@
 
         <!-- MASTHEAD — the theme-reactive signature -->
         <header class="masthead">
-            <span class="eyebrow">A conservatory for Tyria &amp; Heartopia</span>
+            <span class="eyebrow">A conservatory for Tyria &amp; Heartopia<span id="online-count" class="online-count hidden"><span class="online-dot"></span><span id="online-n">1</span> online</span></span>
             <div class="masthead-row">
                 <div class="sconce" aria-hidden="true"><div class="flame"></div><div class="candle"></div><div class="sconce-cup"></div></div>
                 <h1 class="masthead-title"><span class="tl" style="--i:0">S</span><span class="tl" style="--i:1">a</span><span class="tl" style="--i:2">r</span><span class="tl" style="--i:3">y</span><span class="tl" style="--i:4">a</span><span class="tl" style="--i:5">'</span><span class="tl" style="--i:6">s</span> <span class="tl" style="--i:7">M</span><span class="tl" style="--i:8">u</span><span class="tl" style="--i:9">s</span><span class="tl" style="--i:10">i</span><span class="tl" style="--i:11">c</span> <span class="tl" style="--i:12">T</span><span class="tl" style="--i:13">h</span><span class="tl" style="--i:14">i</span><span class="tl" style="--i:15">n</span><span class="tl" style="--i:16">g</span><span class="tl" style="--i:17">y</span></h1>
@@ -8567,6 +8583,79 @@
         jamSetChatEnabled(false);
         renderPeers();
         jamUpdateCount();
+
+        // ==========================================
+        // 8. WHO ELSE IS HERE — live count (Firebase)
+        // ==========================================
+        // This key is public on purpose: Firebase web config is an identifier,
+        // not a secret. What actually protects the database is its security
+        // rules — see the note at the bottom of this block.
+        const FIREBASE_CONFIG = {
+            apiKey: "AIzaSyBRPEdUNEbHXGAeQ5hY1seRZQZReJNT20o",
+            authDomain: "music-thingy-df109.firebaseapp.com",
+            projectId: "music-thingy-df109",
+            storageBucket: "music-thingy-df109.firebasestorage.app",
+            messagingSenderId: "22001103812",
+            appId: "1:22001103812:web:5d58d94f8097f635c7aa91",
+            databaseURL: "https://music-thingy-df109-default-rtdb.europe-west1.firebasedatabase.app"
+        };
+
+        async function startPresence() {
+            const box = document.getElementById('online-count');
+            const num = document.getElementById('online-n');
+            if (!box || !FIREBASE_CONFIG.databaseURL) return;
+            try {
+                const [appMod, authMod, dbMod] = await Promise.all([
+                    import('https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js'),
+                    import('https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js'),
+                    import('https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js')
+                ]);
+                const app = appMod.initializeApp(FIREBASE_CONFIG);
+                const db = dbMod.getDatabase(app);
+                const cred = await authMod.signInAnonymously(authMod.getAuth(app));
+                const uid = cred.user.uid;
+
+                // Keyed by user, not by tab: three tabs of yours are still one
+                // player, and the rules can then stop anyone editing anyone
+                // else's entry (or inflating the count).
+                const mine = dbMod.ref(db, 'connections/' + uid);
+                dbMod.onValue(dbMod.ref(db, '.info/connected'), (snap) => {
+                    if (snap.val() !== true) return;   // fires again on every reconnect
+                    const conn = dbMod.push(mine);
+                    // Register the cleanup BEFORE claiming presence, so a crash
+                    // or a closed laptop still removes us.
+                    dbMod.onDisconnect(conn).remove().then(() => dbMod.set(conn, true));
+                });
+                dbMod.onValue(dbMod.ref(db, 'connections'), (snap) => {
+                    const n = snap.numChildren();
+                    if (!n) { box.classList.add('hidden'); return; }
+                    num.textContent = n;
+                    box.classList.remove('hidden');
+                    box.title = n === 1 ? 'You are the only one here right now'
+                                        : n + ' people have this open right now';
+                });
+            } catch (e) {
+                // Blocked by an extension, offline, or rules not set: say nothing.
+                box.classList.add('hidden');
+            }
+        }
+        // Never let the counter compete with the instrument for the first paint.
+        if ('requestIdleCallback' in window) requestIdleCallback(() => startPresence(), { timeout: 4000 });
+        else setTimeout(startPresence, 1500);
+
+        // ── Realtime Database rules this expects (paste into Firebase console):
+        // {
+        //   "rules": {
+        //     "connections": {
+        //       ".read": "auth != null",
+        //       "$uid": {
+        //         ".write": "auth.uid === $uid",
+        //         "$conn": { ".validate": "newData.isBoolean()" }
+        //       }
+        //     },
+        //     "$other": { ".read": false, ".write": false }
+        //   }
+        // }
 
     </script>
 
