@@ -8992,10 +8992,33 @@
                     const conn = dbMod.push(mine);
                     // Register the cleanup BEFORE claiming presence, so a crash
                     // or a closed laptop still removes us.
-                    dbMod.onDisconnect(conn).remove().then(() => dbMod.set(conn, true));
+                    dbMod.onDisconnect(conn).remove()
+                        .then(() => dbMod.set(conn, true))
+                        .catch((err) => {
+                            box.classList.add('hidden');
+                            console.warn('[presence] cannot claim a slot:', err && err.message,
+                                '\nThe database rules must allow this shape:\n' +
+                                '{ "rules": { "connections": { ".read": "auth != null",\n' +
+                                '    "$uid": { ".write": "auth != null && auth.uid === $uid",\n' +
+                                '      "$conn": { ".validate": "newData.isBoolean()" } } } } }');
+                        });
                 });
+                // If neither callback below has fired shortly after we claimed a
+                // slot, the read is being refused — that looks identical to
+                // "nothing happened", so name it.
+                let heard = false;
+                setTimeout(() => {
+                    if (heard) return;
+                    console.warn('[presence] no answer from /connections \u2014 the read is almost certainly denied.',
+                        '\nRules must include  "connections": { ".read": "auth != null", ... }  at THAT level,',
+                        '\nnot only inside "$uid".');
+                }, 6000);
                 dbMod.onValue(dbMod.ref(db, 'connections'), (snap) => {
-                    const n = snap.numChildren();
+                    heard = true;
+                    const n = (typeof snap.size === 'number')
+                        ? snap.size
+                        : (typeof snap.numChildren === 'function' ? snap.numChildren() : 0);
+                    console.info('[presence] online:', n);
                     if (!n) { box.classList.add('hidden'); return; }
                     num.textContent = n;
                     box.classList.remove('hidden');
@@ -9004,6 +9027,7 @@
                 }, (err) => {
                     // The one failure that looks like "nothing happened": the
                     // database rules refuse the read. Say so plainly.
+                    heard = true;
                     box.classList.add('hidden');
                     console.warn('[presence] cannot read /connections:', err && err.message,
                         '\nFix: Firebase console \u2192 Realtime Database \u2192 Rules, allow read on "connections" for auth != null, and enable Authentication \u2192 Anonymous.');
