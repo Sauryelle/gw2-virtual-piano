@@ -2186,6 +2186,30 @@
         #archive-panel.is-open { transform: translateX(0); }
 
         .archive-cards { display: flex; flex-direction: column; gap: 10px; }
+        .archive-card-link {
+            display: flex;
+            align-items: stretch;
+            flex: 1;
+            min-width: 0;
+            text-decoration: none;
+            color: inherit;
+        }
+        .archive-card-copy {
+            flex-shrink: 0;
+            width: 40px;
+            background: none;
+            border: none;
+            border-left: 1px solid var(--stroke-soft);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s, background 0.2s;
+        }
+        .archive-card-copy:hover { color: var(--text-acc); background: var(--wash); }
+        .archive-out { opacity: 0.5; margin-left: 6px; vertical-align: baseline; }
+        .archive-card:hover .archive-out { opacity: 1; color: var(--text-acc); }
         .archive-card {
             display: flex;
             align-items: stretch;
@@ -4833,32 +4857,32 @@
         document.getElementById('btn-close-archive').addEventListener('click', closeArchive);
         archiveScrim.addEventListener('click', closeArchive);
 
-        function openArchiveBook(book) {
-            songbookUrlInput.value = book.url;
-            loadSongbookUrl();
-            if (!isSongbookOpen) btnToggleSongbook.click();   // opens on your last tab…
-            btnLoadTomeDark.click();                          // …then switch to the Songbook
-            closeArchive();
-            showMessage('Opening ' + book.name + '\u2026');
-        }
-
         const archiveCards = document.getElementById('archive-cards');
         SONGBOOK_ARCHIVE.forEach(book => {
-            const card = document.createElement('button');
-            card.type = 'button';
+            const card = document.createElement('div');
             card.className = 'archive-card';
             const letter = String(book.name || '?').trim().charAt(0).toUpperCase() || '?';
             const safeImg = book.image ? String(book.image).replace(/"/g, '&quot;') : '';
+            const safeUrl = /^https?:\/\//i.test(String(book.url || '')) ? book.url : '';
             card.innerHTML =
-                '<span class="archive-card-img">'
+                '<a class="archive-card-link" href="' + escapeHtml(safeUrl) + '" target="_blank" rel="noopener noreferrer"'
+                + ' title="Open ' + escapeHtml(book.name || '') + ' in a new tab">'
+                + '<span class="archive-card-img">'
                 + '<span class="archive-monogram" aria-hidden="true">' + escapeHtml(letter) + '</span>'
                 + (safeImg ? '<img src="' + safeImg + '" alt="" onerror="this.remove()">' : '')
                 + '</span>'
                 + '<span class="archive-card-body">'
-                + '<span class="archive-card-name">' + escapeHtml(book.name || 'Untitled Tome') + '</span>'
+                + '<span class="archive-card-name">' + escapeHtml(book.name || 'Untitled Tome')
+                + '<svg class="archive-out" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>'
+                + '</span>'
                 + '<span class="archive-card-desc">' + escapeHtml(book.description || '') + '</span>'
-                + '</span>';
-            card.addEventListener('click', () => openArchiveBook(book));
+                + '</span></a>'
+                + '<button type="button" class="archive-card-copy" title="Copy link" aria-label="Copy link to ' + escapeHtml(book.name || '') + '">'
+                + '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+                + '</button>';
+            card.querySelector('.archive-card-copy').addEventListener('click', () => {
+                copyTextToClipboard(book.url, '\u201c' + book.name + '\u201d link copied.');
+            });
             archiveCards.appendChild(card);
         });
 
