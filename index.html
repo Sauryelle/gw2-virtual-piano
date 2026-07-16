@@ -524,14 +524,14 @@
             color: var(--text-primary);
             font-family: var(--font-body);
             font-weight: 400;
-            font-size: 15.5px;
+            font-size: 17px;
             line-height: 1.5;
             min-height: 100vh;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-        [data-density="compact"] body, html[data-density="compact"] { font-size: 14px; }
+        [data-density="compact"] body, html[data-density="compact"] { font-size: 15.5px; }
 
         body {
             user-select: none;
@@ -591,7 +591,7 @@
            ============================================================== */
         .eyebrow {
             font-family: var(--font-label);
-            font-size: 0.66rem;
+            font-size: 0.73rem;
             letter-spacing: var(--label-tracking);
             text-transform: uppercase;
             color: var(--text-muted);
@@ -688,7 +688,7 @@
         }
         .rail-btn.active .rail-label { color: var(--on-acc); }
         .rail-label {
-            font-size: 0.6rem;
+            font-size: 0.67rem;
             font-weight: 600;
             letter-spacing: 0.04em;
             color: var(--text-muted);
@@ -957,7 +957,7 @@
             background: var(--wash);
             color: var(--text-primary);
             font-family: var(--font-body);
-            font-size: 0.84rem;
+            font-size: 0.88rem;
             font-weight: 600;
             letter-spacing: 0.01em;
             cursor: pointer;
@@ -1002,7 +1002,7 @@
             font-family: var(--font-body);
             font-size: 0.85rem;
             outline: none;
-            transition: border-color 0.2s, background 0.2s;
+            transition: border-color 0.2s, background-color 0.2s;   /* not `background` — it slides the arrow  [Lynie] */
         }
         .input:focus, select.input:focus { border-color: var(--stroke-strong); }
         .input::placeholder { color: var(--text-muted); }
@@ -1113,7 +1113,7 @@
         .dock-group--sound { flex: 1 1 360px; max-width: 640px; }
         .dock-group-label {
             font-family: var(--font-label);
-            font-size: 0.6rem;
+            font-size: 0.68rem;
             letter-spacing: var(--label-tracking);
             text-transform: uppercase;
             color: var(--text-acc);
@@ -1139,7 +1139,7 @@
             border-radius: var(--r-md);
             color: var(--text-primary);
             font-family: var(--font-body);
-            font-size: 0.82rem;
+            font-size: 0.88rem;
             line-height: 1;
             white-space: nowrap;
             transition: border-color 0.2s var(--ease-smooth), background 0.2s var(--ease-smooth);
@@ -1167,11 +1167,11 @@
             padding: 0 6px;
             color: var(--text-muted);
             font-family: var(--font-mono);
-            font-size: 0.74rem;
+            font-size: 0.8rem;
             font-style: italic;
         }
-        .dock-label { color: var(--text-secondary); font-size: 0.79rem; font-weight: 600; line-height: 1; white-space: nowrap; }
-        .dock-label--dim { color: var(--text-muted); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; }
+        .dock-label { color: var(--text-secondary); font-size: 0.86rem; font-weight: 600; line-height: 1; white-space: nowrap; }
+        .dock-label--dim { color: var(--text-muted); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
         .dock-icon { color: var(--text-secondary); flex-shrink: 0; }
 
         .dock-select {
@@ -1182,7 +1182,7 @@
             border: none;
             color: var(--text-primary);
             font-family: var(--font-body);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 600;
             padding: 0 24px 0 0;
             margin: 0;
@@ -1477,7 +1477,7 @@
         #sys-message {
             min-height: 1.5rem;
             font-family: var(--font-mono);
-            font-size: 0.8rem;
+            font-size: 0.87rem;
             color: var(--text-acc);
             opacity: 0;
             transition: opacity 0.5s;
@@ -1486,7 +1486,7 @@
         }
         .hints {
             color: var(--text-muted);
-            font-size: 0.84rem;
+            font-size: 0.9rem;
             font-style: italic;
             text-align: center;
             font-family: var(--font-tagline);
@@ -1548,6 +1548,12 @@
             flex: 1 1 600px;
             width: 100%;
             max-width: 700px;
+        }
+        /* Songs and tabs want width, and the centre only ever needs the piano —
+           so the leftovers belong to whatever you're reading. */
+        #songbook-panel.is-open, #scribe-panel.is-open {
+            flex: 1 1 900px;
+            max-width: 1050px;
             padding: 22px;
             opacity: 1;
             border-width: 1px;
@@ -1555,7 +1561,7 @@
         }
         #songbook-panel.is-open { margin-right: 18px; }
         #scribe-panel.is-open, #jam-panel.is-open { margin-left: 18px; }
-        #jam-panel.is-open { max-width: 460px; }
+        #jam-panel.is-open { flex: 0 1 440px; max-width: 460px; }
         #songbook-panel.hidden, #scribe-panel.hidden, #jam-panel.hidden { display: flex !important; }
 
         .drawer-header {
@@ -1578,7 +1584,7 @@
         [data-theme="ash"] .drawer-title { font-size: 1.25rem; letter-spacing: -0.02em; }
         .drawer-subtitle {
             color: var(--text-secondary);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-style: italic;
             font-family: var(--font-tagline);
             margin: 2px 0 0;
@@ -1601,7 +1607,7 @@
             background: transparent;
             color: var(--text-secondary);
             font-family: var(--font-body);
-            font-size: 0.78rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.25s var(--ease-spring);
@@ -1637,7 +1643,7 @@
             padding: 16px;
             margin: 0;
             font-family: var(--font-mono);
-            font-size: 0.82rem;
+            font-size: 0.9rem;
             line-height: 1.55rem;
             white-space: pre-wrap;
             word-wrap: break-word;
@@ -1710,7 +1716,7 @@
         .atelier-section { display: flex; flex-direction: column; gap: 10px; }
         .atelier-heading {
             font-family: var(--font-label);
-            font-size: 0.66rem;
+            font-size: 0.73rem;
             letter-spacing: var(--label-tracking);
             text-transform: uppercase;
             color: var(--text-acc);
@@ -1718,7 +1724,7 @@
             padding-bottom: 6px;
             border-bottom: 1px solid var(--stroke-soft);
         }
-        .atelier-note { font-size: 0.74rem; color: var(--text-muted); margin: -4px 0 0; }
+        .atelier-note { font-size: 0.81rem; color: var(--text-muted); margin: -4px 0 0; }
 
         .theme-cards { display: flex; flex-direction: column; gap: 8px; }
         .theme-card {
@@ -1742,7 +1748,7 @@
         .theme-swatches span { width: 13px; height: 26px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.2); }
         .theme-card > span:nth-child(2) { flex: 1; }
         .theme-card-name { font-weight: 700; font-size: 0.9rem; line-height: 1.2; }
-        .theme-card-desc { font-size: 0.72rem; color: var(--text-muted); line-height: 1.35; }
+        .theme-card-desc { font-size: 0.79rem; color: var(--text-muted); line-height: 1.35; }
         .theme-card-check { margin-left: auto; color: var(--text-acc); opacity: 0; transition: opacity 0.2s; flex-shrink: 0; }
         .theme-card.is-active .theme-card-check { opacity: 1; }
 
@@ -1762,7 +1768,7 @@
             background: transparent;
             color: var(--text-secondary);
             font-family: var(--font-body);
-            font-size: 0.74rem;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s var(--ease-smooth);
@@ -1866,7 +1872,7 @@
             border-bottom: 1px solid var(--stroke-soft);
             font-weight: 600;
         }
-        .help-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 0.88rem; color: var(--text-primary); }
+        .help-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 0.94rem; color: var(--text-primary); }
         .kbd {
             display: inline-flex;
             align-items: center;
@@ -2051,13 +2057,13 @@
            SONG LIBRARY (Tome Viewer tab)
            ============================================================== */
         .library-bar { display: flex; gap: 8px; }
-        .library-hint { font-size: 0.75rem; color: var(--text-muted); margin: 0; line-height: 1.5; }
+        .library-hint { font-size: 0.82rem; color: var(--text-muted); margin: 0; line-height: 1.5; }
         .library-hint b { color: var(--text-acc); }
         .library-import-text {
             min-height: 110px;
             resize: vertical;
             font-family: var(--font-mono);
-            font-size: 0.76rem;
+            font-size: 0.84rem;
             line-height: 1.5;
         }
         #library-list {
@@ -2089,7 +2095,7 @@
         .library-item:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
         .library-item-title {
             font-weight: 700;
-            font-size: 0.86rem;
+            font-size: 0.94rem;
             flex: 1;
             min-width: 0;
             overflow: hidden;
@@ -2097,7 +2103,7 @@
             white-space: nowrap;
         }
         .library-item-artist {
-            font-size: 0.76rem;
+            font-size: 0.84rem;
             color: var(--text-secondary);
             white-space: nowrap;
             overflow: hidden;
@@ -2109,18 +2115,23 @@
         .library-item-go { color: var(--text-acc); font-size: 1rem; line-height: 1; flex-shrink: 0; }
         .library-empty {
             color: var(--text-muted);
-            font-size: 0.8rem;
+            font-size: 0.88rem;
             text-align: center;
             padding: 26px 16px;
             font-style: italic;
             line-height: 1.7;
         }
         .library-empty b { color: var(--text-acc); font-style: normal; }
+        /* Controls on one line, title on its own beneath — so a long name wraps
+           like a title instead of one letter per line. */
+        .library-song-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .library-song-head > div:last-of-type { margin-left: auto; }
         .library-song-title {
+            order: 9;
+            flex: 1 1 100%;
             font-family: var(--font-display);
             font-size: 1.25rem;
             line-height: 1.15;
-            flex: 1;
             min-width: 0;
         }
         .library-song-title .lst-title { display: block; }
@@ -2144,7 +2155,7 @@
             border-radius: var(--r-md);
             padding: 16px;
             font-family: var(--font-mono);
-            font-size: 0.82rem;
+            font-size: 0.9rem;
             line-height: 1.55rem;
             white-space: pre-wrap;
             word-wrap: break-word;
@@ -2277,7 +2288,7 @@
             user-select: text;
             -webkit-user-select: text;
             font-family: var(--font-mono);
-            font-size: 0.82rem;
+            font-size: 0.9rem;
             line-height: 1.55rem;
             white-space: pre-wrap;
             word-wrap: break-word;
@@ -2289,7 +2300,7 @@
         /* Library group headers (default songbook vs personal imports) */
         .library-group {
             font-family: var(--font-label);
-            font-size: 0.62rem;
+            font-size: 0.7rem;
             letter-spacing: var(--label-tracking);
             text-transform: uppercase;
             color: var(--text-acc);
@@ -2391,7 +2402,7 @@
             border: 1px solid var(--stroke-soft);
             color: var(--text-secondary);
             font-family: var(--font-body);
-            font-size: 0.72rem;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s var(--ease-smooth);
@@ -2553,7 +2564,7 @@
         .library-credit {
             font-family: var(--font-tagline);
             font-style: italic;
-            font-size: 0.74rem;
+            font-size: 0.82rem;
             color: var(--text-muted);
             text-align: right;
             padding: 2px 4px 0;
@@ -2630,12 +2641,12 @@
         #jam-color::-webkit-color-swatch { border: none; border-radius: calc(var(--r-md) - 3px); }
 
         .jam-statusbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-        .jam-status { font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); }
+        .jam-status { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-muted); }
         .jam-status.is-live { color: var(--good); }
-        .jam-count { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); }
+        .jam-count { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); }
         .jam-code {
             font-family: var(--font-mono);
-            font-size: 0.68rem;
+            font-size: 0.76rem;
             color: var(--text-acc);
             padding: 2px 6px;
             border: 1px solid var(--stroke-soft);
@@ -2646,7 +2657,7 @@
         .jam-warn {
             margin: 0;
             padding: 9px 11px;
-            font-size: 0.72rem;
+            font-size: 0.8rem;
             line-height: 1.5;
             color: var(--text-secondary);
             background: var(--wash);
@@ -2663,12 +2674,36 @@
             padding-bottom: 6px;
             border-bottom: 1px solid var(--stroke-soft);
         }
+        .jam-advanced {
+            background: var(--well);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+            padding: 8px 10px;
+        }
+        .jam-advanced > summary {
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            list-style: none;
+        }
+        .jam-advanced > summary::-webkit-details-marker { display: none; }
+        .jam-advanced > summary::before { content: '\25B8 '; color: var(--text-acc); }
+        .jam-advanced[open] > summary::before { content: '\25BE '; }
+        .jam-advanced > summary:hover { color: var(--text-primary); }
+        .jam-advanced > *:not(summary) { margin-top: 8px; }
+        .jam-advanced .input { width: 100%; font-size: 0.84rem; }
+        .jam-advanced-note { font-size: 0.8rem; line-height: 1.5; color: var(--text-muted); margin: 8px 0 0; }
+        .jam-advanced-note b { color: var(--text-acc); }
+        .jam-check { display: flex; align-items: flex-start; gap: 8px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4; cursor: pointer; }
+        .jam-check .check { margin-top: 1px; }
+
         .jam-peers { display: flex; flex-direction: column; gap: 6px; max-height: 190px; overflow-y: auto; }
         .jam-empty, .jam-chat-empty {
             margin: 0; padding: 14px 8px;
             font-family: var(--font-tagline);
             font-style: italic;
-            font-size: 0.78rem;
+            font-size: 0.86rem;
             color: var(--text-muted);
             text-align: center;
         }
@@ -2684,10 +2719,10 @@
         .jam-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
         .jam-pname {
             flex: 1; min-width: 0;
-            font-size: 0.8rem; font-weight: 700;
+            font-size: 0.88rem; font-weight: 700;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-        .jam-as { font-size: 0.62rem; color: var(--text-muted); flex-shrink: 0; }
+        .jam-as { font-size: 0.7rem; color: var(--text-muted); flex-shrink: 0; }
         .jam-instr {
             width: 92px; flex-shrink: 0;
             background: var(--surface-1);
@@ -2695,7 +2730,7 @@
             border-radius: var(--r-sm);
             color: var(--text-primary);
             font-family: var(--font-body);
-            font-size: 0.7rem;
+            font-size: 0.78rem;
             padding: 3px 4px;
             outline: none;
         }
@@ -2717,13 +2752,13 @@
             background: var(--well-deep);
             border: 1px solid var(--stroke-soft);
             border-radius: var(--r-md);
-            font-size: 0.76rem;
+            font-size: 0.92rem;
             line-height: 1.5;
             user-select: text;
             -webkit-user-select: text;
         }
         .jam-chat-msg { margin-bottom: 3px; word-wrap: break-word; }
-        .jam-chat-time { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.64rem; }
+        .jam-chat-time { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.74rem; }
         .jam-chat-name { font-weight: 700; }
         .jam-chat-sys { color: var(--text-muted); font-style: italic; }
 
@@ -2734,8 +2769,40 @@
 
         /* Credits in the help scroll */
         .help-credits { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--stroke-soft); }
-        .credit-line { margin: 0 0 6px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+        .credit-line { margin: 0 0 6px; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; }
         .credit-line b { color: var(--text-acc); font-weight: 700; }
+
+        /* Drop anywhere to load SoundFonts  [Lynie] */
+        .drop-veil {
+            position: fixed;
+            inset: 0;
+            z-index: 190;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: hsl(from var(--bg-base) h s l / 0.72);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.18s ease;
+        }
+        .drop-veil.is-on { opacity: 1; }
+        .drop-veil-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 34px 46px;
+            border-radius: var(--r-xl);
+            border: 2px dashed var(--stroke-strong);
+            background: var(--surface-2);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-lg), var(--shadow-acc);
+        }
+        .drop-veil-card svg { color: var(--text-acc); }
+        .drop-veil-card span { font-family: var(--font-label); font-size: 1rem; font-weight: 600; letter-spacing: 0.04em; }
+        .drop-veil-card small { font-size: 0.8rem; color: var(--text-muted); }
 
         /* Collapsed side panels must not contribute height to the stage row */
         #songbook-panel:not(.is-open) > *,
@@ -2867,29 +2934,29 @@
                 </div>
 
                 <div class="tab-pills">
-                    <button id="btn-load-tome-dark" class="is-active" type="button">
+                    <button id="btn-toggle-library" class="is-active" type="button">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                        Library
+                    </button>
+                    <button id="btn-load-tome-dark" type="button">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                        Tome of Melodies
+                        Songbook
                     </button>
                     <button id="btn-toggle-custom" type="button">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                         Custom Notes
                     </button>
-                    <button id="btn-toggle-library" type="button">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                        Library
-                    </button>
                 </div>
 
-                <div id="doc-input-area" style="display:flex; flex-direction:column; gap:8px;">
+                <div id="doc-input-area" class="hidden" style="display:flex; flex-direction:column; gap:8px;">
                     <div style="display:flex; gap:8px;">
-                        <input type="text" id="songbook-url" class="input" style="flex:1;" placeholder="Paste Google Doc link…" value="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview">
+                        <input type="text" id="songbook-url" class="input" style="flex:1;" placeholder="Paste Google Doc link…" value="https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview">
                         <button id="btn-load-songbook" class="btn btn-primary" type="button">Load</button>
                     </div>
                     <p style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin:0;">Load a <span style="color:var(--text-acc);">public Google Doc</span> URL.</p>
                 </div>
 
-                <iframe id="songbook-frame" title="Songbook" src="https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview"></iframe>
+                <iframe id="songbook-frame" class="hidden" title="Songbook" src="https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview"></iframe>
 
                 <div id="custom-notes-container" class="editor-container hidden" style="min-height:400px;">
                     <div id="customTextareaB" class="editor-layer editor-back" aria-hidden="true"></div>
@@ -2897,7 +2964,7 @@
                 </div>
 
                 <!-- LIBRARY — file-based song list -->
-                <div id="library-container" class="hidden" style="display:flex; flex-direction:column; gap:10px; flex:1; min-height:0;">
+                <div id="library-container" style="display:flex; flex-direction:column; gap:10px; flex:1; min-height:0;">
                     <div id="library-bar" class="library-bar">
                         <input type="text" id="library-search" class="input" style="flex:1;" placeholder="Search songs…">
                         <button id="btn-library-import" class="btn" type="button">Import</button>
@@ -2944,7 +3011,7 @@
                     </div>
                     <div id="library-list"></div>
                     <div id="library-song" class="hidden" style="display:flex; flex-direction:column; gap:10px; flex:1; min-height:0;">
-                        <div style="display:flex; align-items:center; gap:10px;">
+                        <div class="library-song-head">
                             <button id="btn-library-back" class="btn btn-ghost" type="button">← All songs</button>
                             <button id="btn-library-fav" class="library-star" type="button" title="Add to favorites" aria-label="Toggle favorite">☆</button>
                             <div id="library-song-title" class="library-song-title"></div>
@@ -2991,14 +3058,14 @@
 
                                 <div class="dock-item" title="Master volume">
                                     <svg class="dock-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                                    <input type="range" id="master-volume" class="slider" min="0" max="1" step="0.01" value="0.8" style="width:100px;" aria-label="Master volume">
+                                    <input type="range" id="master-volume" class="slider" min="0" max="1.2" step="0.01" value="0.8" style="width:100px;" aria-label="Master volume" title="Master volume — can be pushed past 100%">
                                 </div>
 
-                                <label for="sf2-upload" class="dock-item dock-item--btn" title="Load a custom SoundFont (.sf2)">
+                                <label for="sf2-upload" class="dock-item dock-item--btn" title="Load SoundFonts (.sf2) — or just drop files or a folder anywhere on the page">
                                     <svg class="dock-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                                     <span class="dock-label">Load SF2</span>
                                 </label>
-                                <input type="file" id="sf2-upload" accept=".sf2" class="hidden">
+                                <input type="file" id="sf2-upload" accept=".sf2" multiple class="hidden">
                                 <button id="btn-unload-sf2" class="dock-item dock-item--btn hidden" type="button">Unload SF2</button>
 
                                 <div class="dock-item" id="midi-status" title="Web MIDI controller">
@@ -3270,8 +3337,24 @@
                 </div>
 
                 <p id="jam-warn" class="jam-warn">
-                    Playing together connects you directly to the other players, which means they can see your IP address. Only jam with people you trust — and pick a password nobody else will guess.
+                    Playing together connects you directly to the other players, which means they can see your IP address. Only jam with people you trust — and pick a password nobody else will guess. To hide your address, tick <b>Always go through TURN</b> under “Trouble connecting?”.
                 </p>
+
+                <details id="jam-advanced" class="jam-advanced">
+                    <summary>Trouble connecting? (VPN, strict firewall)</summary>
+                    <p class="jam-advanced-note">
+                        Players connect straight to each other. Behind a VPN or a strict firewall that direct path often fails, even though you are both in the right room. A <b>TURN</b> server forwards the notes instead. Free ones are tried automatically; if they are busy, paste your own below — Jam only sends a few KB per minute, so any free tier is plenty.
+                    </p>
+                    <input type="text" id="jam-turn-url" class="input" placeholder="turn:your-server.com:3478" autocomplete="off">
+                    <div class="jam-row">
+                        <input type="text" id="jam-turn-user" class="input" placeholder="TURN username" autocomplete="off">
+                        <input type="password" id="jam-turn-pass" class="input" placeholder="TURN password" autocomplete="off">
+                    </div>
+                    <label class="jam-check">
+                        <input type="checkbox" id="jam-relay-only" class="check">
+                        <span>Always go through TURN — hides your IP from the other players, but needs a TURN server that works.</span>
+                    </label>
+                </details>
 
                 <div class="jam-section-label">Players</div>
                 <div id="jam-peers" class="jam-peers"></div>
@@ -3292,6 +3375,14 @@
 <!-- ============================================ -->
 <!-- THE ARCHIVE — songbook database              -->
 <!-- ============================================ -->
+<div id="drop-veil" class="drop-veil" aria-hidden="true">
+    <div class="drop-veil-card">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Drop SoundFonts to attune them</span>
+        <small>.sf2 files, or a whole folder of them</small>
+    </div>
+</div>
+
 <div class="atelier-scrim" id="archive-scrim"></div>
 <aside id="archive-panel" aria-label="Songbook archive" role="dialog" aria-modal="false">
     <div class="drawer-header">
@@ -3306,7 +3397,8 @@
     <div class="atelier-section">
         <span class="atelier-heading">Songbooks</span>
         <div id="archive-cards" class="archive-cards"></div>
-        <p class="atelier-note">To add a songbook, open this page's HTML and add one entry to <b>SONGBOOK_ARCHIVE</b> at the top of the main script — name, description, image and Google Doc link.</p>
+        <!-- To add a songbook: add one entry to SONGBOOK_ARCHIVE at the top of
+             the main script — name, description, image and Google Doc link. -->
     </div>
 </aside>
 
@@ -3543,7 +3635,8 @@
             <div class="help-section-title" style="margin-bottom:10px;">Credits</div>
             <p class="credit-line"><b>Sarya</b> — the instrument, the songbook, and every tab in it.</p>
             <p class="credit-line"><b>Lynie</b> — live Jam rooms and chat. Built in her own fork of this project, merged back here with thanks.</p>
-            <p class="credit-line"><b>Powerina</b> — the tab format the Scribe writes. <b>Jenpai</b> — the spreadsheet export.</p>
+            <p class="credit-line"><b>Powerina</b> — the tab format the Scribe writes.</p>
+            <p class="credit-line"><b>Jenpai</b> — the spreadsheet export.</p>
         </div>
         <div class="help-footer">Crafted with ember and ink. For exclusive use of everyone.</div>
     </div>
@@ -3613,8 +3706,9 @@
         // ║                                                                ║
         // ║    name:        shown big, in the display font                 ║
         // ║    description: one short line under the name                  ║
-        // ║    image:       a picture file next to index.html, or a full   ║
-        // ║                 URL. Leave "" for a monogram placeholder.      ║
+        // ║    image:       a file in the img/ folder (img/sb1.png,        ║
+        // ║                 img/sb2.png …) or a full URL. Leave "" for a   ║
+        // ║                 monogram placeholder.                          ║
         // ║    url:         a public Google Doc — use the /preview link    ║
         // ║                                                                ║
         // ║  To add a friend's songbook: copy the block between { and },   ║
@@ -3647,14 +3741,20 @@
         const SONGBOOK_ARCHIVE = [
             {
                 name: "Sarya's Songbook",
-                description: "The original Tome of Melodies — game, movie & TV themes.",
-                image: "saryamusic2.png",
-                url: "https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview"
+                description: "The original songbook — game, movie & TV themes.",
+                image: "img/sb1.png",
+                url: "https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview"
+            },
+            {
+                name: "Seeker\u2019s Doc III",
+                description: "A fellow traveller\u2019s collection of tabs.",
+                image: "img/sb2.png",
+                url: "https://docs.google.com/document/d/11VXdUKx_bY5spQ2u_dnMF_AWzAJLjdRSHBRGYjS0OJU/preview"
             }
             // , {
             //     name: "Another Tome",
             //     description: "A friend's collection.",
-            //     image: "",
+            //     image: "img/sb3.png",
             //     url: "https://docs.google.com/document/d/DOC_ID_HERE/preview"
             // }
         ];
@@ -4405,7 +4505,7 @@
         btnLoadSongbook.addEventListener('click', loadSongbookUrl);
         songbookUrlInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') loadSongbookUrl(); });
 
-        // Tome of Melodies Button
+        // Songbook Button
         btnLoadTomeDark.addEventListener('click', () => {
             btnLoadTomeDark.classList.add('is-active');
             btnToggleCustom.classList.remove('is-active');
@@ -4416,7 +4516,7 @@
             libraryContainer.classList.add('hidden');
             songbookFrame.classList.remove('hidden');
 
-            songbookUrlInput.value = 'https://docs.google.com/document/d/1gX4ohvjG1Jr3nzWyC-mwYswzj8EsgLt9cHSNSCrTl7c/preview';
+            songbookUrlInput.value = 'https://docs.google.com/document/d/1KOYLOCvwig71yQjDXOGW9mUHWy9aoW8ziRLUBjxX_nA/preview';
             loadSongbookUrl();
         });
 
@@ -4734,17 +4834,10 @@
         archiveScrim.addEventListener('click', closeArchive);
 
         function openArchiveBook(book) {
-            // Point the Tome Viewer at this book and bring it up
-            btnLoadTomeDark.classList.add('is-active');
-            btnToggleCustom.classList.remove('is-active');
-            btnToggleLibrary.classList.remove('is-active');
-            docInputArea.classList.remove('hidden');
-            songbookFrame.classList.remove('hidden');
-            customNotesContainer.classList.add('hidden');
-            libraryContainer.classList.add('hidden');
             songbookUrlInput.value = book.url;
             loadSongbookUrl();
-            if (!isSongbookOpen) btnToggleSongbook.click();
+            if (!isSongbookOpen) btnToggleSongbook.click();   // opens on your last tab…
+            btnLoadTomeDark.click();                          // …then switch to the Songbook
             closeArchive();
             showMessage('Opening ' + book.name + '\u2026');
         }
@@ -5158,9 +5251,12 @@
         btnRailNotes.addEventListener('click', () => railOpenTab(btnToggleCustom));
         // Opening the panel fresh via the Songbook button lands on the Tome tab
         let sbLastOpen = songbookPanel.classList.contains('is-open');
+        let sbLastTab = btnToggleLibrary;   // the Library is the main songbook now
+        [btnLoadTomeDark, btnToggleCustom, btnToggleLibrary]
+            .forEach(b => b.addEventListener('click', () => { sbLastTab = b; }));
         btnToggleSongbook.addEventListener('click', () => {
             const openNow = songbookPanel.classList.contains('is-open');
-            if (openNow && !sbLastOpen) btnLoadTomeDark.click();
+            if (openNow && !sbLastOpen) sbLastTab.click();   // reopen where you left off
             sbLastOpen = openNow;
             updateRailActive();
         });
@@ -5801,7 +5897,6 @@
         const heartopiaBindsMap = {};
 
         // Restore fully featured SF2 Storage Cache
-        let sf2Data = { buffer: null, smplOffset: 0, smplSize: 0, presets: [], bufferCache: {} };
 
         // Essential for proper native SF2 volume decay
         function timecentsToSecs(tc) {
@@ -5822,7 +5917,11 @@
         }
 
         // Restored Native SF2 Audio Buffer Decoder
-        function loadSf2Buffer(sampleInfo) {
+        // SF2 sample data is little-endian, as is virtually every machine — but
+        // check rather than assume.
+        const LITTLE_ENDIAN = new Uint8Array(new Uint16Array([1]).buffer)[0] === 1;
+
+        function loadSf2Buffer(sampleInfo, font) {
             initAudio();
             try {
                 const numSamples = sampleInfo.end - sampleInfo.start;
@@ -5834,13 +5933,23 @@
 
                 const buffer = audioCtx.createBuffer(1, numSamples, sr);
                 const channelData = buffer.getChannelData(0);
-                const dv = new DataView(sf2Data.buffer);
+                const byteOffset = font.smplOffset + (sampleInfo.start * 2);
 
-                let byteOffset = sf2Data.smplOffset + (sampleInfo.start * 2);
-
-                for (let i = 0; i < numSamples; i++) {
-                    channelData[i] = dv.getInt16(byteOffset, true) / 32768.0;
-                    byteOffset += 2;
+                // Read the samples wholesale through an Int16Array view instead of
+                // one DataView call each — very visible on large SoundFonts. Needs
+                // an even offset and a little-endian machine; fall back otherwise.
+                // [Lynie]
+                let fast = null;
+                if ((byteOffset % 2) === 0 && LITTLE_ENDIAN
+                    && byteOffset + numSamples * 2 <= font.buffer.byteLength) {
+                    fast = new Int16Array(font.buffer, byteOffset, numSamples);
+                }
+                if (fast) {
+                    for (let i = 0; i < numSamples; i++) channelData[i] = fast[i] / 32768.0;
+                } else {
+                    const dv = new DataView(font.buffer);
+                    let o = byteOffset;
+                    for (let i = 0; i < numSamples; i++) { channelData[i] = dv.getInt16(o, true) / 32768.0; o += 2; }
                 }
                 return buffer;
             } catch(e) {
@@ -5866,9 +5975,11 @@
 
             // Restored full SF2 vs Synth logic check
             if (instrumentMode.startsWith('sf2_')) {
-                // SF2 Synth Processing
-                const sfIndex = parseInt(instrumentMode.split('_')[1]);
-                const preset = sf2Data.presets[sfIndex];
+                // sf2_<font>_<preset> — each font carries its own samples  [Lynie]
+                const bits = instrumentMode.split('_');
+                const font = sf2Fonts[parseInt(bits[1])];
+                const preset = font && font.presets[parseInt(bits[2])];
+                if (!preset) return;
 
                 const velocity = 100;
                 let matchedZones = preset.zones.filter(z =>
@@ -5884,11 +5995,11 @@
 
                 matchedZones.forEach(zone => {
                     let cacheKey = zone.sample.name + "_" + zone.sample.start;
-                    if (!sf2Data.bufferCache[cacheKey]) {
-                        sf2Data.bufferCache[cacheKey] = loadSf2Buffer(zone.sample);
+                    if (!font.bufferCache[cacheKey]) {
+                        font.bufferCache[cacheKey] = loadSf2Buffer(zone.sample, font);
                     }
 
-                    const buffer = sf2Data.bufferCache[cacheKey];
+                    const buffer = font.bufferCache[cacheKey];
                     if (buffer) {
                         const gainNode = audioCtx.createGain();
 
@@ -6346,10 +6457,13 @@
                 if (currentOctave < 0) currentOctave = 0;
                 if (currentOctave > 8) currentOctave = 8;
             }
+            // Past the restricted range, keep counting from the nearest edge
+            // instead of showing a bare number.  [Lynie]
             const octLabel = currentOctave === 4 ? 'Mid'
                 : currentOctave === 3 ? 'Low'
                 : currentOctave === 5 ? 'High'
-                : `${currentOctave}`;
+                : currentOctave > 5 ? `High+${currentOctave - 5}`
+                : `Low-${3 - currentOctave}`;
             document.getElementById('octave-display').textContent = `Octave: ${octLabel}`;
             document.querySelectorAll('#gw2-view .key-bind').forEach(el => {
                 let i = el.dataset.index;
@@ -6727,191 +6841,285 @@
         });
 
         btnUnloadSf2.addEventListener('click', () => {
-            const optgroup = document.getElementById('sf2-optgroup');
-            if (optgroup) optgroup.remove();
-
-            synthSelect.value = 'lute';
-            sf2Data = { buffer: null, smplOffset: 0, smplSize: 0, presets: [], bufferCache: {} };
+            const n = sf2Fonts.length;
+            sf2Fonts = [];
             sf2Upload.value = '';
-
-            btnUnloadSf2.classList.add('hidden');
-            showMessage("Soundfont un-attuned. Memory cleared.");
+            rebuildInstrumentList();
+            showMessage(n > 1 ? `${n} soundfonts un-attuned. Memory cleared.` : 'Soundfont un-attuned. Memory cleared.');
         });
 
-        sf2Upload.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
+        // ==========================================
+        // SOUNDFONTS — as many as you like, dropped or picked  [Lynie]
+        // ==========================================
+        // Every .sf2 keeps its own buffer, presets and sample cache, and gets its
+        // own group in the instrument list. Loading another one adds to the list
+        // instead of replacing what you already had.
+        let sf2Fonts = [];
 
-            showMessage(`Attuning ${file.name}... parsing arcane structures.`);
-            const reader = new FileReader();
+        function parseSf2ArrayBuffer(arrayBuffer, name, append) {
+            try {
+                const dv = new DataView(arrayBuffer);
+                let offset = 0;
 
-            reader.onload = function(evt) {
-                try {
-                    const arrayBuffer = evt.target.result;
-                    const dv = new DataView(arrayBuffer);
-                    let offset = 0;
+                const font = { name: name || 'SoundFont', buffer: arrayBuffer, smplOffset: 0, smplSize: 0, presets: [], bufferCache: {} };
 
-                    sf2Data = { buffer: arrayBuffer, smplOffset: 0, smplSize: 0, presets: [], bufferCache: {} };
+                function readStrAt(off, len) {
+                    let s = '';
+                    for(let i=0; i<len; i++) {
+                        let c = dv.getUint8(off + i);
+                        if (c === 0) break;
+                        if (c >= 32 && c <= 126) s += String.fromCharCode(c);
+                    }
+                    return s.trim();
+                }
 
-                    function readStrAt(off, len) {
-                        let s = '';
-                        for(let i=0; i<len; i++) {
-                            let c = dv.getUint8(off + i);
-                            if (c === 0) break;
-                            if (c >= 32 && c <= 126) s += String.fromCharCode(c);
-                        }
-                        return s.trim();
+                function readStr(len) {
+                    let s = readStrAt(offset, len);
+                    offset += len;
+                    return s;
+                }
+
+                let pdtaChunks = {};
+
+                while (offset < arrayBuffer.byteLength - 8) {
+                    let chunkId = readStr(4);
+                    let chunkSize = dv.getUint32(offset, true); offset += 4;
+
+                    if (chunkId === 'RIFF' || chunkId === 'LIST') {
+                        readStr(4);
+                        continue;
                     }
 
-                    function readStr(len) {
-                        let s = readStrAt(offset, len);
-                        offset += len;
-                        return s;
+                    let nextOffset = offset + chunkSize;
+                    if (chunkSize % 2 !== 0) nextOffset++;
+
+                    if (chunkId === 'smpl') {
+                        font.smplOffset = offset;
+                        font.smplSize = chunkSize;
+                    } else if (['phdr', 'pbag', 'pgen', 'inst', 'ibag', 'igen', 'shdr'].includes(chunkId)) {
+                        pdtaChunks[chunkId] = { offset, size: chunkSize };
+                    }
+                    offset = nextOffset;
+                }
+
+                if (pdtaChunks.phdr && pdtaChunks.shdr && font.smplSize > 0) {
+                    let shdr = [], igen = [], ibag = [], inst = [], pgen = [], pbag = [], phdr = [];
+
+                    let o = pdtaChunks.shdr.offset, end = o + pdtaChunks.shdr.size;
+                    while(o < end) {
+                        shdr.push({
+                            name: readStrAt(o, 20), start: dv.getUint32(o+20, true), end: dv.getUint32(o+24, true),
+                            startLoop: dv.getUint32(o+28, true), endLoop: dv.getUint32(o+32, true),
+                            sampleRate: dv.getUint32(o+36, true), originalPitch: dv.getUint8(o+40),
+                            pitchCorrection: dv.getInt8(o+41), sampleType: dv.getUint16(o+44, true)
+                        }); o += 46;
                     }
 
-                    let pdtaChunks = {};
+                    o = pdtaChunks.igen.offset; end = o + pdtaChunks.igen.size;
+                    while(o < end) { igen.push({ oper: dv.getUint16(o, true), amount: dv.getUint16(o+2, true), amountInt: dv.getInt16(o+2, true) }); o += 4; }
 
-                    while (offset < arrayBuffer.byteLength - 8) {
-                        let chunkId = readStr(4);
-                        let chunkSize = dv.getUint32(offset, true); offset += 4;
+                    o = pdtaChunks.ibag.offset; end = o + pdtaChunks.ibag.size;
+                    while(o < end) { ibag.push({ genNdx: dv.getUint16(o, true) }); o += 4; }
 
-                        if (chunkId === 'RIFF' || chunkId === 'LIST') {
-                            readStr(4);
-                            continue;
-                        }
+                    o = pdtaChunks.inst.offset; end = o + pdtaChunks.inst.size;
+                    while(o < end) { inst.push({ name: readStrAt(o, 20), ibagNdx: dv.getUint16(o+20, true) }); o += 22; }
 
-                        let nextOffset = offset + chunkSize;
-                        if (chunkSize % 2 !== 0) nextOffset++;
+                    o = pdtaChunks.pgen.offset; end = o + pdtaChunks.pgen.size;
+                    while(o < end) { pgen.push({ oper: dv.getUint16(o, true), amount: dv.getUint16(o+2, true) }); o += 4; }
 
-                        if (chunkId === 'smpl') {
-                            sf2Data.smplOffset = offset;
-                            sf2Data.smplSize = chunkSize;
-                        } else if (['phdr', 'pbag', 'pgen', 'inst', 'ibag', 'igen', 'shdr'].includes(chunkId)) {
-                            pdtaChunks[chunkId] = { offset, size: chunkSize };
-                        }
-                        offset = nextOffset;
+                    o = pdtaChunks.pbag.offset; end = o + pdtaChunks.pbag.size;
+                    while(o < end) { pbag.push({ genNdx: dv.getUint16(o, true) }); o += 4; }
+
+                    o = pdtaChunks.phdr.offset; end = o + pdtaChunks.phdr.size;
+                    while(o < end) {
+                        phdr.push({ name: readStrAt(o, 20), preset: dv.getUint16(o+20, true), bank: dv.getUint16(o+22, true), pbagNdx: dv.getUint16(o+24, true) });
+                        o += 38;
                     }
 
-                    if (pdtaChunks.phdr && pdtaChunks.shdr && sf2Data.smplSize > 0) {
-                        let shdr = [], igen = [], ibag = [], inst = [], pgen = [], pbag = [], phdr = [];
+                    for (let i = 0; i < phdr.length - 1; i++) {
+                        let preset = phdr[i];
+                        if (preset.name === 'EOP') continue;
+                        let presetZones = [];
 
-                        let o = pdtaChunks.shdr.offset, end = o + pdtaChunks.shdr.size;
-                        while(o < end) {
-                            shdr.push({
-                                name: readStrAt(o, 20), start: dv.getUint32(o+20, true), end: dv.getUint32(o+24, true),
-                                startLoop: dv.getUint32(o+28, true), endLoop: dv.getUint32(o+32, true),
-                                sampleRate: dv.getUint32(o+36, true), originalPitch: dv.getUint8(o+40),
-                                pitchCorrection: dv.getInt8(o+41), sampleType: dv.getUint16(o+44, true)
-                            }); o += 46;
-                        }
+                        for (let j = preset.pbagNdx; j < phdr[i+1].pbagNdx; j++) {
+                            let pGenEnd = pbag[j+1] ? pbag[j+1].genNdx : pgen.length;
+                            let instId = -1;
+                            for (let k = pbag[j].genNdx; k < pGenEnd; k++) if (pgen[k].oper === 41) instId = pgen[k].amount;
 
-                        o = pdtaChunks.igen.offset; end = o + pdtaChunks.igen.size;
-                        while(o < end) { igen.push({ oper: dv.getUint16(o, true), amount: dv.getUint16(o+2, true), amountInt: dv.getInt16(o+2, true) }); o += 4; }
+                            if (instId >= 0 && instId < inst.length - 1) {
+                                let globalInstZone = {
+                                    tuneCents: 0, velRange: { low: 0, high: 127 }, sampleModes: 0,
+                                    volEnv: { delay: -12000, attack: -12000, hold: -12000, decay: -12000, sustain: 0, release: -12000 }
+                                };
 
-                        o = pdtaChunks.ibag.offset; end = o + pdtaChunks.ibag.size;
-                        while(o < end) { ibag.push({ genNdx: dv.getUint16(o, true) }); o += 4; }
+                                for (let z = inst[instId].ibagNdx; z < inst[instId+1].ibagNdx; z++) {
+                                    let iGenEnd = ibag[z+1] ? ibag[z+1].genNdx : igen.length;
 
-                        o = pdtaChunks.inst.offset; end = o + pdtaChunks.inst.size;
-                        while(o < end) { inst.push({ name: readStrAt(o, 20), ibagNdx: dv.getUint16(o+20, true) }); o += 22; }
-
-                        o = pdtaChunks.pgen.offset; end = o + pdtaChunks.pgen.size;
-                        while(o < end) { pgen.push({ oper: dv.getUint16(o, true), amount: dv.getUint16(o+2, true) }); o += 4; }
-
-                        o = pdtaChunks.pbag.offset; end = o + pdtaChunks.pbag.size;
-                        while(o < end) { pbag.push({ genNdx: dv.getUint16(o, true) }); o += 4; }
-
-                        o = pdtaChunks.phdr.offset; end = o + pdtaChunks.phdr.size;
-                        while(o < end) {
-                            phdr.push({ name: readStrAt(o, 20), preset: dv.getUint16(o+20, true), bank: dv.getUint16(o+22, true), pbagNdx: dv.getUint16(o+24, true) });
-                            o += 38;
-                        }
-
-                        for (let i = 0; i < phdr.length - 1; i++) {
-                            let preset = phdr[i];
-                            if (preset.name === 'EOP') continue;
-                            let presetZones = [];
-
-                            for (let j = preset.pbagNdx; j < phdr[i+1].pbagNdx; j++) {
-                                let pGenEnd = pbag[j+1] ? pbag[j+1].genNdx : pgen.length;
-                                let instId = -1;
-                                for (let k = pbag[j].genNdx; k < pGenEnd; k++) if (pgen[k].oper === 41) instId = pgen[k].amount;
-
-                                if (instId >= 0 && instId < inst.length - 1) {
-                                    let globalInstZone = {
-                                        tuneCents: 0, velRange: { low: 0, high: 127 }, sampleModes: 0,
-                                        volEnv: { delay: -12000, attack: -12000, hold: -12000, decay: -12000, sustain: 0, release: -12000 }
+                                    let zoneData = {
+                                        keyRange: { low: 0, high: 127 }, velRange: { ...globalInstZone.velRange },
+                                        tuneCents: globalInstZone.tuneCents, sampleModes: globalInstZone.sampleModes,
+                                        volEnv: { ...globalInstZone.volEnv }
                                     };
+                                    let sampleId = -1;
 
-                                    for (let z = inst[instId].ibagNdx; z < inst[instId+1].ibagNdx; z++) {
-                                        let iGenEnd = ibag[z+1] ? ibag[z+1].genNdx : igen.length;
+                                    for (let g = ibag[z].genNdx; g < iGenEnd; g++) {
+                                        let gen = igen[g];
+                                        if (gen.oper === 43) zoneData.keyRange = { low: gen.amount & 0xFF, high: gen.amount >> 8 };
+                                        else if (gen.oper === 44) zoneData.velRange = { low: gen.amount & 0xFF, high: gen.amount >> 8 };
+                                        else if (gen.oper === 53) sampleId = gen.amount;
+                                        else if (gen.oper === 58) zoneData.rootKey = gen.amount & 0xFF;
+                                        else if (gen.oper === 51) zoneData.tuneCents += gen.amountInt * 100;
+                                        else if (gen.oper === 52) zoneData.tuneCents += gen.amountInt;
+                                        else if (gen.oper === 54) zoneData.sampleModes = gen.amount;
+                                        else if (gen.oper === 33) zoneData.volEnv.delay = gen.amountInt;
+                                        else if (gen.oper === 34) zoneData.volEnv.attack = gen.amountInt;
+                                        else if (gen.oper === 35) zoneData.volEnv.hold = gen.amountInt;
+                                        else if (gen.oper === 36) zoneData.volEnv.decay = gen.amountInt;
+                                        else if (gen.oper === 37) zoneData.volEnv.sustain = gen.amountInt;
+                                        else if (gen.oper === 38) zoneData.volEnv.release = gen.amountInt;
+                                    }
 
-                                        let zoneData = {
-                                            keyRange: { low: 0, high: 127 }, velRange: { ...globalInstZone.velRange },
-                                            tuneCents: globalInstZone.tuneCents, sampleModes: globalInstZone.sampleModes,
-                                            volEnv: { ...globalInstZone.volEnv }
-                                        };
-                                        let sampleId = -1;
-
-                                        for (let g = ibag[z].genNdx; g < iGenEnd; g++) {
-                                            let gen = igen[g];
-                                            if (gen.oper === 43) zoneData.keyRange = { low: gen.amount & 0xFF, high: gen.amount >> 8 };
-                                            else if (gen.oper === 44) zoneData.velRange = { low: gen.amount & 0xFF, high: gen.amount >> 8 };
-                                            else if (gen.oper === 53) sampleId = gen.amount;
-                                            else if (gen.oper === 58) zoneData.rootKey = gen.amount & 0xFF;
-                                            else if (gen.oper === 51) zoneData.tuneCents += gen.amountInt * 100;
-                                            else if (gen.oper === 52) zoneData.tuneCents += gen.amountInt;
-                                            else if (gen.oper === 54) zoneData.sampleModes = gen.amount;
-                                            else if (gen.oper === 33) zoneData.volEnv.delay = gen.amountInt;
-                                            else if (gen.oper === 34) zoneData.volEnv.attack = gen.amountInt;
-                                            else if (gen.oper === 35) zoneData.volEnv.hold = gen.amountInt;
-                                            else if (gen.oper === 36) zoneData.volEnv.decay = gen.amountInt;
-                                            else if (gen.oper === 37) zoneData.volEnv.sustain = gen.amountInt;
-                                            else if (gen.oper === 38) zoneData.volEnv.release = gen.amountInt;
-                                        }
-
-                                        if (sampleId === -1 && z === inst[instId].ibagNdx) {
-                                            globalInstZone = zoneData;
-                                        } else if (sampleId >= 0 && sampleId < shdr.length) {
-                                            zoneData.sample = shdr[sampleId];
-                                            presetZones.push(zoneData);
-                                        }
+                                    if (sampleId === -1 && z === inst[instId].ibagNdx) {
+                                        globalInstZone = zoneData;
+                                    } else if (sampleId >= 0 && sampleId < shdr.length) {
+                                        zoneData.sample = shdr[sampleId];
+                                        presetZones.push(zoneData);
                                     }
                                 }
                             }
-                            if (presetZones.length > 0) sf2Data.presets.push({ name: preset.name, bank: preset.bank, presetId: preset.preset, zones: presetZones });
                         }
+                        if (presetZones.length > 0) font.presets.push({ name: preset.name, bank: preset.bank, presetId: preset.preset, zones: presetZones });
                     }
-
-                    if (sf2Data.presets.length > 0) {
-                        let optgroup = document.getElementById('sf2-optgroup');
-                        if (!optgroup) {
-                            optgroup = document.createElement('optgroup');
-                            optgroup.id = 'sf2-optgroup';
-                            optgroup.label = `SF2: ${file.name}`;
-                            synthSelect.appendChild(optgroup);
-                        }
-                        optgroup.innerHTML = '';
-
-                        sf2Data.presets.forEach((preset, index) => {
-                            let opt = document.createElement('option');
-                            opt.value = 'sf2_' + index;
-                            let bnk = preset.bank === 128 ? 'Perc' : preset.bank;
-                            opt.textContent = `[Bank ${bnk}] ${preset.name}`;
-                            optgroup.appendChild(opt);
-                        });
-
-                        synthSelect.value = 'sf2_0';
-                        btnUnloadSf2.classList.remove('hidden');
-                        showMessage(`Success! Reconstructed ${sf2Data.presets.length} Presets.`);
-                    } else {
-                        showMessage(`Could not read valid instrument presets.`);
-                    }
-
-                } catch (e) {
-                    showMessage(`Error parsing Soundfont file.`);
                 }
-            };
-            reader.readAsArrayBuffer(file);
+
+
+                if (font.presets.length === 0) return null;
+                if (!append) sf2Fonts = [];
+                sf2Fonts.push(font);
+                return font;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // Rebuild the SF2 groups in the instrument menu, keeping your choice if
+        // it still exists.
+        function rebuildInstrumentList(prefer) {
+            const keep = prefer || synthSelect.value;
+            synthSelect.querySelectorAll('optgroup[data-sf2]').forEach(g => g.remove());
+            sf2Fonts.forEach((font, fi) => {
+                const group = document.createElement('optgroup');
+                group.dataset.sf2 = String(fi);
+                group.label = font.name;
+                font.presets.forEach((preset, pi) => {
+                    const opt = document.createElement('option');
+                    opt.value = 'sf2_' + fi + '_' + pi;
+                    const bnk = preset.bank === 128 ? 'Perc' : preset.bank;
+                    opt.textContent = `[Bank ${bnk}] ${preset.name}`;
+                    group.appendChild(opt);
+                });
+                synthSelect.appendChild(group);
+            });
+            // Keep your choice if it still exists; never strand the picker on a
+            // font that has been unloaded.
+            const stillThere = Array.from(synthSelect.options).some(o => o.value === keep);
+            synthSelect.value = stillThere ? keep : (sf2Fonts.length ? 'sf2_0_0' : 'lute');
+            btnUnloadSf2.classList.toggle('hidden', sf2Fonts.length === 0);
+            btnUnloadSf2.textContent = sf2Fonts.length > 1 ? `Unload ${sf2Fonts.length} SF2s` : 'Unload SF2';
+        }
+
+        const readFileBuffer = (file) => new Promise((res, rej) => {
+            const r = new FileReader();
+            r.onload = (e) => res(e.target.result);
+            r.onerror = rej;
+            r.readAsArrayBuffer(file);
+        });
+
+        async function loadSf2Files(files, append) {
+            const list = Array.from(files).filter(f => /\.sf2$/i.test(f.name));
+            if (!list.length) { showMessage('No .sf2 files there.'); return; }
+            let ok = 0, failed = [];
+            for (let i = 0; i < list.length; i++) {
+                const f = list[i];
+                showMessage(list.length > 1
+                    ? `Attuning ${i + 1} of ${list.length}: ${f.name}\u2026`
+                    : `Attuning ${f.name}\u2026 parsing arcane structures.`);
+                // Yield so that message actually paints before we block on parsing
+                await new Promise(r => setTimeout(r, 0));
+                try {
+                    const buf = await readFileBuffer(f);
+                    const font = parseSf2ArrayBuffer(buf, f.name.replace(/\.sf2$/i, ''), append || ok > 0);
+                    if (font) ok++; else failed.push(f.name);
+                } catch (e) { failed.push(f.name); }
+            }
+            // Land on the first preset of the last font that loaded — you asked
+            // for it, you should hear it.
+            rebuildInstrumentList(ok ? 'sf2_' + (sf2Fonts.length - 1) + '_0' : null);
+            const presets = sf2Fonts.reduce((n, f) => n + f.presets.length, 0);
+            if (ok) {
+                showMessage(`${sf2Fonts.length} soundfont${sf2Fonts.length === 1 ? '' : 's'} attuned \u2014 ${presets} presets.`
+                    + (failed.length ? ` (${failed.length} could not be read)` : ''));
+            } else {
+                showMessage(`Could not read ${failed.length === 1 ? failed[0] : 'those soundfonts'}.`);
+            }
+        }
+
+        sf2Upload.addEventListener('change', (e) => {
+            const files = e.target.files;
+            if (!files || !files.length) return;
+            e.target.value = '';   // otherwise picking the same file again fires nothing  [Lynie]
+            loadSf2Files(files, true);
+        });
+
+        // ── Drag & drop: files, or whole folders of them  [Lynie] ──
+        async function collectSf2Files(entry, out) {
+            if (!entry) return;
+            if (entry.isFile) {
+                if (/\.sf2$/i.test(entry.name)) {
+                    out.push(await new Promise((res, rej) => entry.file(res, rej)));
+                }
+            } else if (entry.isDirectory) {
+                const reader = entry.createReader();
+                // readEntries hands back at most 100 at a time; keep asking until empty
+                for (;;) {
+                    const batch = await new Promise((res, rej) => reader.readEntries(res, rej));
+                    if (!batch.length) break;
+                    for (const e of batch) await collectSf2Files(e, out);
+                }
+            }
+        }
+        const dropVeil = document.getElementById('drop-veil');
+        const dragHasFiles = (e) => e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files');
+        let dragDepth = 0;
+        window.addEventListener('dragenter', (e) => {
+            if (!dragHasFiles(e)) return;
+            dragDepth++;
+            dropVeil.classList.add('is-on');
+        });
+        window.addEventListener('dragleave', () => {
+            dragDepth = Math.max(0, dragDepth - 1);
+            if (dragDepth === 0) dropVeil.classList.remove('is-on');
+        });
+        window.addEventListener('dragover', (e) => {
+            if (!dragHasFiles(e)) return;   // never interfere with dragging text
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        });
+        window.addEventListener('drop', async (e) => {
+            if (!dragHasFiles(e)) return;
+            e.preventDefault();
+            dragDepth = 0;
+            dropVeil.classList.remove('is-on');
+            const items = Array.from(e.dataTransfer.items || []);
+            const entries = items.map(i => i.webkitGetAsEntry && i.webkitGetAsEntry()).filter(Boolean);
+            const files = [];
+            if (entries.length) {
+                for (const en of entries) await collectSf2Files(en, files);
+            } else {
+                for (const f of Array.from(e.dataTransfer.files || [])) files.push(f);
+            }
+            if (!files.length) { showMessage('Nothing there but dust \u2014 drop .sf2 files or a folder of them.'); return; }
+            loadSf2Files(files, true);
         });
 
         // ==========================================
@@ -7491,6 +7699,7 @@
                 const file = e.target.files[0];
                 if (!file) return;
                 showScribeMessage(`Scribing ${file.name}... Please wait.`);
+                e.target.value = '';   // same file, twice in a row  [Lynie]
                 originalFileName = file.name;
                 globalMidiFile = file;
 
@@ -7779,6 +7988,42 @@
         const jamChatLog    = document.getElementById('jam-chat-log');
         const jamChatText   = document.getElementById('jam-chat-text');
         const jamChatSend   = document.getElementById('jam-chat-send');
+        const jamAdvanced   = document.getElementById('jam-advanced');
+        const jamTurnUrl    = document.getElementById('jam-turn-url');
+        const jamTurnUser   = document.getElementById('jam-turn-user');
+        const jamTurnPass   = document.getElementById('jam-turn-pass');
+        const jamRelayOnly  = document.getElementById('jam-relay-only');
+
+        function jamCustomTurn() {
+            const urls = (jamTurnUrl.value || '').trim();
+            if (!urls) return null;
+            const o = { urls };
+            const u = (jamTurnUser.value || '').trim();
+            const c = (jamTurnPass.value || '').trim();
+            if (u) o.username = u;
+            if (c) o.credential = c;
+            return o;
+        }
+        function saveJamTurn() {
+            try {
+                localStorage.setItem('saryaJamTurn', JSON.stringify({
+                    url: jamTurnUrl.value, user: jamTurnUser.value,
+                    pass: jamTurnPass.value, relayOnly: jamRelayOnly.checked
+                }));
+            } catch (e) {}
+        }
+        try {
+            const t = JSON.parse(localStorage.getItem('saryaJamTurn') || 'null');
+            if (t) {
+                jamTurnUrl.value = t.url || '';
+                jamTurnUser.value = t.user || '';
+                jamTurnPass.value = t.pass || '';
+                jamRelayOnly.checked = !!t.relayOnly;
+                if (t.url || t.relayOnly) jamAdvanced.open = true;
+            }
+        } catch (e) {}
+        [jamTurnUrl, jamTurnUser, jamTurnPass].forEach(el => el.addEventListener('change', saveJamTurn));
+        jamRelayOnly.addEventListener('change', saveJamTurn);
         let isJamOpen = false;
 
         // Trystero is fetched only when someone actually opens Jam — the page
@@ -7797,6 +8042,17 @@
             'wss://nostr.data.haus',
             'wss://multiplexer.huszonegy.world',
             'wss://nostr.cool110.xyz'
+        ];
+        // Trystero ships STUN only. STUN merely tells each peer its own public
+        // address so they can connect directly — which a VPN, CGNAT or a strict
+        // firewall makes impossible. TURN is a server that forwards the traffic
+        // instead. It costs almost nothing here: Jam sends tiny note events, not
+        // audio. These free relays are best-effort; anyone can point Jam at their
+        // own under "Trouble connecting?".
+        const JAM_TURN = [
+            { urls: 'turn:openrelay.metered.ca:80',               username: 'openrelayproject', credential: 'openrelayproject' },
+            { urls: 'turn:openrelay.metered.ca:443',              username: 'openrelayproject', credential: 'openrelayproject' },
+            { urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' }
         ];
         let TrysteroJoin = null;
         let TrysteroSockets = null;
@@ -7975,6 +8231,14 @@
                 p.bus.gain.setTargetAtTime(target, now, 0.015);   // short ramp, no click
             } else p.bus.gain.value = target;
         }
+        // Cutting a peer's bus the instant they leave chops the release tail off
+        // whatever they were still holding. Let it ring, then tidy up.  [Lynie]
+        function releasePeerBus(p) {
+            const bus = p.bus;
+            if (!bus) return;
+            p.bus = null;
+            setTimeout(() => { try { bus.disconnect(); } catch (e) {} }, 2500);
+        }
         function stopPeerVoices(p) {
             p.active.forEach(midi => { try { _origStopNote('net_' + p.id + '_' + midi); } catch (e) {} });
             p.lit.forEach((kid) => jamLitRemove(kid, p));
@@ -7984,7 +8248,7 @@
             const p = jam.peers.get(pid);
             if (!p) return;
             stopPeerVoices(p);
-            if (p.bus) { try { p.bus.disconnect(); } catch (e) {} }
+            releasePeerBus(p);
             if (p.pulseTimer) clearTimeout(p.pulseTimer);
             jam.peers.delete(pid);
             jamChatRate.delete(pid);
@@ -8114,8 +8378,19 @@
             try {
                 const roomId = await jamRoomId(roomName, roomPass);
                 jam.code = roomId.slice(0, 6);
+                const custom = jamCustomTurn();
+                const cfg = {
+                    appId: 'saryas-music-thingy-jam-v1',
+                    password: roomPass,
+                    relayUrls: JAM_RELAYS,
+                    turnConfig: custom ? [custom].concat(JAM_TURN) : JAM_TURN
+                };
+                // Relay-only forbids direct connections entirely: peers then see
+                // the TURN server's address instead of yours. It only works if a
+                // TURN server is actually reachable.
+                if (jamRelayOnly.checked) cfg.rtcConfig = { iceTransportPolicy: 'relay' };
                 jam.room = TrysteroJoin(
-                    { appId: 'saryas-music-thingy-jam-v1', password: roomPass, relayUrls: JAM_RELAYS },
+                    cfg,
                     roomId,
                     (e) => { console.warn('Jam join error', e); jamSetStatus('A player has a different password for this room.'); }
                 );
@@ -8174,6 +8449,14 @@
                 if (open === 0) jamSetStatus('No relay reachable \u2014 check your connection, then rejoin.');
                 else jamSetStatus('In \u201c' + jam.roomName + '\u201d \u00b7 ' + open + ' relay' + (open === 1 ? '' : 's'), true);
             }, 3000);
+            // Relays connected but nobody arrives = the room is fine and the
+            // direct connection isn't. Say so rather than let them wonder.
+            clearTimeout(jam.lonelyTimer);
+            jam.lonelyTimer = setTimeout(() => {
+                if (!jam.active || jam.peers.size > 0) return;
+                jamAddSystemMessage('Still alone? If a friend is definitely in this room (same code as yours), a VPN or strict firewall is probably blocking the direct connection \u2014 open \u201cTrouble connecting?\u201d below.');
+                jamAdvanced.open = true;
+            }, 25000);
         }
         function leaveJam() {
             if (jam.room) { try { jam.room.leave(); } catch (e) {} }
@@ -8181,9 +8464,10 @@
             jam.sendNote = jam.sendId = jam.sendChat = null;
             jam.peers.forEach(p => {
                 stopPeerVoices(p);
-                if (p.bus) { try { p.bus.disconnect(); } catch (e) {} }
+                releasePeerBus(p);
                 if (p.pulseTimer) clearTimeout(p.pulseTimer);
             });
+            clearTimeout(jam.lonelyTimer);
             jam.peers.clear(); jamLocalNotes.clear(); jamChatRate.clear();
             jamJoinBtn.textContent = 'Join';
             btnToggleJam.classList.remove('is-live');
