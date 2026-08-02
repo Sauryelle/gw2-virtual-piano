@@ -2949,6 +2949,18 @@
            ============================================================== */
         .takes-bar { display: flex; gap: 6px; flex-wrap: wrap; }
         .takes-bar .btn { padding: 8px 12px; font-size: 0.78rem; }
+        .takes-import {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px;
+            background: var(--well);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+        }
+        .takes-import.hidden { display: none !important; }
+        .takes-import-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .takes-import .btn { font-size: 0.76rem; padding: 7px 10px; }
         .takes-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
         .takes-empty {
             margin: 0; padding: 24px 12px;
@@ -3000,6 +3012,174 @@
         .take-instr { flex: 1; min-width: 0; padding: 4px 8px; font-size: 0.74rem; }
         .take-lbl { font-size: 0.72rem; color: var(--text-muted); }
         .take-tval { font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-acc); min-width: 22px; text-align: center; }
+
+        /* ==============================================================
+           THE CONSOLE — a tab strip and one tray
+           Six groups open at once wrapped into a ragged L with holes in it.
+           Now the names live on one strip, the transport stays pinned to the
+           right, and only the group you asked for unfolds beneath.
+           ============================================================== */
+        .dock-bar {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 2px 4px;
+        }
+        .dock-tabs { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; justify-content: center; }
+        .dock-transport {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 10px;
+            border-radius: var(--r-pill);
+            border: 1px solid var(--stroke-soft);
+            background: var(--wash);
+        }
+        /* The transport is always on, so it should never look like a tab */
+        .dock-transport .dock-item { height: 34px; }
+        /* Each group name becomes a pill */
+        .dock-tabs .dock-group-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 13px;
+            border-radius: var(--r-pill);
+            border: 1px solid transparent;
+            background: none;
+            cursor: pointer;
+            font-family: var(--font-label);
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: var(--label-tracking);
+            text-transform: uppercase;
+            color: var(--text-muted);
+            transition: color .18s, background .18s, border-color .18s;
+        }
+        .dock-tabs .dock-group-label:hover { color: var(--text-primary); background: var(--wash); }
+        .dock-tabs .dock-group-label.is-on {
+            color: var(--text-acc);
+            background: var(--surface-2);
+            border-color: var(--stroke-mid);
+            box-shadow: var(--shadow-sm);
+        }
+        .dock-tabs .dock-caret { display: none; }   /* the pill says it better */
+        .dock-tabs .dock-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--good);
+            box-shadow: 0 0 5px var(--good);
+            opacity: 0;
+            transition: opacity .2s;
+        }
+        .dock-tabs .dock-dot.on { opacity: 1; }
+
+        /* The tray opens by growing its own row — no measuring, no jumping */
+        .dock-tray {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows .34s cubic-bezier(.4, 0, .2, 1);
+        }
+        .dock-tray.is-open { grid-template-rows: 1fr; }
+        .dock-tray-inner { overflow: hidden; min-height: 0; }
+        .dock-pane {
+            display: none;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 8px 10px;
+            padding: 14px 8px 4px;
+        }
+        .dock-pane.is-on { display: flex; }
+        .dock-tray.is-open .dock-pane.is-on { animation: dockRise .34s cubic-bezier(.4, 0, .2, 1); }
+        @keyframes dockRise {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: none; }
+        }
+        /* Inside a pane the old row wrapper is just a passthrough */
+        .dock-pane .dock-group-row {
+            display: contents;   /* the wrapper stops being a box; its items centre with the rest */
+        }
+        @media (max-width: 720px) {
+            .dock-transport { padding-left: 0; border-left: none; }
+        }
+
+        .scribe-note {
+            margin: 0;
+            font-size: 0.74rem;
+            line-height: 1.45;
+            color: var(--text-muted);
+        }
+        .orch-strip {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px;
+            background: var(--well);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+        }
+        .orch-strip.hidden { display: none !important; }
+        .orch-row { display: flex; align-items: center; gap: 8px; }
+        .orch-seek {
+            flex: 1;
+            height: 10px;
+            border-radius: var(--r-pill);
+            background: var(--well-deep);
+            border: 1px solid var(--stroke-soft);
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .orch-seek-fill { height: 100%; width: 0; background: var(--grad-acc-computed); transition: width 0.1s linear; }
+        .orch-time { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); min-width: 44px; text-align: right; }
+        #orch-loop.active { color: var(--text-acc); border-color: var(--stroke-strong); }
+        .scribe-track-mix { display: flex; align-items: center; gap: 4px; }
+        .scribe-track-mix button {
+            width: 22px; height: 22px;
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-sm);
+            background: var(--surface-1);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.66rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .scribe-track-mix button.active { color: var(--text-acc); border-color: var(--stroke-strong); }
+        .scribe-track-mix .vol { width: 52px; }
+        .scribe-tracks {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 10px;
+            background: var(--well);
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-md);
+        }
+        .scribe-tracks.hidden { display: none !important; }
+        .scribe-track-row { display: flex; align-items: center; gap: 8px; }
+        .scribe-track-name {
+            flex: 1; min-width: 0;
+            font-size: 0.8rem; font-weight: 600;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .scribe-shift {
+            display: flex; align-items: center; gap: 3px;
+            font-family: var(--font-mono); font-size: 0.72rem;
+        }
+        .scribe-shift button {
+            width: 22px; height: 22px;
+            border: 1px solid var(--stroke-soft);
+            border-radius: var(--r-sm);
+            background: var(--surface-1);
+            color: var(--text-primary);
+            cursor: pointer;
+            line-height: 1;
+        }
+        .scribe-shift button:hover { border-color: var(--stroke-strong); }
+        .scribe-shift .val { min-width: 26px; text-align: center; color: var(--text-acc); }
+        .scribe-shift .lbl { color: var(--text-muted); font-size: 0.62rem; letter-spacing: 0.06em; }
 
         /* Collapsed side panels must not contribute height to the stage row */
         #songbook-panel:not(.is-open) > *,
@@ -3368,6 +3548,8 @@
                                 <button id="sustain-lock" class="dock-item dock-item--btn" type="button" aria-pressed="false" title="Keep sustain on">
                                     <svg class="dock-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                                 </button>
+                                <button id="key-record" class="dock-item dock-item--btn" type="button" title="The key that starts and stops recording — click, then press a new key"></button>
+                                <button id="key-play" class="dock-item dock-item--btn" type="button" title="The key that plays the recording — click, then press a new key"></button>
                                 <div class="dock-item" title="How hard your keyboard and mouse strike the keys">
                                     <svg class="dock-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg>
                                     <input type="range" id="velocity-slider" class="slider" min="0.2" max="1" step="0.01" value="1" style="width:66px;" aria-label="Velocity">
@@ -3400,6 +3582,38 @@
                                 </label>
                                 <div class="dock-item dock-item--status" aria-live="polite">
                                     <span id="rec-status">idle</span>
+                                </div>
+                            </div>
+                            <div class="dock-group-row">
+                                <label class="dock-item dock-item--toggle" title="One bar of clicks before recording starts">
+                                    <input type="checkbox" id="countin-toggle" class="check">
+                                    <span class="dock-label">Count-in</span>
+                                </label>
+                                <label class="dock-item dock-item--toggle" title="Arm the recorder and let your first note start the clock">
+                                    <input type="checkbox" id="startfirst-toggle" class="check">
+                                    <span class="dock-label">Start on 1st note</span>
+                                </label>
+                                <div class="dock-item" title="Tidy the timing when you stop">
+                                    <span class="dock-label dock-label--dim">Quantize</span>
+                                    <select id="quantize-select" class="dock-select" aria-label="Quantize">
+                                        <option value="off">Off</option>
+                                        <option value="4">1/4</option>
+                                        <option value="8">1/8</option>
+                                        <option value="8t">1/8 triplet</option>
+                                        <option value="16">1/16</option>
+                                    </select>
+                                </div>
+                                <div class="dock-item" title="How long a loop lasts before it comes round again">
+                                    <span class="dock-label dock-label--dim">Loop</span>
+                                    <select id="looplen-select" class="dock-select" aria-label="Loop length">
+                                        <option value="free">As played</option>
+                                        <option value="snap">Snap to bar</option>
+                                        <option value="1">1 bar</option>
+                                        <option value="2">2 bars</option>
+                                        <option value="4">4 bars</option>
+                                        <option value="8">8 bars</option>
+                                        <option value="16">16 bars</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -3495,6 +3709,7 @@
                         <p class="drawer-subtitle">Convert arcane MIDI magic.</p>
                     </div>
                     <div style="display:flex; gap:8px; align-items:center;">
+                        <button id="scribe-merge" class="btn btn-ghost" type="button" style="font-size:0.74rem;" title="Fold every part into one">Merge parts</button>
                         <select id="bprSelect" class="input" style="padding:6px 10px; font-size:0.78rem;" title="Bars per row">
                             <option value="4">4 BPR</option>
                             <option value="3">3 BPR</option>
@@ -3512,6 +3727,43 @@
                     Upload MIDI File
                 </label>
                 <input type="file" id="midiFileInput" accept=".mid,.midi" style="display:none;">
+
+                <!-- Auto-arranger  [Lynie] -->
+                <div style="display:flex; gap:8px; align-items:stretch;">
+                    <select id="scribe-arrange-mode" class="input" style="flex:1; padding:8px 10px; font-size:0.78rem;" aria-label="Arrange mode">
+                        <option value="2parts">GW2 arrange → Melody + Bass (2 parts)</option>
+                        <option value="merged">GW2 arrange → Merged (1 part)</option>
+                    </select>
+                    <button id="scribe-arrange" class="btn" type="button" style="flex:0 0 96px; justify-content:center;" title="Reduce the loaded MIDI to an easy, GW2-playable arrangement">Arrange</button>
+                </div>
+                <p class="scribe-note">Arranging is automatic and approximate — it transposes to white keys, trims chords to three notes and folds octaves into reach. Some songs take it better than others.</p>
+
+                <!-- Paste a tab / import a take code  [Lynie] -->
+                <div style="display:flex; gap:8px;">
+                    <button id="scribe-paste-tab" class="btn" type="button" style="flex:1;" title="Read the tab text below back into notes">Read tab below</button>
+                    <button id="scribe-import-token" class="btn" type="button" style="flex:1;" title="Paste a shared take code (SMTR1:…) and turn it into a tab">From take code</button>
+                    <button id="scribe-to-takes" class="btn" type="button" style="flex:1;" title="Send everything currently loaded to the Takes looper">To Takes</button>
+                </div>
+
+                <!-- Orchestra: play what's loaded, seek, loop, live tempo  [Lynie] -->
+                <div id="orch-strip" class="orch-strip hidden">
+                    <div class="orch-row">
+                        <button id="orch-play" class="btn btn-primary" type="button" style="flex:0 0 84px; justify-content:center;">Play</button>
+                        <button id="orch-loop" class="btn btn-ghost" type="button" aria-pressed="false" title="Repeat at the end">&#8635;</button>
+                        <div class="orch-seek" id="orch-seek" title="Click to skip to a point">
+                            <div class="orch-seek-fill" id="orch-seek-fill"></div>
+                        </div>
+                        <span id="orch-time" class="orch-time">0:00</span>
+                    </div>
+                    <div class="orch-row">
+                        <span class="dock-label--dim" style="font-size:0.68rem;">TEMPO</span>
+                        <input type="range" id="orch-tempo" class="slider" min="0.5" max="1.5" step="0.05" value="1" style="flex:1;" title="Playback speed — live, mid-play">
+                        <span id="orch-tempo-val" class="orch-time">1.00×</span>
+                    </div>
+                </div>
+
+                <!-- Per-part transpose + mixer, appears after a conversion -->
+                <div id="scribe-tracks" class="scribe-tracks hidden"></div>
 
                 <div style="display:flex; gap:8px;">
                     <button id="copyTabBtn" class="btn" type="button" style="flex:1; flex-direction:column; padding:10px; gap:2px;">
@@ -3580,8 +3832,18 @@
                     <button id="btn-takes-playall" class="btn" type="button" title="Play every unmuted take together">&#9654; All</button>
                     <button id="btn-takes-stopall" class="btn btn-ghost" type="button">Stop</button>
                     <button id="btn-takes-merge" class="btn btn-ghost" type="button" title="Fold every take into one new take">Merge</button>
+                    <button id="btn-takes-import" class="btn btn-ghost" type="button" title="Bring in takes from a file or a shared code">Import</button>
                 </div>
 
+                <div id="takes-import" class="takes-import hidden">
+                    <input type="text" id="takes-token" class="input" spellcheck="false" placeholder="Paste a shared take code (SMTR1:…)" autocomplete="off">
+                    <div class="takes-import-row">
+                        <label for="takes-file" class="btn" style="flex:1; text-align:center;">Load .json</label>
+                        <input type="file" id="takes-file" accept=".json,application/json" class="hidden">
+                        <button id="btn-takes-token-go" class="btn btn-primary" type="button" style="flex:1;">Import code</button>
+                        <button id="btn-takes-exportall" class="btn btn-ghost" type="button" title="Download every take as one .json">Export all</button>
+                    </div>
+                </div>
                 <div id="takes-list" class="takes-list"></div>
             </aside>
 
@@ -3914,7 +4176,7 @@
         <div class="help-credits">
             <div class="help-section-title" style="margin-bottom:10px;">Credits</div>
             <p class="credit-line"><b>Sarya</b> — the instrument, the songbook, and every tab in it.</p>
-            <p class="credit-line"><b>Lynie</b> — live Jam rooms and chat. Built in her own fork of this project, merged back here with thanks.</p>
+            <p class="credit-line"><b>Lynie</b> — live Jam rooms and chat, the Takes looper, velocity and the Piano voice, reverb, the scale guide, MIDI out, the recorder's count-in and quantize, exports, the auto-arranger and the Orchestra. Built in her own fork of this project, merged back here with thanks.</p>
             <p class="credit-line"><b>Powerina</b> — the tab format the Scribe writes.</p>
             <p class="credit-line"><b>Jenpai</b> — the spreadsheet export.</p>
         </div>
@@ -7455,9 +7717,13 @@
         }
 
         sf2Upload.addEventListener('change', (e) => {
-            const files = e.target.files;
-            if (!files || !files.length) return;
-            e.target.value = '';   // otherwise picking the same file again fires nothing  [Lynie]
+            // input.files is LIVE. Clearing value (so the same file can be picked
+            // twice) empties that same list in Chromium, so the load found nothing
+            // and failed silently — while Firefox kept the list and worked. Take a
+            // real copy first, then reset.
+            const files = Array.from(e.target.files || []);
+            e.target.value = '';
+            if (!files.length) return;
             loadSf2Files(files, true);
         });
 
@@ -7621,6 +7887,79 @@
         let recordStartTime = 0;
         let recordedEvents = []; // {t, type, offset, octave, elementId}
         let playbackTimers = [];
+        let armedForFirstNote = false;
+        let countingIn = false;
+        const countInToggle = document.getElementById('countin-toggle');
+        const startFirstToggle = document.getElementById('startfirst-toggle');
+        const quantizeSelect = document.getElementById('quantize-select');
+        const loopLenSelect = document.getElementById('looplen-select');
+        const takeBpm = () => {
+            const v = parseInt(bpmInput.value, 10);
+            return (v >= 20 && v <= 300) ? v : 120;
+        };
+        const barMs = () => (60000 / takeBpm()) * 4;
+
+        // Snap note starts to a grid, and move each note-off by the same amount,
+        // so nothing changes length — only when it lands.  [Lynie]
+        function quantizeTake(events, grid) {
+            if (grid === 'off' || !events.length) return events;
+            const beat = 60000 / takeBpm();
+            const step = grid === '4' ? beat : grid === '8' ? beat / 2 : grid === '8t' ? beat / 3 : beat / 4;
+            const out = events.map(e => ({ ...e }));
+            const shifts = new Map();
+            out.forEach(e => {
+                if (e.type === 'down') {
+                    const snapped = Math.max(0, Math.round(e.t / step) * step);
+                    const delta = snapped - e.t;
+                    e.t = snapped;
+                    if (!shifts.has(e.elementId)) shifts.set(e.elementId, []);
+                    shifts.get(e.elementId).push(delta);
+                } else {
+                    const q = shifts.get(e.elementId);
+                    const delta = (q && q.length) ? q.shift() : 0;
+                    e.t = Math.max(0, e.t + delta);
+                }
+            });
+            out.sort((a, b) => a.t - b.t || (a.type === 'down' ? 1 : -1));
+            return out;
+        }
+
+        // How long one pass lasts: as played, rounded up to a whole bar, or a
+        // fixed number of bars at the current tempo.  [Lynie]
+        function loopLengthMs() {
+            const last = recordedEvents.length ? recordedEvents[recordedEvents.length - 1].t : 0;
+            const mode = loopLenSelect.value;
+            if (mode === 'free') return last + 200;
+            const bar = barMs();
+            if (mode === 'snap') return Math.max(bar, Math.ceil((last + 1) / bar) * bar);
+            return bar * (parseInt(mode, 10) || 1);
+        }
+
+        // Four clicks in the tempo you are about to play in.  [Lynie]
+        function runCountIn() {
+            return new Promise(resolve => {
+                initAudio();
+                countingIn = true;
+                const beat = 60000 / takeBpm();
+                const t0 = audioCtx.currentTime + 0.06;
+                const savedBeat = metronomeBeat;
+                for (let i = 0; i < 4; i++) {
+                    metronomeBeat = i;               // first click is the downbeat
+                    playClick(t0 + i * (beat / 1000));
+                }
+                metronomeBeat = savedBeat;
+                let n = 4;
+                recStatus.textContent = 'Count-in\u2026 ' + n;
+                const iv = setInterval(() => {
+                    n--;
+                    if (!countingIn) { clearInterval(iv); resolve(false); return; }
+                    if (n > 0) { recStatus.textContent = 'Count-in\u2026 ' + n; return; }
+                    clearInterval(iv);
+                    countingIn = false;
+                    resolve(true);
+                }, beat);
+            });
+        }
 
         // Try to restore the last recording — survives refresh
         try {
@@ -7640,6 +7979,13 @@
         // to be selected at playback time.  [Lynie]
         function recordEvent(type, offset, octave, elementId, velocity) {
             if (!isRecording) return;
+            // Armed and waiting: your first note is bar 1, beat 1.  [Lynie]
+            if (armedForFirstNote) {
+                if (type !== 'down') return;
+                armedForFirstNote = false;
+                recordStartTime = performance.now();
+                recStatus.textContent = 'Recording\u2026';
+            }
             const ev = { t: performance.now() - recordStartTime, type, offset, octave, elementId };
             if (type === 'down') {
                 ev.i = synthSelect.value;
@@ -7648,25 +7994,51 @@
             recordedEvents.push(ev);
         }
 
-        function startRecording() {
+        async function startRecording() {
             stopPlayback();
+            if (countInToggle.checked) {
+                btnRecord.classList.add('active');
+                recDot.classList.add('active');
+                recLabel.textContent = 'Stop';
+                const finished = await runCountIn();
+                if (!finished) return;   // cancelled mid-count
+            }
             recordedEvents = [];
             recordStartTime = performance.now();
+            armedForFirstNote = startFirstToggle.checked;
             isRecording = true;
             btnRecord.classList.add('active');
             recDot.classList.add('active');
             recLabel.textContent = 'Stop';
-            recStatus.textContent = 'Recording…';
+            recStatus.textContent = armedForFirstNote ? 'Armed \u2014 play to begin' : 'Recording\u2026';
             btnPlayRecording.disabled = true;
             btnPlayRecording.style.opacity = '0.5';
             showMessage('Recording performance…');
         }
 
         function stopRecording() {
+            // Cancel a count-in cleanly, rather than recording four beats of nothing
+            if (countingIn) {
+                countingIn = false;
+                btnRecord.classList.remove('active');
+                recDot.classList.remove('active');
+                recLabel.textContent = 'Record';
+                recStatus.textContent = 'idle';
+                return;
+            }
             isRecording = false;
+            armedForFirstNote = false;
+            recordedEvents = quantizeTake(recordedEvents, quantizeSelect.value);
             btnRecord.classList.remove('active');
             recDot.classList.remove('active');
             recLabel.textContent = 'Record';
+            if (overdubTarget) {
+                const layered = recordedEvents;
+                recordedEvents = [];
+                recStatus.textContent = 'idle';
+                finishOverdub(layered);
+                return;   // an overdub belongs to its take, not to the Recorder
+            }
             const noteCount = recordedEvents.filter(e => e.type === 'down').length;
             recStatus.textContent = noteCount > 0 ? `${noteCount} notes captured` : 'Empty';
             if (noteCount > 0) {
@@ -7687,31 +8059,37 @@
             recStatus.textContent = 'Playing back…';
 
             initAudio();
-            const startAt = performance.now();
-            recordedEvents.forEach(ev => {
-                const timer = setTimeout(() => {
+            // Every pass is timed from ONE origin. The old loop re-entered
+            // playRecording() from a setTimeout, so each lap inherited the last
+            // lap's lateness and the groove slid away from the metronome.  [Lynie]
+            const t0 = performance.now();
+            const loopLen = loopLengthMs();
+            const schedulePass = (pass) => {
+                if (!isPlayingBack) return;
+                const base = t0 + pass * loopLen;
+                recordedEvents.forEach(ev => {
+                    // A pass-stamped id, so a long note from the previous lap
+                    // can't be cut short by the same note starting on this one.
+                    const id = 'pb-' + pass + '-' + ev.elementId;
+                    playbackTimers.push(setTimeout(() => {
+                        if (!isPlayingBack) return;
+                        if (ev.type === 'down') {
+                            playNote(ev.offset, ev.octave, id, ev.i || undefined, undefined, ev.v);
+                            lightCorrespondingKey(ev.offset, ev.octave, true);
+                        } else {
+                            stopNote(id);
+                            lightCorrespondingKey(ev.offset, ev.octave, false);
+                        }
+                    }, Math.max(0, base + ev.t - performance.now())));
+                });
+                const endsAt = base + loopLen;
+                playbackTimers.push(setTimeout(() => {
                     if (!isPlayingBack) return;
-                    if (ev.type === 'down') {
-                        // Use a synthetic element id so playback doesn't collide with live input
-                        playNote(ev.offset, ev.octave, 'pb-' + ev.elementId, ev.i || undefined, undefined, ev.v);
-                        lightCorrespondingKey(ev.offset, ev.octave, true);
-                    } else {
-                        stopNote('pb-' + ev.elementId);
-                        lightCorrespondingKey(ev.offset, ev.octave, false);
-                    }
-                }, ev.t);
-                playbackTimers.push(timer);
-            });
-
-            // Schedule end-of-playback handler
-            const totalDuration = recordedEvents[recordedEvents.length - 1].t + 200;
-            playbackTimers.push(setTimeout(() => {
-                if (loopToggle.checked && isPlayingBack) {
-                    playRecording(); // loop
-                } else {
-                    stopPlayback();
-                }
-            }, totalDuration));
+                    if (loopToggle.checked) schedulePass(pass + 1);
+                    else stopPlayback();
+                }, Math.max(0, endsAt - performance.now() - (loopToggle.checked ? 80 : 0))));
+            };
+            schedulePass(0);
         }
 
         function stopPlayback() {
@@ -7736,7 +8114,9 @@
         }
 
         btnRecord.addEventListener('click', () => {
-            if (isRecording) stopRecording();
+            // While counting in we are not "recording" yet, but the button says
+            // Stop — so it must stop, not start a second count-in.
+            if (isRecording || countingIn) stopRecording();
             else startRecording();
         });
         btnPlayRecording.addEventListener('click', () => {
@@ -7798,20 +8178,35 @@
                 if (isArchiveOpen()) { closeArchive(); return; }
                 if (isSongbookOpen) { btnToggleSongbook.click(); return; }
                 if (isScribeOpen) { btnToggleScribe.click(); return; }
-            } else if (e.code === 'KeyR' && !bindings.notes.includes('KeyR')) {
-                // Only trigger record if R isn't bound to a note in GW2 view
-                if (currentViewMode === 'gw2') {
+            } else if (e.code === transportKeys.record && !bindings.notes.includes(e.code)) {
+                // Only fire when the key isn't playing a note in this view
+                if (currentViewMode === 'gw2' || transportKeys.record !== 'KeyR') {
                     e.preventDefault();
                     btnRecord.click();
                 }
-            } else if (e.code === 'Space' && !bindings.notes.includes('Space')) {
+            } else if (e.code === transportKeys.play && !bindings.notes.includes(e.code)) {
                 e.preventDefault();
                 btnPlayRecording.click();
             }
         });
 
+        // Which keys drive the transport — rebindable.  [Lynie]
+        let transportKeys = { record: 'KeyR', play: 'Space' };
+        try {
+            const tk = JSON.parse(localStorage.getItem('saryaTransportKeys') || 'null');
+            if (tk && typeof tk.record === 'string' && typeof tk.play === 'string') transportKeys = tk;
+        } catch (e) {}
+
         let originalFileName = "converted";
         let globalMidiFile = null;
+        // In-memory MIDI for content the Scribe generated itself (arranger, pasted
+        // tab, take code) — there is no File on disk for these.  [Lynie]
+        let scribeMidi = null;
+        let lastMidiObj = null;          // whatever was parsed last, for arrange/merge/takes
+        let scribeTrackShifts = [];      // per-part { oct, semi }, drives the notation
+        let arrangeSource = null;        // snapshot of the ORIGINAL import's notes
+        let arrangeBpm = 120;
+        let preMergeMidi = null;         // for un-merging
 
         const bprSelect = document.getElementById("bprSelect");
         const midiInput = document.getElementById("midiFileInput");
@@ -7910,11 +8305,15 @@
             return { note: key, octaveDiff: octaveDiff }
         }
 
-        const parseFile = async (arrayBuffer) => {
+        const parseFile = async (input, trackShifts) => {
             if (!MidiLib) {
                 throw new Error("MIDI library failed to load. Try refreshing the page.");
             }
-            let midi = new MidiLib.Midi(arrayBuffer);
+            trackShifts = trackShifts || [];   // [{oct, semi}] aligned to the filtered track order
+            // Bytes from an upload, or an already-built Midi (arranger, paste, token).
+            // parseFile mutates note data, so object callers must hand us a clone.
+            let midi = (MidiLib && input instanceof MidiLib.Midi) ? input : new MidiLib.Midi(input);
+            lastMidiObj = (typeof midi.clone === 'function') ? midi.clone() : midi;
             const ppq = midi.header.ppq; const quarter = ppq;
             const multipleSignatures = midi.header.timeSignatures.length > 1;
             let gw2 = ''; const tempos = midi.header.tempos;
@@ -7926,7 +8325,12 @@
 
             midi.tracks = midi.tracks.reduce((sum, val) => { if (val.notes && val.notes.length > 0) sum.push(val); return sum; }, []);
 
-            const tracks = midi.tracks.map(track => {
+            const tracks = midi.tracks.map((track, trackIdx) => {
+                // Per-part transpose: swap the global knobs for this track's own,
+                // restore after. (transposeNote and getOctaveBrackets read them.)
+                const shift = trackShifts[trackIdx] || { oct: 0, semi: 0 };
+                settings.steps = shift.semi | 0;
+                settings.octaveOffset = -(shift.oct | 0);   // musical up = bracket middle down
                 let currTimeSig = rawTimeSigs[0].timeSignature;
                 let timeSigIndex = 1; let tempoIndex = 1;
                 let units = timeSigUnits(currTimeSig, ppq);
@@ -8050,6 +8454,7 @@
                     bar.text = gw2;
                     return bar;
                 });
+                settings.steps = 0; settings.octaveOffset = 0;
                 return { name: track.name || "Instrument", bars: bars };
             })
             return tracks;
@@ -8070,7 +8475,7 @@
         });
 
         async function processMidiFile() {
-            if (!globalMidiFile) return;
+            if (!globalMidiFile && !scribeMidi) return;
 
             // Ensure MIDI library is loaded before processing
             await midiReady;
@@ -8078,10 +8483,17 @@
                 throw new Error("MIDI library unavailable. Refresh the page to retry.");
             }
 
-            const arrayBuffer = await globalMidiFile.arrayBuffer();
-            const tracks = await parseFile(arrayBuffer);
+            // In-memory content (arranger, pasted tab, take code) outranks the file;
+            // @tonejs/midi's bundled toArray() is broken, so we pass the object
+            // itself — cloned, because parseFile mutates what it reads.
+            const source = scribeMidi
+                ? (typeof scribeMidi.clone === 'function' ? scribeMidi.clone() : scribeMidi)
+                : await globalMidiFile.arrayBuffer();
+            const tracks = await parseFile(source, scribeTrackShifts);
+            renderScribeTracks(tracks.map(t => t.name));
+            if (typeof orchRefresh === 'function') orchRefresh();
 
-            let tabNotes = globalMidiFile.name + "\n\n";
+            let tabNotes = (scribeMidi ? (scribeMidi.name || originalFileName) : globalMidiFile.name) + "\n\n";
             tracks.forEach(track => {
                 tabNotes += "--- " + track.name + " ---\n";
                 let trackStr = "";
@@ -8102,6 +8514,10 @@
                 e.target.value = '';   // same file, twice in a row  [Lynie]
                 originalFileName = file.name;
                 globalMidiFile = file;
+                scribeMidi = null;            // a real file outranks generated content
+                scribeTrackShifts = [];
+                arrangeSource = null;         // next Arrange snapshots THIS import
+                preMergeMidi = null;
 
                 bprSelect.value = "4";
                 settings.barsPerRow = 4;
@@ -9241,48 +9657,102 @@
         // Six groups is a lot to look at when you only wanted a piano. Each one
         // folds to its label; a closed group that is still doing something keeps
         // a lit dot, so nothing is ever hidden and forgotten.
-        const DOCK_OPEN_DEFAULT = { sound: true, scale: false, ambience: false, tempo: false, performance: true, recorder: true };
-        let dockOpen = { ...DOCK_OPEN_DEFAULT };
+        // The console had six groups fighting for one wrapping row, which folded
+        // into a ragged L with holes in it. Rebuild it as a strip of names with
+        // the transport pinned alongside, and one tray that unfolds beneath —
+        // so there is never more than a single row of controls on screen.
+        // The nodes are MOVED, never recreated, so every listener survives.
+        const consoleEl = document.querySelector('.console');
+        const dockBar = document.createElement('div');
+        dockBar.className = 'dock-bar';
+        const dockTabs = document.createElement('div');
+        dockTabs.className = 'dock-tabs';
+        const dockTransport = document.createElement('div');
+        dockTransport.className = 'dock-transport';
+        dockBar.append(dockTabs, dockTransport);
+
+        const dockTray = document.createElement('div');
+        dockTray.className = 'dock-tray';
+        const dockTrayInner = document.createElement('div');
+        dockTrayInner.className = 'dock-tray-inner';
+        dockTray.appendChild(dockTrayInner);
+
+        Array.from(consoleEl.querySelectorAll('.dock-group')).forEach(group => {
+            const label = group.querySelector('.dock-group-label');
+            if (!label) return;
+            const g = label.dataset.group;
+            const pane = document.createElement('div');
+            pane.className = 'dock-pane';
+            pane.dataset.group = g;
+            group.querySelectorAll('.dock-group-row').forEach(row => pane.appendChild(row));
+            dockTabs.appendChild(label);
+            dockTrayInner.appendChild(pane);
+            group.remove();
+        });
+        consoleEl.append(dockBar, dockTray);
+
+        // The whole Recorder lives in its own tray — transport included.
+        dockTransport.remove();
+        // Any row left empty must go, or it still claims space (.dock-group-row
+        // carries flex: 1, so an empty one shoves its neighbours sideways).
+        dockTrayInner.querySelectorAll('.dock-group-row').forEach(row => {
+            if (!row.children.length) row.remove();
+        });
+
+        let dockOpenGroup = 'sound';
         try {
             const saved = JSON.parse(localStorage.getItem('saryaDock') || 'null');
-            if (saved) Object.keys(dockOpen).forEach(k => { if (typeof saved[k] === 'boolean') dockOpen[k] = saved[k]; });
+            if (saved && (typeof saved.open === 'string' || saved.open === null)) dockOpenGroup = saved.open;
         } catch (e) {}
 
         function applyDockGroups() {
-            document.querySelectorAll('.dock-group-label').forEach(btn => {
-                const g = btn.dataset.group;
-                const open = dockOpen[g] !== false;
-                btn.closest('.dock-group').classList.toggle('is-closed', !open);
-                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            const valid = !!dockOpenGroup && !!dockTrayInner.querySelector('.dock-pane[data-group="' + dockOpenGroup + '"]');
+            if (!valid) dockOpenGroup = null;
+            dockTabs.querySelectorAll('.dock-group-label').forEach(btn => {
+                const on = btn.dataset.group === dockOpenGroup;
+                btn.classList.toggle('is-on', on);
+                btn.setAttribute('aria-expanded', on ? 'true' : 'false');
             });
+            dockTrayInner.querySelectorAll('.dock-pane').forEach(p => {
+                p.classList.toggle('is-on', p.dataset.group === dockOpenGroup);
+            });
+            dockTray.classList.toggle('is-open', !!dockOpenGroup);
             updateDockDots();
         }
         function updateDockDots() {
+            // A folded group that is still doing something keeps a lit dot, so
+            // nothing is ever hidden AND forgotten.
             const busy = {
                 sound: sf2Fonts.length > 0,
                 scale: scaleTypeSel.value !== 'off',
                 ambience: ambienceKind !== 'off',
                 tempo: metronomeToggle.checked,
                 performance: sustainLocked,
-                recorder: typeof isRecording !== 'undefined' && isRecording
+                recorder: (typeof isRecording !== 'undefined' && isRecording)
+                          || (typeof isPlayingBack !== 'undefined' && isPlayingBack)
+                          || quantizeSelect.value !== 'off' || loopLenSelect.value !== 'free'
+                          || countInToggle.checked || startFirstToggle.checked
             };
-            document.querySelectorAll('.dock-group-label').forEach(btn => {
+            dockTabs.querySelectorAll('.dock-group-label').forEach(btn => {
                 const dot = btn.querySelector('.dock-dot');
                 if (dot) dot.classList.toggle('on', !!busy[btn.dataset.group]);
             });
         }
-        document.querySelectorAll('.dock-group-label').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const g = btn.dataset.group;
-                dockOpen[g] = dockOpen[g] === false;
-                try { localStorage.setItem('saryaDock', JSON.stringify(dockOpen)); } catch (e) {}
-                applyDockGroups();
-            });
+        dockTabs.addEventListener('click', (e) => {
+            const btn = e.target.closest('.dock-group-label');
+            if (!btn) return;
+            // Clicking the open one closes the tray: the console becomes a single slim strip.
+            dockOpenGroup = (dockOpenGroup === btn.dataset.group) ? null : btn.dataset.group;
+            try { localStorage.setItem('saryaDock', JSON.stringify({ open: dockOpenGroup })); } catch (e) {}
+            applyDockGroups();
         });
-        // Anything that changes a group's "busy" state repaints the dots
-        [scaleTypeSel, ambienceSelect, metronomeToggle].forEach(el => el.addEventListener('change', updateDockDots));
+        [scaleTypeSel, ambienceSelect, metronomeToggle, quantizeSelect, loopLenSelect,
+         countInToggle, startFirstToggle].forEach(el => el.addEventListener('change', updateDockDots));
         sustainLockBtn.addEventListener('click', () => setTimeout(updateDockDots, 0));
-        document.getElementById('btn-record').addEventListener('click', () => setTimeout(updateDockDots, 0));
+        ['btn-record', 'btn-play-recording'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('click', () => setTimeout(updateDockDots, 0));
+        });
         applyDockGroups();
 
         // ==========================================
@@ -9298,16 +9768,69 @@
         let takes = [];
         let isTakesOpen = false;
         let takeRaf = null;
+        let overdubTarget = null;
+
+        // Play a take and record on top of it — one pass, so what you add lands
+        // exactly where you played it. Stopping folds the new notes in.  [Lynie]
+        function startOverdub(t) {
+            if (isRecording || countingIn) stopRecording();
+            stopAllTakes();
+            overdubTarget = t;
+            const wasLoop = t.loop;
+            t.loop = false;                 // one pass only, then it folds in
+            playTake(t, 0);
+            t.loop = wasLoop;
+            recordedEvents = [];
+            recordStartTime = t.startedAt;  // the take's clock IS the clock
+            armedForFirstNote = false;
+            isRecording = true;
+            btnRecord.classList.add('active');
+            recDot.classList.add('active');
+            recLabel.textContent = 'Stop';
+            recStatus.textContent = 'Overdubbing \u201c' + t.name + '\u201d\u2026';
+            btnPlayRecording.disabled = true;
+            t.timers.push(setTimeout(() => { if (overdubTarget === t) stopRecording(); }, Math.max(50, t.dur + 60)));
+            renderTakes();
+        }
+        function finishOverdub(added) {
+            const t = overdubTarget;
+            overdubTarget = null;
+            if (!t) return false;
+            stopTake(t, true);
+            const notes = added.filter(e => e.t >= 0);
+            if (!notes.length) { renderTakes(); showMessage('Nothing added.'); return true; }
+            t.events = t.events.concat(JSON.parse(JSON.stringify(notes)))
+                .sort((a, b) => a.t - b.t || (a.type === 'down' ? 1 : -1));
+            t.dur = Math.max(t.dur, t.events[t.events.length - 1].t + 250);
+            saveTakes();
+            renderTakes();
+            showMessage(notes.filter(e => e.type === 'down').length + ' notes layered onto \u201c' + t.name + '\u201d.');
+            return true;
+        }
+
+        // Stretch a take from the tempo it was played at to the tempo set now.
+        function syncTakeToBpm(t) {
+            const from = t.bpm || takeBpm(), to = takeBpm();
+            if (!from || from === to) { showMessage('Already at ' + to + ' BPM.'); return; }
+            const factor = from / to;   // slower tempo -> longer times
+            t.events = t.events.map(e => ({ ...e, t: e.t * factor }));
+            t.dur = t.dur * factor;
+            t.bpm = to;
+            saveTakes();
+            renderTakes();
+            showMessage('\u201c' + t.name + '\u201d stretched from ' + Math.round(from) + ' to ' + to + ' BPM.');
+        }
 
         try {
             const saved = JSON.parse(localStorage.getItem('saryaTakes') || '[]');
-            if (Array.isArray(saved)) takes = saved.map(t => ({ ...t, playing: false, startedAt: 0, timers: [], bus: null }));
+            if (Array.isArray(saved)) takes = saved.map(t => ({ ...t, bpm: t.bpm || takeBpm(), click: !!t.click, playing: false, startedAt: 0, timers: [], bus: null }));
         } catch (e) {}
         function saveTakes() {
             try {
                 localStorage.setItem('saryaTakes', JSON.stringify(takes.map(t => ({
                     id: t.id, name: t.name, events: t.events, dur: t.dur, vol: t.vol,
-                    muted: t.muted, solo: t.solo, loop: t.loop, transpose: t.transpose, instrument: t.instrument
+                    muted: t.muted, solo: t.solo, loop: t.loop, transpose: t.transpose,
+                    instrument: t.instrument, bpm: t.bpm, click: t.click
                 }))));
             } catch (e) { showMessage('Could not save takes — storage is full.'); }
         }
@@ -9324,6 +9847,7 @@
                 name: name || ('Take ' + (takes.length + 1)),
                 events: JSON.parse(JSON.stringify(events)),
                 dur, vol: 1, muted: false, solo: false, loop: false, transpose: 0, instrument: '',
+                bpm: takeBpm(), click: false,
                 playing: false, startedAt: 0, timers: [], bus: null
             };
         }
@@ -9382,6 +9906,17 @@
                     }
                 }, Math.max(0, at)));
             });
+            // Its own click, at its own tempo — independent of the metronome
+            if (t.click && audioCtx) {
+                const beat = 60000 / (t.bpm || takeBpm());
+                const savedBeat = metronomeBeat;
+                for (let b = 0, at = 0; at < t.dur; b++, at = b * beat) {
+                    if (at < from) continue;
+                    metronomeBeat = b;
+                    playClick(audioCtx.currentTime + (at - from) / 1000);
+                }
+                metronomeBeat = savedBeat;
+            }
             t.timers.push(setTimeout(() => {
                 if (!t.playing) return;
                 if (t.loop) playTake(t, 0);
@@ -9442,6 +9977,17 @@
                             </select>
                         </div>
                         <div class="take-extra-row">
+                            <button class="take-midi btn btn-ghost" type="button" title="Download as a .mid file">MIDI</button>
+                            <button class="take-wav btn btn-ghost" type="button" title="Record this take to a .wav — plays it once in real time">WAV</button>
+                            <button class="take-json btn btn-ghost" type="button" title="Download as a .json file">JSON</button>
+                            <button class="take-token btn btn-ghost" type="button" title="Copy as a code you can send to anyone">Share</button>
+                        </div>
+                        <div class="take-extra-row">
+                            <button class="take-click btn btn-ghost${t.click ? ' active' : ''}" type="button" title="Click along with this take, at its own tempo">Click</button>
+                            <button class="take-sync btn btn-ghost" type="button" title="Stretch this take to the tempo set now">Sync ${t.bpm || '?'}\u2192BPM</button>
+                        </div>
+                        <div class="take-extra-row">
+                            <button class="take-dub btn btn-ghost${overdubTarget && overdubTarget.id === t.id ? ' active' : ''}" type="button" title="Play this take once and record what you add on top">${overdubTarget && overdubTarget.id === t.id ? 'Stop overdub' : 'Overdub'}</button>
                             <button class="take-dupe btn btn-ghost" type="button">Duplicate</button>
                             <button class="take-del btn btn-ghost" type="button">Delete</button>
                         </div>
@@ -9474,6 +10020,17 @@
             if (hit('.take-loop')) { t.loop = !t.loop; saveTakes(); renderTakes(); return; }
             if (hit('.take-tdown')) { t.transpose = Math.max(-24, t.transpose - 1); saveTakes(); renderTakes(); return; }
             if (hit('.take-tup')) { t.transpose = Math.min(24, t.transpose + 1); saveTakes(); renderTakes(); return; }
+            if (hit('.take-midi')) { exportTakeMidi(t); return; }
+            if (hit('.take-wav')) { exportTakeWav(t); return; }
+            if (hit('.take-json')) { exportTakeJson(t); return; }
+            if (hit('.take-token')) { copyTextToClipboard(takeToToken(t), '\u201c' + t.name + '\u201d copied as a share code.'); return; }
+            if (hit('.take-dub')) {
+                if (overdubTarget && overdubTarget.id === t.id) stopRecording();
+                else startOverdub(t);
+                return;
+            }
+            if (hit('.take-sync')) { syncTakeToBpm(t); return; }
+            if (hit('.take-click')) { t.click = !t.click; saveTakes(); renderTakes(); return; }
             if (hit('.take-dupe')) {
                 const copy = newTake(t.events, t.name + ' copy');
                 copy.vol = t.vol; copy.transpose = t.transpose; copy.instrument = t.instrument; copy.loop = t.loop;
@@ -9565,6 +10122,837 @@
         [btnToggleScribe, btnToggleJam].forEach(b => b.addEventListener('click', () => { if (isTakesOpen) setTakesOpen(false); }));
         window.addEventListener('beforeunload', () => takes.forEach(t => stopTake(t, true)));
         renderTakes();
+
+        // ==========================================
+        // 10. TAKES OUT — MIDI, JSON, and a code you can paste  [Lynie]
+        // ==========================================
+        // A take is only data: notes, each with its own instrument and velocity.
+        // So it can leave as a real MIDI file, as JSON, or as a short code that
+        // someone else can paste straight back in.
+
+        function varLen(n) {
+            const out = [n & 0x7f];
+            n >>= 7;
+            while (n > 0) { out.unshift((n & 0x7f) | 0x80); n >>= 7; }
+            return out;
+        }
+        // Standard MIDI File, format 0, written by hand — no library needed.
+        function takeToMidiBytes(t) {
+            const PPQ = 480;
+            const bpm = t.bpm || takeBpm();
+            const ticksPerMs = PPQ / (60000 / bpm);
+            const evs = t.events
+                .map(e => ({ ...e, tick: Math.max(0, Math.round(e.t * ticksPerMs)) }))
+                .sort((a, b) => a.tick - b.tick || (a.type === 'down' ? 1 : -1));
+            const track = [];
+            const usPerQuarter = Math.round(60000000 / bpm);
+            track.push(...varLen(0), 0xFF, 0x51, 0x03,
+                (usPerQuarter >> 16) & 0xff, (usPerQuarter >> 8) & 0xff, usPerQuarter & 0xff);
+            const name = [...('Take: ' + t.name)].map(c => c.charCodeAt(0) & 0x7f);
+            track.push(...varLen(0), 0xFF, 0x03, ...varLen(name.length), ...name);
+            let last = 0;
+            evs.forEach(e => {
+                const delta = e.tick - last;
+                last = e.tick;
+                const midi = Math.max(0, Math.min(127, 12 * (e.octave + 1) + e.offset + (t.transpose || 0)));
+                const vel = Math.max(1, Math.min(127, Math.round((typeof e.v === 'number' ? e.v : 1) * 127)));
+                track.push(...varLen(delta), e.type === 'down' ? 0x90 : 0x80, midi, e.type === 'down' ? vel : 0);
+            });
+            track.push(...varLen(0), 0xFF, 0x2F, 0x00);
+            const head = [0x4D, 0x54, 0x68, 0x64, 0, 0, 0, 6, 0, 0, 0, 1, (PPQ >> 8) & 0xff, PPQ & 0xff];
+            const len = track.length;
+            const trkHead = [0x4D, 0x54, 0x72, 0x6B, (len >>> 24) & 0xff, (len >>> 16) & 0xff, (len >>> 8) & 0xff, len & 0xff];
+            return new Uint8Array([...head, ...trkHead, ...track]);
+        }
+
+        function downloadBlob(blob, filename) {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+        }
+        const safeFile = (s) => String(s || 'take').replace(/[^\w\d\- ]+/g, '').trim().slice(0, 40) || 'take';
+
+        function exportTakeMidi(t) {
+            if (!t.events.length) { showMessage('That take is empty.'); return; }
+            downloadBlob(new Blob([takeToMidiBytes(t)], { type: 'audio/midi' }), safeFile(t.name) + '.mid');
+            showMessage('\u201c' + t.name + '\u201d exported as MIDI.');
+        }
+
+        const takeToPlain = (t) => ({
+            name: t.name, bpm: t.bpm, dur: t.dur, vol: t.vol, transpose: t.transpose,
+            instrument: t.instrument, loop: t.loop, click: t.click, events: t.events
+        });
+        function exportTakeJson(t) {
+            const doc = { format: 'sarya-take', version: 1, takes: [takeToPlain(t)] };
+            downloadBlob(new Blob([JSON.stringify(doc, null, 1)], { type: 'application/json' }), safeFile(t.name) + '.json');
+            showMessage('\u201c' + t.name + '\u201d exported as JSON.');
+        }
+        function exportAllTakesJson() {
+            if (!takes.length) { showMessage('No takes to export.'); return; }
+            const doc = { format: 'sarya-take', version: 1, takes: takes.map(takeToPlain) };
+            downloadBlob(new Blob([JSON.stringify(doc, null, 1)], { type: 'application/json' }),
+                'sarya-takes-' + new Date().toISOString().slice(0, 10) + '.json');
+            showMessage(takes.length + ' takes exported.');
+        }
+
+        // A shareable code: the same notes, squeezed onto one line.
+        function takeToToken(t) {
+            const instruments = [];
+            const idx = (name) => {
+                if (!name) return -1;
+                let i = instruments.indexOf(name);
+                if (i < 0) { instruments.push(name); i = instruments.length - 1; }
+                return i;
+            };
+            const e = t.events.map(ev => ev.type === 'down'
+                ? [Math.round(ev.t), 1, ev.offset, ev.octave, Math.round((typeof ev.v === 'number' ? ev.v : 1) * 100), idx(ev.i)]
+                : [Math.round(ev.t), 0, ev.offset, ev.octave]);
+            const packed = { n: t.name, b: Math.round(t.bpm || takeBpm()), i: instruments, e };
+            return 'SMTR1:' + btoa(unescape(encodeURIComponent(JSON.stringify(packed))));
+        }
+        function tokenToTake(code) {
+            const raw = String(code || '').trim();
+            if (!raw.startsWith('SMTR1:')) return null;
+            let p;
+            try { p = JSON.parse(decodeURIComponent(escape(atob(raw.slice(6))))); } catch (e) { return null; }
+            if (!p || !Array.isArray(p.e)) return null;
+            const events = [];
+            for (const a of p.e) {
+                if (!Array.isArray(a) || a.length < 4) return null;
+                const [t, kind, offset, octave, v, ii] = a;
+                if (![t, offset, octave].every(n => typeof n === 'number' && isFinite(n))) return null;
+                // Nothing off the wire is trusted
+                if (offset < 0 || offset > 11 || octave < -1 || octave > 9) return null;
+                const ev = { t: Math.max(0, t), type: kind ? 'down' : 'up', offset, octave,
+                             elementId: 'n' + offset + '_' + octave };
+                if (kind) {
+                    ev.v = Math.max(0.05, Math.min(1, (typeof v === 'number' ? v : 100) / 100));
+                    const name = (Array.isArray(p.i) && ii >= 0) ? p.i[ii] : '';
+                    if (name) ev.i = String(name);
+                }
+                events.push(ev);
+            }
+            if (!events.length) return null;
+            events.sort((a, b) => a.t - b.t);
+            const take = newTake(events, String(p.n || 'Shared take').slice(0, 40));
+            take.bpm = (typeof p.b === 'number' && p.b >= 20 && p.b <= 300) ? p.b : takeBpm();
+            return take;
+        }
+
+        const takesImport = document.getElementById('takes-import');
+        const takesTokenInput = document.getElementById('takes-token');
+        function importTakesDoc(text) {
+            let doc;
+            try { doc = JSON.parse(text); } catch (e) { showMessage('That file is not readable JSON.'); return; }
+            const list = Array.isArray(doc) ? doc : (doc && Array.isArray(doc.takes) ? doc.takes : null);
+            if (!list || !list.length) { showMessage('No takes in that file.'); return; }
+            let added = 0;
+            list.forEach(p => {
+                if (!p || !Array.isArray(p.events) || !p.events.length) return;
+                const t = newTake(p.events, String(p.name || 'Imported').slice(0, 40));
+                if (typeof p.bpm === 'number') t.bpm = p.bpm;
+                if (typeof p.vol === 'number') t.vol = Math.max(0, Math.min(1, p.vol));
+                if (typeof p.transpose === 'number') t.transpose = Math.max(-24, Math.min(24, p.transpose));
+                if (typeof p.instrument === 'string') t.instrument = p.instrument;
+                t.loop = !!p.loop; t.click = !!p.click;
+                takes.push(t);
+                added++;
+            });
+            if (!added) { showMessage('No takes in that file.'); return; }
+            saveTakes(); renderTakes();
+            showMessage(added + (added === 1 ? ' take imported.' : ' takes imported.'));
+        }
+        document.getElementById('btn-takes-import').addEventListener('click', () => {
+            takesImport.classList.toggle('hidden');
+            if (!takesImport.classList.contains('hidden')) takesTokenInput.focus();
+        });
+        document.getElementById('btn-takes-token-go').addEventListener('click', () => {
+            const t = tokenToTake(takesTokenInput.value);
+            if (!t) { showMessage('That code could not be read.'); return; }
+            takes.push(t);
+            saveTakes(); renderTakes();
+            takesTokenInput.value = '';
+            takesImport.classList.add('hidden');
+            showMessage('\u201c' + t.name + '\u201d imported.');
+        });
+        takesTokenInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); document.getElementById('btn-takes-token-go').click(); }
+        });
+        document.getElementById('takes-file').addEventListener('change', (e) => {
+            const f = e.target.files && e.target.files[0];
+            if (!f) return;
+            e.target.value = '';   // so the same file can be chosen twice  [Lynie]
+            const r = new FileReader();
+            r.onload = (ev) => importTakesDoc(ev.target.result);
+            r.onerror = () => showMessage('Could not read that file.');
+            r.readAsText(f);
+        });
+        document.getElementById('btn-takes-exportall').addEventListener('click', exportAllTakesJson);
+
+        // ==========================================
+        // 11. SCRIBE, EXTENDED — arrange, paste, per-part shifts  [Lynie]
+        // ==========================================
+
+        // ── Flat note list from the last parsed MIDI (skips drums, ch. 10) ──
+        function flattenMidiNotes(midi) {
+            const out = [];
+            if (!midi || !midi.tracks) return out;
+            midi.tracks.forEach(tr => {
+                if (tr.channel === 9) return;
+                (tr.notes || []).forEach(n => out.push({
+                    midi: n.midi, time: n.time, duration: n.duration, velocity: n.velocity
+                }));
+            });
+            return out.sort((a, b) => a.time - b.time || a.midi - b.midi);
+        }
+
+        // ── Build a Midi from parts and hand it to the Scribe  [Lynie] ──
+        async function loadArrangementIntoScribe(name, parts, bpm) {
+            await midiReady;
+            if (!MidiLib) { showScribeMessage('MIDI library unavailable.'); return false; }
+            const usable = (parts || []).filter(p => p && Array.isArray(p.notes) && p.notes.length);
+            if (!usable.length) { showScribeMessage('Nothing to write.'); return false; }
+            let midi;
+            try {
+                midi = new MidiLib.Midi();
+                midi.name = name || 'Arrangement';
+                // Tempo BEFORE the notes, so their seconds→ticks conversion uses it
+                // and the 16th grid lands on clean tick boundaries.
+                if (bpm && midi.header && typeof midi.header.setTempo === 'function') {
+                    try { midi.header.setTempo(bpm); } catch (e) {}
+                }
+                usable.forEach(p => {
+                    const tr = midi.addTrack();
+                    tr.name = p.name || 'Part';
+                    p.notes.forEach(n => {
+                        if (typeof n.midi !== 'number' || n.midi < 0 || n.midi > 127) return;
+                        tr.addNote({
+                            midi: Math.round(n.midi),
+                            time: Math.max(0, +n.time || 0),
+                            duration: Math.max(0.05, +n.duration || 0.25),
+                            velocity: (typeof n.velocity === 'number' ? Math.max(0.05, Math.min(1, n.velocity)) : 0.8)
+                        });
+                    });
+                });
+            } catch (e) {
+                console.error('Could not build the arrangement', e);
+                showScribeMessage('Could not build the arrangement.');
+                return false;
+            }
+            scribeMidi = midi;
+            globalMidiFile = null;
+            originalFileName = name || 'Arrangement';
+            scribeTrackShifts = [];
+            preMergeMidi = null;
+            bprSelect.value = '4';
+            settings.barsPerRow = 4;
+            try { await processMidiFile(); } catch (e) {
+                console.error(e);
+                showScribeMessage('Could not render the tab.');
+                return false;
+            }
+            return true;
+        }
+
+        // ── The auto-arranger  [Lynie] ──
+        // Group notes into onset chords, then make each chord easy to play:
+        // whole piece transposed to the key that lands most note-time on white
+        // keys, 16th-note grid at the source tempo, ≤3 notes per chord, span
+        // capped at two octaves, everything folded into GW2's reach.
+        function autoArrangeGw2(mode) {
+            if (!arrangeSource) {
+                const cur = flattenMidiNotes(lastMidiObj);
+                if (!cur.length) { showScribeMessage('Load a MIDI first, then arrange.'); return; }
+                arrangeSource = cur;
+                arrangeBpm = (lastMidiObj && lastMidiObj.header && lastMidiObj.header.tempos
+                    && lastMidiObj.header.tempos[0] && lastMidiObj.header.tempos[0].bpm) || 120;
+            }
+            const src = arrangeSource;
+            const MAX_NOTES = 3, MAX_SPAN = 24;
+            const WHITE = new Set([0, 2, 4, 5, 7, 9, 11]);
+            const snapWhite = (m) => WHITE.has(((m % 12) + 12) % 12) ? m : m - 1;
+
+            // The transposition that lands the most note-time on white keys —
+            // the whole piece moves together, so the tune stays recognizable.
+            const pcWeight = new Array(12).fill(0);
+            for (const n of src) pcWeight[((n.midi % 12) + 12) % 12] += Math.max(0.05, +n.duration || 0.1);
+            let bestTr = 0, bestScore = -1;
+            for (let tr = 0; tr < 12; tr++) {
+                let s = 0;
+                for (let pc = 0; pc < 12; pc++) if (WHITE.has((pc + tr) % 12)) s += pcWeight[pc];
+                if (s > bestScore) { bestScore = s; bestTr = tr; }
+            }
+
+            // 16th grid at the source tempo, so the tab comes out tidy.
+            const STEP = (60 / (arrangeBpm || 120)) / 4;
+            const qpos = (t) => Math.round((+t || 0) / STEP) * STEP;
+            const qlen = (d) => Math.max(STEP, Math.round((+d || 0) / STEP) * STEP);
+            const qnotes = src.map(n => ({ midi: n.midi, time: qpos(n.time), len: qlen(n.duration), velocity: n.velocity }))
+                              .sort((a, b) => a.time - b.time || a.midi - b.midi);
+            const clusters = [];
+            for (const n of qnotes) {
+                const last = clusters[clusters.length - 1];
+                if (last && n.time === last.time) last.notes.push(n);
+                else clusters.push({ time: n.time, notes: [n] });
+            }
+
+            // Melody above the piece's median pitch, bass below — the split
+            // adapts to each piece instead of assuming where middle C is.
+            const allMidi = src.map(n => n.midi).sort((a, b) => a - b);
+            const boundary = allMidi.length ? allMidi[allMidi.length >> 1] : 60;
+
+            const buildPart = (selector, lo, hi) => {
+                const raw = [];
+                for (const c of clusters) {
+                    const picked = selector(c.notes);
+                    if (!picked.length) continue;
+                    let ps = Array.from(new Set(picked.map(n => n.midi + bestTr))).sort((a, b) => a - b);
+                    const top = ps[ps.length - 1];
+                    ps = ps.map(p => { let v = p; while (top - v > MAX_SPAN) v += 12; return v; });
+                    ps = Array.from(new Set(ps.map(snapWhite))).sort((a, b) => a - b);
+                    if (ps.length > MAX_NOTES) {
+                        const mid = ps[Math.round((ps.length - 1) / 2)];
+                        ps = Array.from(new Set([ps[0], mid, ps[ps.length - 1]])).sort((a, b) => a - b);
+                    }
+                    const vel = picked.reduce((mx, n) => Math.max(mx, n.velocity || 0.8), 0) || 0.8;
+                    const soundLen = picked.reduce((mx, n) => Math.max(mx, n.len || STEP), 0) || STEP;
+                    raw.push({ time: c.time, pitches: ps, velocity: vel, soundLen });
+                }
+                if (!raw.length) return [];
+                // Centre the part in its window, then octave-fold strays back in.
+                const allP = [];
+                for (const ch of raw) for (const p of ch.pitches) allP.push(p);
+                allP.sort((a, b) => a - b);
+                const k = Math.round(((lo + hi) / 2 - allP[allP.length >> 1]) / 12) * 12;
+                for (const ch of raw) {
+                    let ps = ch.pitches.map(p => p + k);
+                    let mnp = Math.min(...ps), mxp = Math.max(...ps);
+                    while (mxp > hi) { ps = ps.map(p => p - 12); mxp -= 12; mnp -= 12; }
+                    while (mnp < lo) { ps = ps.map(p => p + 12); mnp += 12; mxp += 12; }
+                    ch.pitches = Array.from(new Set(ps.map(p => Math.max(lo, Math.min(hi, p))))).sort((a, b) => a - b);
+                }
+                for (let j = 0; j < raw.length; j++) {
+                    const gap = (j < raw.length - 1) ? raw[j + 1].time - raw[j].time : raw[j].soundLen;
+                    raw[j].dur = Math.max(STEP, Math.min(raw[j].soundLen, gap));
+                }
+                return raw;
+            };
+            const emit = (part) => {
+                const out = [];
+                for (const ch of part) for (const p of ch.pitches)
+                    out.push({ midi: p, time: ch.time, duration: ch.dur, velocity: ch.velocity });
+                return out;
+            };
+
+            const melodyPart = buildPart(ns => ns.filter(n => n.midi >= boundary), 60, 83);
+            const bassPart   = buildPart(ns => ns.filter(n => n.midi <  boundary), 48, 71);
+            if (!melodyPart.length && !bassPart.length) { showScribeMessage('Nothing to arrange.'); return; }
+
+            if (mode === 'merged') {
+                const notes = emit(melodyPart).concat(emit(bassPart)).sort((a, b) => a.time - b.time);
+                loadArrangementIntoScribe('GW2 arrangement', [{ name: 'GW2 Arrangement', notes }], arrangeBpm);
+                showScribeMessage('Arranged: one merged part, white keys, chords \u22643.');
+            } else {
+                const parts = [];
+                if (melodyPart.length) parts.push({ name: 'GW2 Melody', notes: emit(melodyPart) });
+                if (bassPart.length)   parts.push({ name: 'GW2 Bass',   notes: emit(bassPart) });
+                loadArrangementIntoScribe('GW2 arrangement', parts, arrangeBpm);
+                showScribeMessage('Arranged: melody + bass, white keys, chords \u22643.');
+            }
+        }
+
+        // ── Read a tab BACK into notes  [Lynie] ──
+        // The inverse of the generator, approximately: '/' joins a chord, two
+        // adjacent digits are a sixteenth apart, spaces and dots and dashes are
+        // rests. Bracket pairs move the octave. It will never be sample-exact —
+        // tabs round durations — but the tune comes back.
+        function parseGw2Tab(text, bpm) {
+            bpm = bpm || 120;
+            const SIXT = (60 / bpm) / 4;
+            const DEG = { 1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: 11, 8: 12 };
+            const notes = [];
+            let cursor = 0;          // in sixteenths
+            let gap = 0;             // accumulated rest since the last note
+            let octShift = 0;
+            let chordOpen = false;
+            let lastNoteAt = 0;
+            for (const line of String(text || '').split('\n')) {
+                const s = line;
+                // Only bar lines are notation; titles and part headers never
+                // contain '|', and their digits must not become notes.
+                if (!s.includes('|')) continue;
+                let i = 0;
+                while (i < s.length) {
+                    const c = s[i];
+                    if (c === '|') { chordOpen = false; i++; continue; }
+                    if (c === '[') { octShift = -1; i++; continue; }
+                    if (c === '(') { octShift = +1; i++; continue; }
+                    if (c === '{') { octShift = -2; i++; continue; }
+                    if (c === '<') { octShift = +2; i++; continue; }
+                    if (c === ']' || c === ')' || c === '}' || c === '>') { octShift = 0; i++; continue; }
+                    if (c === '/') { chordOpen = true; i++; continue; }
+                    if (c === ' ') { gap += 2; i++; continue; }
+                    if (c === '-') { gap += 2; i++; continue; }
+                    if (c === '\u2501') { gap += 4; i++; continue; }
+                    if (c === '\u00B7') { gap += 1.5; i++; continue; }
+                    if (c === '.') { gap += 0.5; i++; continue; }
+                    if (c >= '0' && c <= '9') {
+                        // A digit run containing 9 or 0 is a tempo marker, never notes.
+                        let j = i;
+                        while (j < s.length && s[j] >= '0' && s[j] <= '9') j++;
+                        if (/[09]/.test(s.slice(i, j))) { i = j; gap = Math.max(gap, 0); continue; }
+                        // Notes, one digit at a time — the timing model:
+                        //   '/' before  -> same instant (a chord)
+                        //   rest chars  -> advance by their sum
+                        //   nothing     -> a sixteenth (adjacent digits, or a
+                        //                  bracket change between two notes)
+                        for (; i < j; i++) {
+                            const d = +s[i];
+                            let semis = DEG[d];
+                            if (s[i + 1] === '#') { semis += 1; }
+                            if (chordOpen && notes.length) {
+                                cursor = lastNoteAt;
+                            } else if (notes.length) {
+                                cursor = lastNoteAt + (gap > 0 ? gap : 1);
+                            }
+                            gap = 0;
+                            chordOpen = false;
+                            notes.push({
+                                midi: 12 * (4 + octShift + 1) + semis,
+                                time: cursor * SIXT, duration: SIXT * 2, velocity: 0.85
+                            });
+                            lastNoteAt = cursor;
+                        }
+                        while (s[i] === '#') i++;
+                        continue;
+                    }
+                    i++;   // anything else is decoration
+                }
+            }
+            // Ring each note to the next onset, so held notes read naturally.
+            notes.sort((a, b) => a.time - b.time || a.midi - b.midi);
+            for (let i = 0; i < notes.length; i++) {
+                let next = null;
+                for (let j = i + 1; j < notes.length; j++) if (notes[j].time > notes[i].time) { next = notes[j]; break; }
+                if (next) notes[i].duration = Math.max(SIXT, Math.min(SIXT * 8, next.time - notes[i].time));
+            }
+            return notes;
+        }
+
+        // ── Per-part transpose rows  [Lynie] ──
+        function renderScribeTracks(names) {
+            const box = document.getElementById('scribe-tracks');
+            if (!names || names.length === 0) { box.classList.add('hidden'); box.innerHTML = ''; return; }
+            while (scribeTrackShifts.length < names.length) scribeTrackShifts.push({ oct: 0, semi: 0 });
+            scribeTrackShifts.length = names.length;
+            box.classList.remove('hidden');
+            box.innerHTML = names.map((n, i) => {
+                const sh = scribeTrackShifts[i];
+                const mx = (typeof orch !== 'undefined' && orch.mix[i]) || { vol: 1, muted: false, solo: false };
+                return '<div class="scribe-track-row" data-idx="' + i + '">'
+                    + '<span class="scribe-track-name" title="' + escapeHtml(n) + '">' + escapeHtml(n) + '</span>'
+                    + '<span class="scribe-track-mix">'
+                    + '<button type="button" data-act="mute" class="' + (mx.muted ? 'active' : '') + '" title="Mute this part" aria-label="Mute">M</button>'
+                    + '<button type="button" data-act="solo" class="' + (mx.solo ? 'active' : '') + '" title="Only this part" aria-label="Solo">S</button>'
+                    + '<input type="range" class="vol slider" data-act="vol" min="0" max="1" step="0.01" value="' + (mx.vol != null ? mx.vol : 1) + '" title="Part volume" aria-label="Part volume">'
+                    + '</span>'
+                    + '<span class="scribe-shift"><span class="lbl">OCT</span>'
+                    + '<button type="button" data-act="oct-" aria-label="Octave down">\u2212</button>'
+                    + '<span class="val">' + (sh.oct > 0 ? '+' : '') + sh.oct + '</span>'
+                    + '<button type="button" data-act="oct+" aria-label="Octave up">+</button></span>'
+                    + '<span class="scribe-shift"><span class="lbl">SEMI</span>'
+                    + '<button type="button" data-act="semi-" aria-label="Semitone down">\u2212</button>'
+                    + '<span class="val">' + (sh.semi > 0 ? '+' : '') + sh.semi + '</span>'
+                    + '<button type="button" data-act="semi+" aria-label="Semitone up">+</button></span>'
+                    + '</div>';
+            }).join('');
+        }
+        document.getElementById('scribe-tracks').addEventListener('input', (e) => {
+            if (e.target.dataset.act !== 'vol') return;
+            const idx = +e.target.closest('.scribe-track-row').dataset.idx;
+            if (orch.mix[idx]) { orch.mix[idx].vol = +e.target.value; orchApplyMix(); }
+        });
+        document.getElementById('scribe-tracks').addEventListener('click', async (e) => {
+            const btn = e.target.closest('button[data-act]');
+            if (!btn) return;
+            const idx = +btn.closest('.scribe-track-row').dataset.idx;
+            const sh = scribeTrackShifts[idx];
+            if (!sh) return;
+            if (btn.dataset.act === 'mute') {
+                orch.mix[idx].muted = !orch.mix[idx].muted;
+                btn.classList.toggle('active', orch.mix[idx].muted);
+                orchApplyMix();
+                return;
+            }
+            if (btn.dataset.act === 'solo') {
+                orch.mix[idx].solo = !orch.mix[idx].solo;
+                btn.classList.toggle('active', orch.mix[idx].solo);
+                orchApplyMix();
+                return;
+            }
+            if (btn.dataset.act === 'oct-') sh.oct = Math.max(-3, sh.oct - 1);
+            if (btn.dataset.act === 'oct+') sh.oct = Math.min(3, sh.oct + 1);
+            if (btn.dataset.act === 'semi-') sh.semi = Math.max(-11, sh.semi - 1);
+            if (btn.dataset.act === 'semi+') sh.semi = Math.min(11, sh.semi + 1);
+            try { await processMidiFile(); showScribeMessage('Re-scribed with the new shift.'); }
+            catch (err) { showScribeMessage('Could not re-render.'); }
+        });
+
+        // ── Wiring ──
+        document.getElementById('scribe-arrange').addEventListener('click', () => {
+            autoArrangeGw2(document.getElementById('scribe-arrange-mode').value);
+        });
+
+        document.getElementById('scribe-merge').addEventListener('click', async () => {
+            const btn = document.getElementById('scribe-merge');
+            if (preMergeMidi) {
+                // un-merge: put the parts back
+                scribeMidi = preMergeMidi;
+                preMergeMidi = null;
+                globalMidiFile = null;
+                scribeTrackShifts = [];
+                btn.textContent = 'Merge parts';
+                try { await processMidiFile(); showScribeMessage('Parts split back.'); } catch (e) {}
+                return;
+            }
+            if (!lastMidiObj || !lastMidiObj.tracks || lastMidiObj.tracks.length < 2) {
+                showScribeMessage('Nothing to merge \u2014 one part only.');
+                return;
+            }
+            await midiReady;
+            const merged = new MidiLib.Midi();
+            merged.name = (lastMidiObj.name || originalFileName || 'Merged');
+            const bpm = (lastMidiObj.header && lastMidiObj.header.tempos && lastMidiObj.header.tempos[0]
+                && lastMidiObj.header.tempos[0].bpm) || 120;
+            try { merged.header.setTempo(bpm); } catch (e) {}
+            const tr = merged.addTrack();
+            tr.name = 'All parts';
+            flattenMidiNotes(lastMidiObj).forEach(n => {
+                try { tr.addNote({ midi: n.midi, time: n.time, duration: Math.max(0.05, n.duration || 0.25), velocity: n.velocity || 0.8 }); } catch (e) {}
+            });
+            preMergeMidi = (typeof lastMidiObj.clone === 'function') ? lastMidiObj.clone() : lastMidiObj;
+            scribeMidi = merged;
+            globalMidiFile = null;
+            scribeTrackShifts = [];
+            btn.textContent = 'Split back';
+            try { await processMidiFile(); showScribeMessage('All parts folded into one.'); }
+            catch (e) { showScribeMessage('Could not merge.'); }
+        });
+
+        document.getElementById('scribe-paste-tab').addEventListener('click', async () => {
+            const text = textareaA.value;
+            if (!text.trim()) { showScribeMessage('The tab area below is empty.'); return; }
+            const bpmGuess = (() => { const m = text.match(/\b(1[0-9]{2}|[2-9][0-9])\b/); return m ? +m[0] : 120; })();
+            const notes = parseGw2Tab(text, bpmGuess);
+            if (!notes.length) { showScribeMessage('No notes found in that tab.'); return; }
+            arrangeSource = null;
+            const ok = await loadArrangementIntoScribe('Pasted tab', [{ name: 'Pasted tab', notes }], bpmGuess);
+            if (ok) showScribeMessage('Read ' + notes.length + ' notes back from the tab (approximate).');
+        });
+
+        document.getElementById('scribe-import-token').addEventListener('click', async () => {
+            const code = prompt('Paste a shared take code (SMTR1:\u2026)');
+            if (!code) return;
+            const take = tokenToTake(code);
+            if (!take) { showScribeMessage('That code could not be read.'); return; }
+            const notes = [];
+            const downs = new Map();
+            take.events.forEach(ev => {
+                const midi = 12 * (ev.octave + 1) + ev.offset;
+                if (ev.type === 'down') downs.set(midi + ':' + ev.t, { midi, time: ev.t / 1000, velocity: ev.v || 0.8 });
+            });
+            // pair offs by scanning
+            take.events.forEach(ev => {
+                if (ev.type !== 'up') return;
+                const midi = 12 * (ev.octave + 1) + ev.offset;
+                for (const [k, n] of downs) {
+                    if (n.midi === midi && n.duration === undefined && ev.t / 1000 > n.time) {
+                        n.duration = ev.t / 1000 - n.time;
+                        break;
+                    }
+                }
+            });
+            for (const n of downs.values()) notes.push({ midi: n.midi, time: n.time, duration: n.duration || 0.3, velocity: n.velocity });
+            arrangeSource = null;
+            const ok = await loadArrangementIntoScribe(take.name, [{ name: take.name, notes }], take.bpm);
+            if (ok) showScribeMessage('\u201c' + take.name + '\u201d written as a tab.');
+        });
+
+        document.getElementById('scribe-to-takes').addEventListener('click', () => {
+            const flat = flattenMidiNotes(lastMidiObj);
+            if (!flat.length) { showScribeMessage('Nothing loaded to send.'); return; }
+            const events = [];
+            flat.forEach((n, i) => {
+                const off = ((n.midi % 12) + 12) % 12, oct = Math.floor(n.midi / 12) - 1;
+                const id = 'sc' + i;
+                events.push({ t: n.time * 1000, type: 'down', offset: off, octave: oct, elementId: id, v: n.velocity || 0.8 });
+                events.push({ t: (n.time + Math.max(0.05, n.duration || 0.25)) * 1000, type: 'up', offset: off, octave: oct, elementId: id });
+            });
+            events.sort((a, b) => a.t - b.t || (a.type === 'down' ? 1 : -1));
+            const t = newTake(events, (originalFileName || 'From Scribe').replace(/\.(mid|midi)$/i, '').slice(0, 40));
+            t.bpm = (lastMidiObj && lastMidiObj.header && lastMidiObj.header.tempos && lastMidiObj.header.tempos[0]
+                && lastMidiObj.header.tempos[0].bpm) || takeBpm();
+            takes.push(t);
+            saveTakes();
+            renderTakes();
+            showMessage('\u201c' + t.name + '\u201d sent to Takes (' + flat.length + ' notes).');
+            showScribeMessage('Sent to Takes.');
+        });
+
+        // ==========================================
+        // 12. ORCHESTRA — play what the Scribe holds  [Lynie]
+        // ==========================================
+        // The loaded MIDI, played through the instrument of your choosing: every
+        // part on its own bus (volume / mute / solo), a seek bar, loop, and a
+        // tempo slider that works mid-play. The keys light as it plays.
+        const orch = {
+            playing: false, t0: 0, pos: 0, rate: 1, loop: false,
+            timers: [], raf: null, buses: [], mix: [], dur: 0, notes: []
+        };
+        const orchStrip = document.getElementById('orch-strip');
+        const orchPlayBtn = document.getElementById('orch-play');
+        const orchLoopBtn = document.getElementById('orch-loop');
+        const orchSeekEl = document.getElementById('orch-seek');
+        const orchFillEl = document.getElementById('orch-seek-fill');
+        const orchTimeEl = document.getElementById('orch-time');
+        const orchTempoEl = document.getElementById('orch-tempo');
+        const orchTempoVal = document.getElementById('orch-tempo-val');
+
+        // Rebuilt whenever the Scribe re-renders: per-track notes with the same
+        // shifts the notation uses, so what you hear is what you read.
+        function orchRefresh() {
+            orchStop();
+            orch.notes = [];
+            orch.dur = 0;
+            const midi = lastMidiObj;
+            if (!midi || !midi.tracks || !midi.tracks.length) { orchStrip.classList.add('hidden'); return; }
+            midi.tracks.forEach((tr, ti) => {
+                if (tr.channel === 9) return;
+                const sh = scribeTrackShifts[ti] || { oct: 0, semi: 0 };
+                const lift = (sh.oct | 0) * 12 + (sh.semi | 0);
+                (tr.notes || []).forEach(n => {
+                    const m = n.midi + lift;
+                    if (m < 0 || m > 127) return;
+                    orch.notes.push({ midi: m, time: n.time, dur: Math.max(0.05, n.duration || 0.25),
+                                      vel: n.velocity || 0.8, track: ti });
+                    const end = n.time + (n.duration || 0.25);
+                    if (end > orch.dur) orch.dur = end;
+                });
+            });
+            while (orch.mix.length < midi.tracks.length) orch.mix.push({ vol: 1, muted: false, solo: false });
+            orch.mix.length = midi.tracks.length;
+            orchStrip.classList.toggle('hidden', orch.notes.length === 0);
+            orchPaintTime();
+        }
+        function orchBus(ti) {
+            if (!orch.buses[ti] && audioCtx && masterGainNode) {
+                orch.buses[ti] = audioCtx.createGain();
+                orch.buses[ti].connect(masterGainNode);
+            }
+            if (orch.buses[ti]) orch.buses[ti].gain.value = orchAudible(ti) ? orch.mix[ti].vol : 0;
+            return orch.buses[ti];
+        }
+        const orchAnySolo = () => orch.mix.some(m => m && m.solo);
+        const orchAudible = (ti) => {
+            const m = orch.mix[ti] || {};
+            return !m.muted && (!orchAnySolo() || m.solo);
+        };
+        function orchApplyMix() {
+            orch.buses.forEach((b, ti) => {
+                if (!b) return;
+                const target = orchAudible(ti) ? (orch.mix[ti].vol || 0) : 0;
+                if (audioCtx) b.gain.setTargetAtTime(target, audioCtx.currentTime, 0.02);
+                else b.gain.value = target;
+            });
+        }
+        const orchFmt = (s) => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+        function orchPaintTime() {
+            const at = orch.playing ? orch.pos + ((performance.now() - orch.t0) / 1000) * orch.rate : orch.pos;
+            orchFillEl.style.width = (orch.dur ? Math.min(100, (at / orch.dur) * 100) : 0) + '%';
+            orchTimeEl.textContent = orchFmt(Math.min(at, orch.dur)) + ' / ' + orchFmt(orch.dur);
+        }
+        function orchTick() {
+            orch.raf = null;
+            if (!orch.playing) return;
+            orchPaintTime();
+            orch.raf = requestAnimationFrame(orchTick);
+        }
+        function orchStop(keepPos) {
+            orch.timers.forEach(clearTimeout);
+            orch.timers = [];
+            if (orch.playing && !keepPos) orch.pos = 0;
+            orch.playing = false;
+            if (orch.raf) { cancelAnimationFrame(orch.raf); orch.raf = null; }
+            orch.notes.forEach((n, i) => { try { _origStopNote('or' + i); } catch (e) {} });
+            orchPlayBtn.textContent = 'Play';
+            orchPaintTime();
+        }
+        function orchPlayFrom(pos) {
+            orchStop(true);
+            if (!orch.notes.length) return;
+            initAudio();
+            orch.pos = Math.max(0, Math.min(pos, orch.dur));
+            orch.t0 = performance.now();
+            orch.playing = true;
+            orchPlayBtn.textContent = 'Stop';
+            const rate = orch.rate;
+            orch.notes.forEach((n, i) => {
+                const startIn = (n.time - orch.pos) / rate * 1000;
+                const stopIn = (n.time + n.dur - orch.pos) / rate * 1000;
+                if (stopIn < 0) return;
+                const off = ((n.midi % 12) + 12) % 12, oct = Math.floor(n.midi / 12) - 1;
+                orch.timers.push(setTimeout(() => {
+                    if (!orch.playing || !orchAudible(n.track)) return;
+                    _origPlayNote(off, oct, 'or' + i, undefined, orchBus(n.track) || undefined, n.vel);
+                    lightCorrespondingKey(off, oct, true);
+                }, Math.max(0, startIn)));
+                orch.timers.push(setTimeout(() => {
+                    try { _origStopNote('or' + i); } catch (e) {}
+                    lightCorrespondingKey(off, oct, false);
+                }, Math.max(0, stopIn)));
+            });
+            orch.timers.push(setTimeout(() => {
+                if (!orch.playing) return;
+                if (orch.loop) orchPlayFrom(0);
+                else orchStop();
+            }, Math.max(20, (orch.dur - orch.pos) / rate * 1000 + 120)));
+            if (!orch.raf) orch.raf = requestAnimationFrame(orchTick);
+        }
+        orchPlayBtn.addEventListener('click', () => {
+            if (orch.playing) orchStop(true);
+            else orchPlayFrom(orch.pos >= orch.dur ? 0 : orch.pos);
+        });
+        orchLoopBtn.addEventListener('click', () => {
+            orch.loop = !orch.loop;
+            orchLoopBtn.classList.toggle('active', orch.loop);
+            orchLoopBtn.setAttribute('aria-pressed', orch.loop ? 'true' : 'false');
+        });
+        orchSeekEl.addEventListener('click', (e) => {
+            const r = orchSeekEl.getBoundingClientRect();
+            const frac = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+            const to = frac * orch.dur;
+            if (orch.playing) orchPlayFrom(to);
+            else { orch.pos = to; orchPaintTime(); }
+        });
+        // A live tempo change re-anchors from the current position: nothing
+        // stops, the remaining notes simply arrive at the new speed.  [Lynie]
+        orchTempoEl.addEventListener('input', () => {
+            const rate = +orchTempoEl.value;
+            orchTempoVal.textContent = rate.toFixed(2) + '\u00d7';
+            const wasAt = orch.playing ? orch.pos + ((performance.now() - orch.t0) / 1000) * orch.rate : orch.pos;
+            orch.rate = rate;
+            if (orch.playing) orchPlayFrom(wasAt);
+            else { orch.pos = wasAt; }
+        });
+
+        // ==========================================
+        // 13. TRANSPORT KEY REBINDING + WAV EXPORT
+        // ==========================================
+        const keyRecordBtn = document.getElementById('key-record');
+        const keyPlayBtn = document.getElementById('key-play');
+        let transportRebind = null;   // 'record' | 'play' while listening
+
+        const keyPretty = (code) => code === 'Space' ? 'Space'
+            : code.startsWith('Key') ? code.slice(3)
+            : code.startsWith('Digit') ? code.slice(5) : code;
+        function reflectTransportKeys() {
+            keyRecordBtn.textContent = transportRebind === 'record' ? 'Press a key\u2026' : 'Rec: ' + keyPretty(transportKeys.record);
+            keyPlayBtn.textContent = transportRebind === 'play' ? 'Press a key\u2026' : 'Play: ' + keyPretty(transportKeys.play);
+            keyRecordBtn.classList.toggle('active', transportRebind === 'record');
+            keyPlayBtn.classList.toggle('active', transportRebind === 'play');
+        }
+        function saveTransportKeys() {
+            try { localStorage.setItem('saryaTransportKeys', JSON.stringify(transportKeys)); } catch (e) {}
+        }
+        keyRecordBtn.addEventListener('click', () => { transportRebind = transportRebind === 'record' ? null : 'record'; reflectTransportKeys(); });
+        keyPlayBtn.addEventListener('click', () => { transportRebind = transportRebind === 'play' ? null : 'play'; reflectTransportKeys(); });
+        // Capture phase, so the piano never hears the key being assigned
+        window.addEventListener('keydown', (e) => {
+            if (!transportRebind) return;
+            e.preventDefault();
+            e.stopPropagation();
+            if (e.key !== 'Escape') {
+                if (bindings.notes.includes(e.code)) {
+                    showMessage('That key already plays a note \u2014 pick another.');
+                } else {
+                    transportKeys[transportRebind] = e.code;
+                    saveTransportKeys();
+                    showMessage((transportRebind === 'record' ? 'Record' : 'Play') + ' is now ' + keyPretty(e.code) + '.');
+                }
+            }
+            transportRebind = null;
+            reflectTransportKeys();
+        }, true);
+        reflectTransportKeys();
+
+        // ── WAV: record the take AS IT PLAYS, then unpack to PCM  [Lynie] ──
+        // The synth is welded to the live context, so instead of a fake offline
+        // copy we capture the genuine output — SoundFonts, reverb and all — and
+        // decode it into a .wav. It takes as long as the take does.
+        let wavBusy = false;
+        function audioBufferToWav(buf) {
+            const ch = Math.min(2, buf.numberOfChannels), sr = buf.sampleRate, len = buf.length;
+            const bytes = 44 + len * ch * 2;
+            const ab = new ArrayBuffer(bytes), dv = new DataView(ab);
+            const wstr = (o, s) => { for (let i = 0; i < s.length; i++) dv.setUint8(o + i, s.charCodeAt(i)); };
+            wstr(0, 'RIFF'); dv.setUint32(4, bytes - 8, true); wstr(8, 'WAVE');
+            wstr(12, 'fmt '); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true);
+            dv.setUint16(22, ch, true); dv.setUint32(24, sr, true);
+            dv.setUint32(28, sr * ch * 2, true); dv.setUint16(32, ch * 2, true); dv.setUint16(34, 16, true);
+            wstr(36, 'data'); dv.setUint32(40, len * ch * 2, true);
+            let o = 44;
+            const chans = [];
+            for (let c = 0; c < ch; c++) chans.push(buf.getChannelData(c));
+            for (let i = 0; i < len; i++) for (let c = 0; c < ch; c++) {
+                const s = Math.max(-1, Math.min(1, chans[c][i]));
+                dv.setInt16(o, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+                o += 2;
+            }
+            return ab;
+        }
+        async function exportTakeWav(t) {
+            if (wavBusy) { showMessage('Already rendering \u2014 one at a time.'); return; }
+            if (!t.events.length) { showMessage('That take is empty.'); return; }
+            if (typeof MediaRecorder === 'undefined') { showMessage('This browser cannot capture audio.'); return; }
+            initAudio();
+            if (!audioCtx.createMediaStreamDestination) { showMessage('This browser cannot capture audio.'); return; }
+            wavBusy = true;
+            const cap = audioCtx.createMediaStreamDestination();
+            masterGainNode.connect(cap);
+            if (reverbConvolver) reverbConvolver.connect(cap);   // the room comes too
+            const mime = MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+                ? 'audio/webm;codecs=opus' : '';
+            const rec = mime ? new MediaRecorder(cap.stream, { mimeType: mime }) : new MediaRecorder(cap.stream);
+            const chunks = [];
+            rec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+            const finish = () => new Promise(res => { rec.onstop = res; rec.stop(); });
+            showMessage('Recording \u201c' + t.name + '\u201d in real time \u2014 ' + fmtTime(t.dur) + ' plus tail\u2026');
+            rec.start();
+            const wasLoop = t.loop;
+            t.loop = false;
+            playTake(t, 0);
+            t.loop = wasLoop;
+            await new Promise(r => setTimeout(r, t.dur + 1600));   // let the tail ring
+            stopTake(t, true);
+            await finish();
+            try { masterGainNode.disconnect(cap); } catch (e) {}
+            try { if (reverbConvolver) reverbConvolver.disconnect(cap); } catch (e) {}
+            try {
+                const blob = new Blob(chunks, { type: rec.mimeType || 'audio/webm' });
+                const pcm = await audioCtx.decodeAudioData(await blob.arrayBuffer());
+                downloadBlob(new Blob([audioBufferToWav(pcm)], { type: 'audio/wav' }), safeFile(t.name) + '.wav');
+                showMessage('\u201c' + t.name + '\u201d exported as WAV.');
+            } catch (e) {
+                console.error('WAV decode failed', e);
+                showMessage('Could not unpack the capture \u2014 nothing was downloaded.');
+            }
+            renderTakes();
+            wavBusy = false;
+        }
 
     </script>
 
