@@ -3043,14 +3043,14 @@
         .dock-tabs .dock-group-label {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 13px;
+            gap: 7px;
+            padding: 9px 18px;
             border-radius: var(--r-pill);
             border: 1px solid transparent;
             background: none;
             cursor: pointer;
             font-family: var(--font-label);
-            font-size: 0.68rem;
+            font-size: 0.8rem;
             font-weight: 600;
             letter-spacing: var(--label-tracking);
             text-transform: uppercase;
@@ -3181,6 +3181,44 @@
         .scribe-shift .val { min-width: 26px; text-align: center; color: var(--text-acc); }
         .scribe-shift .lbl { color: var(--text-muted); font-size: 0.62rem; letter-spacing: 0.06em; }
 
+        /* ==============================================================
+           THE TITLE MOVES ONTO THE INSTRUMENT
+           The old banner spent ~300px of every screen on air. The name now
+           sits on the centre panel itself — always visible, costing one slim
+           row — and the side panels gain all of that height for tabs.
+           ============================================================== */
+        .center-head {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 6px 16px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--stroke-soft);
+        }
+        .center-head .masthead-title {
+            font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+            line-height: 1.1;
+            margin: 0;
+            text-align: center;
+        }
+        .center-head .view-switch { margin: 0; }
+        /* The counter sits in the panel's bottom-right corner, out of the way
+           of everything — the piano ends well above it. */
+        #center-panel { position: relative; }
+        #center-panel .online-count {
+            position: absolute;
+            bottom: 12px;
+            right: 52px;              /* clear of the corner flourish (ends ~43px in) */
+            margin-left: 0;
+            padding-left: 0;
+            border-left: none;        /* the divider belonged to the old banner text */
+            z-index: 3;
+            opacity: 0.85;
+        }
+        body.focus-mode .center-head { display: none !important; }
+
         /* Collapsed side panels must not contribute height to the stage row */
         #songbook-panel:not(.is-open) > *,
         #scribe-panel:not(.is-open) > *,
@@ -3283,24 +3321,7 @@
     <div class="main">
 
         <!-- MASTHEAD — the theme-reactive signature -->
-        <header class="masthead">
-            <span class="eyebrow">A conservatory for Tyria &amp; Heartopia<span id="online-count" class="online-count hidden"><span class="online-dot"></span><span id="online-n">1</span> online</span></span>
-            <div class="masthead-row">
-                <div class="sconce" aria-hidden="true"><div class="flame"></div><div class="candle"></div><div class="sconce-cup"></div></div>
-                <h1 class="masthead-title"><span class="tl" style="--i:0">S</span><span class="tl" style="--i:1">a</span><span class="tl" style="--i:2">r</span><span class="tl" style="--i:3">y</span><span class="tl" style="--i:4">a</span><span class="tl" style="--i:5">'</span><span class="tl" style="--i:6">s</span> <span class="tl" style="--i:7">M</span><span class="tl" style="--i:8">u</span><span class="tl" style="--i:9">s</span><span class="tl" style="--i:10">i</span><span class="tl" style="--i:11">c</span> <span class="tl" style="--i:12">T</span><span class="tl" style="--i:13">h</span><span class="tl" style="--i:14">i</span><span class="tl" style="--i:15">n</span><span class="tl" style="--i:16">g</span><span class="tl" style="--i:17">y</span></h1>
-                <div class="sconce" aria-hidden="true"><div class="flame"></div><div class="candle"></div><div class="sconce-cup"></div></div>
-            </div>
-            <div class="masthead-rule" aria-hidden="true"></div>
-            <p class="masthead-tagline">An instrument for Tyrians and everyone else.</p>
-
-            <div class="view-switch" id="view-switch" data-view="gw2">
-                <div class="switch-indicator"></div>
-                <button id="view-btn-gw2" class="is-active" type="button">Guild Wars 2</button>
-                <button id="view-btn-htp" type="button">Heartopia</button>
-            </div>
-            <!-- Legacy hidden button the engine toggles; the banner tabs above drive it -->
-            <button id="btn-toggle-view" type="button" style="display:none;">Switch</button>
-        </header>
+<!-- masthead retired: the title now lives on the instrument itself -->
 
         <!-- ======================================== -->
         <!-- STAGE: songbook | instrument | scribe    -->
@@ -3416,6 +3437,15 @@
 
             <!-- CENTER PANEL: THE INSTRUMENT -->
             <section id="center-panel">
+                <div class="center-head">
+                    <h1 class="masthead-title"><span class="tl" style="--i:0">S</span><span class="tl" style="--i:1">a</span><span class="tl" style="--i:2">r</span><span class="tl" style="--i:3">y</span><span class="tl" style="--i:4">a</span><span class="tl" style="--i:5">'</span><span class="tl" style="--i:6">s</span> <span class="tl" style="--i:7">M</span><span class="tl" style="--i:8">u</span><span class="tl" style="--i:9">s</span><span class="tl" style="--i:10">i</span><span class="tl" style="--i:11">c</span> <span class="tl" style="--i:12">T</span><span class="tl" style="--i:13">h</span><span class="tl" style="--i:14">i</span><span class="tl" style="--i:15">n</span><span class="tl" style="--i:16">g</span><span class="tl" style="--i:17">y</span></h1>
+                    <div class="view-switch" id="view-switch" data-view="gw2">
+                        <div class="switch-indicator"></div>
+                        <button id="view-btn-gw2" class="is-active" type="button">Guild Wars 2</button>
+                        <button id="view-btn-htp" type="button">Heartopia</button>
+                    </div>
+                    <button id="btn-toggle-view" type="button" style="display:none;">Switch</button>
+                </div>
                 <div class="flourish flourish--tl" aria-hidden="true"></div>
                 <div class="flourish flourish--tr" aria-hidden="true"></div>
                 <div class="flourish flourish--bl" aria-hidden="true"></div>
@@ -3699,6 +3729,7 @@
                         Keybinds map to standard <b>QWERTY</b> rows to match the Heartopia layout exactly.
                     </p>
                 </div>
+                <span id="online-count" class="online-count hidden" title="Musicians here right now"><span class="online-dot"></span><span id="online-n">1</span> online</span>
             </section>
 
             <!-- RIGHT PANEL: SCRIBE -->
@@ -8206,6 +8237,7 @@
         let scribeTrackShifts = [];      // per-part { oct, semi }, drives the notation
         let arrangeSource = null;        // snapshot of the ORIGINAL import's notes
         let arrangeBpm = 120;
+        let arrangePpq = 0;
         let preMergeMidi = null;         // for un-merging
 
         const bprSelect = document.getElementById("bprSelect");
@@ -8360,6 +8392,7 @@
                             note.tempoChange = Math.floor(tempos[tempoIndex].bpm); tempoIndex++;
                         }
                     }
+                    if (!isFinite(note.ticks) || !isFinite(ticksPerBar) || ticksPerBar <= 0) return;
                     while (currTick <= note.ticks) {
                         currTick += ticksPerBar;
                         if (multipleSignatures && rawTimeSigs[timeSigIndex] && nextTimeSig(rawTimeSigs, timeSigIndex, currTick)) {
@@ -10304,7 +10337,8 @@
             midi.tracks.forEach(tr => {
                 if (tr.channel === 9) return;
                 (tr.notes || []).forEach(n => out.push({
-                    midi: n.midi, time: n.time, duration: n.duration, velocity: n.velocity
+                    midi: n.midi, time: n.time, duration: n.duration, velocity: n.velocity,
+                    ticks: n.ticks, durationTicks: n.durationTicks
                 }));
             });
             return out.sort((a, b) => a.time - b.time || a.midi - b.midi);
@@ -10365,65 +10399,160 @@
         // capped at two octaves, everything folded into GW2's reach.
         function autoArrangeGw2(mode) {
             if (!arrangeSource) {
-                const cur = flattenMidiNotes(lastMidiObj);
-                if (!cur.length) { showScribeMessage('Load a MIDI first, then arrange.'); return; }
-                arrangeSource = cur;
-                arrangeBpm = (lastMidiObj && lastMidiObj.header && lastMidiObj.header.tempos
-                    && lastMidiObj.header.tempos[0] && lastMidiObj.header.tempos[0].bpm) || 120;
+                // Snapshot only the parts you can HEAR: mute the pads, solo the
+                // lead, then Arrange — the mixer is the arranger's input.
+                const midi = lastMidiObj;
+                if (!midi || !midi.tracks) { showScribeMessage('Load a MIDI first, then arrange.'); return; }
+                const cur = [];
+                let fed = 0;
+                midi.tracks.forEach((tr, ti) => {
+                    if (tr.channel === 9) return;
+                    if (typeof orchAudible === 'function' && !orchAudible(ti)) return;
+                    if (tr.notes && tr.notes.length) fed++;
+                    (tr.notes || []).forEach(n => cur.push({
+                        midi: n.midi, time: n.time, duration: n.duration, velocity: n.velocity,
+                        ticks: n.ticks, durationTicks: n.durationTicks
+                    }));
+                });
+                if (!cur.length) { showScribeMessage('Nothing audible to arrange \u2014 un-mute a part first.'); return; }
+                arrangeSource = cur.sort((a, b) => a.time - b.time || a.midi - b.midi);
+                arrangeSource._parts = fed;
+                arrangeBpm = (midi.header && midi.header.tempos && midi.header.tempos[0]
+                    && midi.header.tempos[0].bpm) || 120;
+                arrangePpq = (midi.header && midi.header.ppq) || 0;
             }
             const src = arrangeSource;
             const MAX_NOTES = 3, MAX_SPAN = 24;
             const WHITE = new Set([0, 2, 4, 5, 7, 9, 11]);
-            const snapWhite = (m) => WHITE.has(((m % 12) + 12) % 12) ? m : m - 1;
+            const bpm = arrangeBpm || 120;
 
-            // The transposition that lands the most note-time on white keys —
-            // the whole piece moves together, so the tune stays recognizable.
+            // ── Key: most note-time on white keys; near-ties (0.5%) go to the
+            // smaller shift, so an already-white song isn't dragged sideways.
             const pcWeight = new Array(12).fill(0);
             for (const n of src) pcWeight[((n.midi % 12) + 12) % 12] += Math.max(0.05, +n.duration || 0.1);
             let bestTr = 0, bestScore = -1;
             for (let tr = 0; tr < 12; tr++) {
                 let s = 0;
                 for (let pc = 0; pc < 12; pc++) if (WHITE.has((pc + tr) % 12)) s += pcWeight[pc];
-                if (s > bestScore) { bestScore = s; bestTr = tr; }
+                if (s > bestScore * 1.005) { bestScore = s; bestTr = tr; }
+                else if (s >= bestScore * 0.995 && Math.min(tr, 12 - tr) < Math.min(bestTr, 12 - bestTr)) { bestTr = tr; }
             }
 
-            // 16th grid at the source tempo, so the tab comes out tidy.
-            const STEP = (60 / (arrangeBpm || 120)) / 4;
-            const qpos = (t) => Math.round((+t || 0) / STEP) * STEP;
-            const qlen = (d) => Math.max(STEP, Math.round((+d || 0) / STEP) * STEP);
-            const qnotes = src.map(n => ({ midi: n.midi, time: qpos(n.time), len: qlen(n.duration), velocity: n.velocity }))
-                              .sort((a, b) => a.time - b.time || a.midi - b.midi);
+            // ── Grid: straight OR triplet, whichever the song actually sits on.
+            // Quantizing a 6/8 tune to straight 16ths is how rhythms get mangled;
+            // measuring the error against both grids and keeping the lower one
+            // lets compound-meter songs come out swung, not shredded.
+            // If 16ths would outrun fingers (~105ms), both candidates halve.
+            const haveTicks = arrangePpq > 0 && src.every(n => typeof n.ticks === 'number' && isFinite(n.ticks));
+            const fast = ((60 / bpm) / 4 * 1000) < 105;
+            let gridT = 0, triplet = false, STEP;
+            if (haveTicks) {
+                const cands = fast ? [arrangePpq / 2, arrangePpq / 3] : [arrangePpq / 4, arrangePpq / 6];
+                const err = (g) => src.reduce((sum, n) => sum + Math.abs(n.ticks - Math.round(n.ticks / g) * g), 0);
+                const e0 = err(cands[0]), e1 = err(cands[1]);
+                // Triplets must win clearly AND fit well in absolute terms —
+                // otherwise a coarsened straight-16th run "wins" by accident.
+                const goodFit = e1 <= src.length * cands[1] * 0.15;
+                gridT = (e1 < e0 * 0.9 && goodFit) ? cands[1] : cands[0];
+                triplet = gridT === cands[1];
+                STEP = (gridT / arrangePpq) * (60 / bpm);
+            } else {
+                STEP = (60 / bpm) / (fast ? 2 : 4);
+            }
+
+            // ── Ornaments: a trill or grace run quantizes into machine-gun
+            // clusters. A note far shorter than the grid, immediately followed
+            // by a neighbour within two semitones, is decoration — drop it and
+            // let the main note speak.
+            const tickLen = (n) => haveTicks ? n.durationTicks : (n.duration * bpm / 60) * arrangePpq;
+            const tickAt = (n) => haveTicks ? n.ticks : (n.time * bpm / 60) * arrangePpq;
+            const gT = haveTicks ? gridT : (STEP * bpm / 60) * (arrangePpq || 480);
+            const keep = src.filter((n, i) => {
+                const len = tickLen(n);
+                if (!(len < gT * 0.45)) return true;
+                for (let j = i + 1; j < src.length; j++) {
+                    const dt = tickAt(src[j]) - tickAt(n);
+                    if (dt > gT * 0.6) break;
+                    // An alternating neighbour (1–2 semitones — not 0, so real
+                    // repeated-note lines survive) marks this as decoration.
+                    const iv = Math.abs(src[j].midi - n.midi);
+                    if (dt >= 0 && iv >= 1 && iv <= 2) return false;
+                }
+                return true;
+            });
+
+            const q = (n) => {
+                if (haveTicks) {
+                    const gt = Math.round(n.ticks / gridT) * gridT;
+                    const gd = Math.max(gridT, Math.round((n.durationTicks || gridT) / gridT) * gridT);
+                    return { time: (gt / arrangePpq) * (60 / bpm), len: (gd / arrangePpq) * (60 / bpm) };
+                }
+                return {
+                    time: Math.round((+n.time || 0) / STEP) * STEP,
+                    len: Math.max(STEP, Math.round((+n.duration || 0) / STEP) * STEP)
+                };
+            };
+            const qnotes = keep.filter(n => isFinite(n.midi) && (isFinite(n.time) || isFinite(n.ticks)))
+                               .map(n => ({ midi: n.midi, velocity: n.velocity, ...q(n) }))
+                               .sort((a, b) => a.time - b.time || a.midi - b.midi);
+            if (!qnotes.length) { showScribeMessage('Nothing to arrange.'); return; }
+
+            // ── Anacrusis: a song that starts mid-file must not open the tab
+            // with screens of rest bars. Slide everything back by whole bars.
+            const barSec = 4 * (60 / bpm);
+            const lead = Math.floor(qnotes[0].time / barSec) * barSec;
+            if (lead > 0) qnotes.forEach(n => { n.time -= lead; });
+
             const clusters = [];
             for (const n of qnotes) {
                 const last = clusters[clusters.length - 1];
-                if (last && n.time === last.time) last.notes.push(n);
+                if (last && Math.abs(n.time - last.time) < 1e-6) last.notes.push(n);
                 else clusters.push({ time: n.time, notes: [n] });
             }
 
-            // Melody above the piece's median pitch, bass below — the split
-            // adapts to each piece instead of assuming where middle C is.
-            const allMidi = src.map(n => n.midi).sort((a, b) => a - b);
+            const allMidi = keep.map(n => n.midi).sort((a, b) => a - b);
             const boundary = allMidi.length ? allMidi[allMidi.length >> 1] : 60;
+            const topOf = (ns) => Math.max(...ns.map(n => n.midi));
+            // Out-of-window pitches fold by octaves — never clamp, which would
+            // change the note instead of just its register.
+            const fold = (p, lo, hi) => {
+                while (p < lo) p += 12;
+                while (p > hi) p -= 12;
+                return p < lo ? p + 12 : p;
+            };
 
             const buildPart = (selector, lo, hi) => {
                 const raw = [];
                 for (const c of clusters) {
-                    const picked = selector(c.notes);
+                    const picked = selector(c.notes, topOf(c.notes));
                     if (!picked.length) continue;
                     let ps = Array.from(new Set(picked.map(n => n.midi + bestTr))).sort((a, b) => a - b);
                     const top = ps[ps.length - 1];
                     ps = ps.map(p => { let v = p; while (top - v > MAX_SPAN) v += 12; return v; });
-                    ps = Array.from(new Set(ps.map(snapWhite))).sort((a, b) => a - b);
-                    if (ps.length > MAX_NOTES) {
-                        const mid = ps[Math.round((ps.length - 1) / 2)];
-                        ps = Array.from(new Set([ps[0], mid, ps[ps.length - 1]])).sort((a, b) => a - b);
-                    }
+                    ps = Array.from(new Set(ps)).sort((a, b) => a - b);
                     const vel = picked.reduce((mx, n) => Math.max(mx, n.velocity || 0.8), 0) || 0.8;
                     const soundLen = picked.reduce((mx, n) => Math.max(mx, n.len || STEP), 0) || STEP;
                     raw.push({ time: c.time, pitches: ps, velocity: vel, soundLen });
                 }
                 if (!raw.length) return [];
-                // Centre the part in its window, then octave-fold strays back in.
+                for (let i = 0; i < raw.length; i++) {
+                    const nextPs = (raw[i + 1] && raw[i + 1].pitches) || null;
+                    raw[i].pitches = Array.from(new Set(raw[i].pitches.map(p => {
+                        if (WHITE.has(((p % 12) + 12) % 12)) return p;
+                        if (!nextPs) return p - 1;
+                        const near = nextPs.reduce((best, np) =>
+                            Math.abs(np - p) < Math.abs(best - p) ? np : best, nextPs[0]);
+                        return near >= p ? p + 1 : p - 1;
+                    }))).sort((a, b) => a - b);
+                }
+                for (const ch of raw) {
+                    let ps = ch.pitches;
+                    if (ps.length > MAX_NOTES) {
+                        const mid = ps[Math.round((ps.length - 1) / 2)];
+                        ps = Array.from(new Set([ps[0], mid, ps[ps.length - 1]])).sort((a, b) => a - b);
+                    }
+                    ch.pitches = ps;
+                }
                 const allP = [];
                 for (const ch of raw) for (const p of ch.pitches) allP.push(p);
                 allP.sort((a, b) => a - b);
@@ -10433,7 +10562,7 @@
                     let mnp = Math.min(...ps), mxp = Math.max(...ps);
                     while (mxp > hi) { ps = ps.map(p => p - 12); mxp -= 12; mnp -= 12; }
                     while (mnp < lo) { ps = ps.map(p => p + 12); mnp += 12; mxp += 12; }
-                    ch.pitches = Array.from(new Set(ps.map(p => Math.max(lo, Math.min(hi, p))))).sort((a, b) => a - b);
+                    ch.pitches = Array.from(new Set(ps.map(p => fold(p, lo, hi)))).sort((a, b) => a - b);
                 }
                 for (let j = 0; j < raw.length; j++) {
                     const gap = (j < raw.length - 1) ? raw[j + 1].time - raw[j].time : raw[j].soundLen;
@@ -10448,20 +10577,39 @@
                 return out;
             };
 
-            const melodyPart = buildPart(ns => ns.filter(n => n.midi >= boundary), 60, 83);
-            const bassPart   = buildPart(ns => ns.filter(n => n.midi <  boundary), 48, 71);
+            const melodyPart = buildPart((ns, top) => ns.filter(n => n.midi >= boundary || n.midi === top), 60, 83);
+            const bassPart   = buildPart((ns, top) => ns.filter(n => n.midi <  boundary && n.midi !== top), 48, 71);
             if (!melodyPart.length && !bassPart.length) { showScribeMessage('Nothing to arrange.'); return; }
 
+            const flavour = (triplet ? ', triplet feel kept' : '') + (fast ? ', eased to 8ths' : '')
+                + (src._parts > 1 ? ', from ' + src._parts + ' parts' : '');
             if (mode === 'merged') {
-                const notes = emit(melodyPart).concat(emit(bassPart)).sort((a, b) => a.time - b.time);
-                loadArrangementIntoScribe('GW2 arrangement', [{ name: 'GW2 Arrangement', notes }], arrangeBpm);
-                showScribeMessage('Arranged: one merged part, white keys, chords \u22643.');
+                const byTime = new Map();
+                emit(melodyPart).concat(emit(bassPart)).forEach(n => {
+                    const k = n.time.toFixed(6);
+                    if (!byTime.has(k)) byTime.set(k, []);
+                    byTime.get(k).push(n);
+                });
+                const notes = [];
+                for (const group of byTime.values()) {
+                    let ps = Array.from(new Set(group.map(n => n.midi))).sort((a, b) => a - b);
+                    if (ps.length > MAX_NOTES) {
+                        const mid = ps[Math.round((ps.length - 1) / 2)];
+                        ps = Array.from(new Set([ps[0], mid, ps[ps.length - 1]]));
+                    }
+                    const dur = Math.max(...group.map(n => n.duration));
+                    const vel = Math.max(...group.map(n => n.velocity));
+                    ps.forEach(p => notes.push({ midi: p, time: group[0].time, duration: dur, velocity: vel }));
+                }
+                notes.sort((a, b) => a.time - b.time || a.midi - b.midi);
+                loadArrangementIntoScribe('GW2 arrangement', [{ name: 'GW2 Arrangement', notes }], bpm);
+                showScribeMessage('Arranged: one part, white keys, chords \u22643' + flavour + '.');
             } else {
                 const parts = [];
                 if (melodyPart.length) parts.push({ name: 'GW2 Melody', notes: emit(melodyPart) });
                 if (bassPart.length)   parts.push({ name: 'GW2 Bass',   notes: emit(bassPart) });
-                loadArrangementIntoScribe('GW2 arrangement', parts, arrangeBpm);
-                showScribeMessage('Arranged: melody + bass, white keys, chords \u22643.');
+                loadArrangementIntoScribe('GW2 arrangement', parts, bpm);
+                showScribeMessage('Arranged: melody + bass, white keys, chords \u22643' + flavour + '.');
             }
         }
 
