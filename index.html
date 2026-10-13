@@ -2278,9 +2278,11 @@
             border-radius: var(--r-md);
         }
         .scribe-tracks.hidden { display: none !important; }
-        .scribe-track-row { display: flex; align-items: center; gap: 8px; }
+        /* The name gets its own line: beside the mixer and shift controls a
+           side panel left it two letters wide. */
+        .scribe-track-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
         .scribe-track-name {
-            flex: 1; min-width: 0;
+            flex: 1 1 100%; min-width: 0;
             font-size: 0.8rem; font-weight: 600;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
@@ -3612,14 +3614,20 @@
                 <input type="file" id="midiFileInput" accept=".mid,.midi" style="display:none;">
 
                 <!-- Auto-arranger  [Lynie] -->
-                <div style="display:flex; gap:8px; align-items:stretch;">
-                    <select id="scribe-arrange-mode" class="input" style="flex:1; padding:8px 10px; font-size:0.78rem;" aria-label="Arrange mode">
-                        <option value="2parts">GW2 arrange → Melody + Bass (2 parts)</option>
-                        <option value="merged">GW2 arrange → Merged (1 part)</option>
+                <div style="display:flex; gap:8px; align-items:stretch; flex-wrap:wrap;">
+                    <select id="scribe-arrange-mode" class="input" style="flex:1 1 150px; min-width:0; padding:8px 10px; font-size:0.78rem;" aria-label="Arrange for">
+                        <option value="duet">Duet · two players</option>
+                        <option value="solo">Solo · one player</option>
                     </select>
-                    <button id="scribe-arrange" class="btn" type="button" style="flex:0 0 96px; justify-content:center;" title="Reduce the loaded MIDI to an easy, GW2-playable arrangement">Arrange</button>
+                    <select id="scribe-arrange-melody" class="input" style="flex:1 1 150px; min-width:0; padding:8px 10px; font-size:0.78rem;" aria-label="Which part is the melody" title="Which part of the MIDI carries the tune">
+                        <option value="auto">Melody: pick for me</option>
+                    </select>
+                    <label style="flex:1 1 auto; display:flex; align-items:center; gap:6px; font-size:0.8rem; color:var(--text-secondary); cursor:pointer;" title="Also write a Bass part: the song's own bassline, or a simple one built from its chords when it has none">
+                        <input type="checkbox" id="scribe-arrange-bass"> + Bass part
+                    </label>
+                    <button id="scribe-arrange" class="btn" type="button" style="flex:1 0 96px; justify-content:center;" title="Turn the loaded MIDI into an easy GW2 arrangement: white keys only, chords you can play from one octave">Arrange</button>
                 </div>
-                <p class="scribe-note">Arranging is automatic and approximate — it transposes to white keys, trims chords to three notes and folds octaves into reach. Some songs take it better than others.</p>
+                <p class="scribe-note">Arrange moves the song onto white keys, keeps the melody and bass in their real octaves and fits every chord in one octave (three notes at most). Duet: melody + accompaniment. Solo: the melody with a chord on every beat, in one octave. + Bass part adds a bassline: the song’s own, or one built from its chords. Mute a part to leave it out.</p>
 
                 <!-- Paste a tab / import a take code  [Lynie] -->
                 <div style="display:flex; gap:8px;">
@@ -8185,7 +8193,7 @@
         const textareaA = document.getElementById("textareaA");
         const textareaB = document.getElementById("textareaB");
 
-        const settings = { beatNote: 'time', octaveOffset: 0, steps: 0, barSkip: 0, barsPerRow: 4 };
+        const settings = { beatNote: 'time', octaveOffset: 0, steps: 0, barSkip: 0, barsPerRow: 4, fixedMiddle: null };
 
         const timeSigUnits = (timesignature, ppq) => {
             let barUnit = ppq; let ticksPerBar = ppq * 4;
@@ -8210,7 +8218,7 @@
         const nextTempo = (tempos, index, currTick) => (tempos[index].ticks <= currTick);
 
         const getOctaveBrackets = (octave, min, max) => {
-            let middleOctave = min + Math.floor((max - min) / 2);
+            let middleOctave = settings.fixedMiddle != null ? settings.fixedMiddle : min + Math.floor((max - min) / 2);
             middleOctave += settings.octaveOffset;
             if (octave > middleOctave + 1) return { start: '<', end: '>', high: true };
             if (octave < middleOctave - 1) return { start: '{', end: '}', low: true };
@@ -8301,6 +8309,7 @@
             // (program changes only) shifts every part row onto the wrong part.
             if (lastMidiObj !== midi) lastMidiObj.tracks = lastMidiObj.tracks.filter(t => t.notes && t.notes.length > 0);
 
+            const labels = partNames(midi.tracks, midi.name);
             const tracks = midi.tracks.map((track, trackIdx) => {
                 // Per-part transpose: swap the global knobs for this track's own,
                 // restore after. (transposeNote and getOctaveBrackets read them.)
@@ -8316,6 +8325,11 @@
                 let bars = [{ notes: [], tick: currTick, ticks: ticksPerBar, unit: barUnit, timeSignatureChange: [currTimeSig] }];
                 const notes = track.notes;
                 let minOctave = 1337; let maxOctave = -1337;
+                // Inside GW2's reach (Low 1 to High 8) the brackets are absolute:
+                // no bracket is Mid, [ ] Low, ( ) High. Outside it they stay
+                // relative to the part's own range, the best a tab can do.
+                const pitches = track.notes.map(n => n.midi);
+                settings.fixedMiddle = (Math.min(...pitches) >= 48 && Math.max(...pitches) <= 84) ? 4 : null;
 
                 notes.forEach(n => { n.isSharp = n.pitch.indexOf('#') !== -1; n.pitch = n.pitch.substr(0, 1); })
                 notes.sort((a, b) => {
@@ -8379,7 +8393,7 @@
                                 if (key === 1 && currentOctave < note.octave) { key = 8; startOffset = -1; }
                                 let noteOctave = note.octave + startOffset;
                                 brackets = getOctaveBrackets(noteOctave, minOctave, maxOctave);
-                                if (key === 1 && brackets.high) { key = 8; startOffset = -1; brackets = getOctaveBrackets(noteOctave, minOctave, maxOctave); }
+                                if (key === 1 && brackets.high) { key = 8; startOffset = -1; noteOctave = note.octave + startOffset; brackets = getOctaveBrackets(noteOctave, minOctave, maxOctave); }
                                 noteOctave = note.octave + startOffset;
                                 currentOctave = noteOctave;
                                 gw2 += brackets.start; gw2 += key;
@@ -8431,8 +8445,8 @@
                     bar.text = gw2;
                     return bar;
                 });
-                settings.steps = 0; settings.octaveOffset = 0;
-                return { name: track.name || "Instrument", bars: bars };
+                settings.steps = 0; settings.octaveOffset = 0; settings.fixedMiddle = null;
+                return { name: labels[trackIdx], bars: bars };
             })
             return tracks;
         }
@@ -8468,6 +8482,7 @@
                 : await globalMidiFile.arrayBuffer();
             const tracks = await parseFile(source, scribeTrackShifts);
             renderScribeTracks(tracks.map(t => t.name));
+            if (!arrangeSource) refreshArrangeMelodyPicker();   // a new source, not an arrangement of the old one
             if (typeof orchRefresh === 'function') orchRefresh();
 
             let tabNotes = (scribeMidi ? (scribeMidi.name || originalFileName) : globalMidiFile.name) + "\n\n";
@@ -8492,7 +8507,7 @@
                 originalFileName = file.name;
                 globalMidiFile = file;
                 scribeMidi = null;            // a real file outranks generated content
-                scribeTrackShifts = [];
+                scribeTrackShifts = []; resetPartMix();
                 arrangeSource = null;         // next Arrange snapshots THIS import
                 preMergeMidi = null;
 
@@ -10204,7 +10219,7 @@
         }
 
         // ── Build a Midi from parts and hand it to the Scribe  [Lynie] ──
-        async function loadArrangementIntoScribe(name, parts, bpm) {
+        async function loadArrangementIntoScribe(name, parts, bpm, timing) {
             await midiReady;
             if (!MidiLib) { showScribeMessage('MIDI library unavailable.'); return false; }
             const usable = (parts || []).filter(p => p && Array.isArray(p.notes) && p.notes.length);
@@ -10218,17 +10233,37 @@
                 if (bpm && midi.header && typeof midi.header.setTempo === 'function') {
                     try { midi.header.setTempo(bpm); } catch (e) {}
                 }
+                // The arranger's notes count beats at `bpm`; the song's own tempo
+                // and metre maps then set the real speed and the bar lines.
+                const ppq = (midi.header && midi.header.ppq) || 480;
+                const mapped = !!(timing && timing.tempos && timing.tempos.length && midi.header);
+                if (mapped) {
+                    midi.header.tempos = timing.tempos.map(t => ({ ticks: Math.round(t.beat * ppq), bpm: t.bpm }));
+                    midi.header.timeSignatures = (timing.sigs || []).map(s => ({ ticks: Math.round(s.beat * ppq), timeSignature: [s.num, s.den], measures: 0 }));
+                    midi.header.update();
+                }
                 usable.forEach(p => {
                     const tr = midi.addTrack();
                     tr.name = p.name || 'Part';
                     p.notes.forEach(n => {
                         if (typeof n.midi !== 'number' || n.midi < 0 || n.midi > 127) return;
-                        tr.addNote({
-                            midi: Math.round(n.midi),
-                            time: Math.max(0, +n.time || 0),
-                            duration: Math.max(0.05, +n.duration || 0.25),
-                            velocity: (typeof n.velocity === 'number' ? Math.max(0.05, Math.min(1, n.velocity)) : 0.8)
-                        });
+                        const velocity = (typeof n.velocity === 'number' ? Math.max(0.05, Math.min(1, n.velocity)) : 0.8);
+                        if (mapped) {
+                            const toTicks = (sec) => Math.round(sec * bpm / 60 * ppq);
+                            tr.addNote({
+                                midi: Math.round(n.midi),
+                                ticks: Math.max(0, toTicks(+n.time || 0)),
+                                durationTicks: Math.max(1, toTicks(Math.max(0.05, +n.duration || 0.25))),
+                                velocity
+                            });
+                        } else {
+                            tr.addNote({
+                                midi: Math.round(n.midi),
+                                time: Math.max(0, +n.time || 0),
+                                duration: Math.max(0.05, +n.duration || 0.25),
+                                velocity
+                            });
+                        }
                     });
                 });
             } catch (e) {
@@ -10239,7 +10274,7 @@
             scribeMidi = midi;
             globalMidiFile = null;
             originalFileName = name || 'Arrangement';
-            scribeTrackShifts = [];
+            scribeTrackShifts = []; resetPartMix();
             preMergeMidi = null;
             bprSelect.value = '4';
             settings.barsPerRow = 4;
@@ -10252,50 +10287,167 @@
         }
 
         // ── The auto-arranger  [Lynie] ──
-        // Group notes into onset chords, then make each chord easy to play:
-        // whole piece transposed to the key that lands most note-time on white
-        // keys, 16th-note grid at the source tempo, ≤3 notes per chord, span
-        // capped at two octaves, everything folded into GW2's reach.
+        // Four plain rules, so the result is predictable:
+        //  1. Key: the whole song moves by the fewest semitones that put the
+        //     most note-time on white keys. A sharp still left over steps to
+        //     whichever white neighbour the song uses more.
+        //  2. Roles: one source part is the melody (picked by ear, or chosen in
+        //     the menu); everything else you can hear is accompaniment, its
+        //     lowest part the bass line. A single part splits into its top line
+        //     and the rest.
+        //  3. One hand position per chord: GW2 plays a chord from one octave
+        //     (keys 1–8). The melody's top note, or the bass note, stays exactly
+        //     where it is; the other notes move by octaves to join it, never
+        //     past it, three notes at most.
+        //  4. Octaves: a line only ever moves as a whole, by whole octaves, into
+        //     the instrument's reach (Low 1 to High 8). Melody and bass move
+        //     together when they fit, so the bass stays under the tune; other
+        //     harmony sits in the octave just under the melody.
+        // Duet = melody and accompaniment for two players. Solo = the melody
+        // with the accompaniment tucked under it, for one.
+        const ARR_LO = 48, ARR_HI = 84;
+        const ARR_WHITE = new Set([0, 2, 4, 5, 7, 9, 11]);
+        const pcOf = (p) => ((p % 12) + 12) % 12;
+
+        // The melody, by ear: the highest part that mostly plays one note at a
+        // time. A chord part can sit higher on average and still be backing.
+        function guessMelodyTrack(notes) {
+            const parts = new Map();
+            for (const n of notes) {
+                if (!parts.has(n.tr)) parts.set(n.tr, new Map());
+                const onsets = parts.get(n.tr), k = n.time.toFixed(3);
+                const o = onsets.get(k) || { top: -Infinity, count: 0 };
+                o.top = Math.max(o.top, n.midi);
+                o.count++;
+                onsets.set(k, o);
+            }
+            const most = Math.max(...[...parts.values()].map(o => o.size));
+            let best = -1, bestScore = -Infinity;
+            for (const [tr, onsets] of parts) {
+                if (onsets.size < most * 0.15) continue;   // a few stray notes are not a melody
+                let top = 0, single = 0;
+                for (const o of onsets.values()) { top += o.top; if (o.count === 1) single++; }
+                const score = top / onsets.size + 6 * (single / onsets.size);
+                if (score > bestScore) { bestScore = score; best = tr; }
+            }
+            return best;
+        }
+
+        // A part's name: its own, else its instrument ("Choir Aahs") when the
+        // parts are different instruments, else "Part N". In a one-track file
+        // the song's title sits on the first part; that isn't the part's name.
+        function partNames(tracks, songName) {
+            const title = String(songName || '').trim();
+            const own = tracks.map(t => {
+                const n = String(t.name || '').trim();
+                return (n && !(tracks.length > 1 && n === title)) ? n : '';
+            });
+            const instr = tracks.map(t => (t.channel !== 9 && t.instrument && t.instrument.name)
+                ? String(t.instrument.name).replace(/\b\w/g, c => c.toUpperCase()) : '');
+            const varied = new Set(tracks.map((t, i) => own[i] ? null : instr[i]).filter(x => x != null)).size > 1;
+            const seen = new Map();
+            return tracks.map((t, i) => {
+                if (own[i]) return own[i];
+                if (varied && instr[i]) {
+                    const k = (seen.get(instr[i]) || 0) + 1;
+                    seen.set(instr[i], k);
+                    return k > 1 ? instr[i] + ' ' + k : instr[i];
+                }
+                return 'Part ' + (i + 1);
+            });
+        }
+
+        // The melody menu lists the parts of whatever was just loaded.
+        function refreshArrangeMelodyPicker() {
+            const sel = document.getElementById('scribe-arrange-melody');
+            if (!sel) return;
+            const was = sel.value;
+            const opts = ['<option value="auto">Melody: pick for me</option>'];
+            const tracks = (lastMidiObj && lastMidiObj.tracks) || [];
+            const labels = partNames(tracks, lastMidiObj && lastMidiObj.name);
+            tracks.forEach((tr, ti) => {
+                if (tr.channel === 9 || !tr.notes || !tr.notes.length) return;
+                opts.push('<option value="' + ti + '">Melody: ' + escapeHtml(labels[ti]) + '</option>');
+            });
+            opts.push('<option value="top">Melody: highest notes</option>');
+            sel.innerHTML = opts.join('');
+            if ([...sel.options].some(o => o.value === was)) sel.value = was;
+        }
+
         function autoArrangeGw2(mode) {
             if (!arrangeSource) {
-                // Snapshot only the parts you can HEAR: mute the pads, solo the
-                // lead, then Arrange — the mixer is the arranger's input.
+                // Snapshot only the parts you can HEAR: mute a part in the
+                // mixer and it stays out of the arrangement.
                 const midi = lastMidiObj;
                 if (!midi || !midi.tracks) { showScribeMessage('Load a MIDI first, then arrange.'); return; }
-                const cur = [];
-                let fed = 0;
+                const cur = [], names = new Map(), labels = partNames(midi.tracks, midi.name);
                 midi.tracks.forEach((tr, ti) => {
                     if (tr.channel === 9) return;
                     if (typeof orchAudible === 'function' && !orchAudible(ti)) return;
-                    if (tr.notes && tr.notes.length) fed++;
-                    (tr.notes || []).forEach(n => cur.push({
-                        midi: n.midi, time: n.time, duration: n.duration, velocity: n.velocity,
-                        ticks: n.ticks, durationTicks: n.durationTicks
-                    }));
+                    if (!tr.notes || !tr.notes.length) return;
+                    names.set(ti, labels[ti]);
+                    tr.notes.forEach(n => {
+                        // Outside a piano's 88 keys is a stray event, not music.
+                        if (n.midi < 21 || n.midi > 108) return;
+                        cur.push({
+                            midi: n.midi, time: n.time, duration: n.duration, velocity: n.velocity,
+                            ticks: n.ticks, durationTicks: n.durationTicks, tr: ti
+                        });
+                    });
                 });
-                if (!cur.length) { showScribeMessage('Nothing audible to arrange \u2014 un-mute a part first.'); return; }
+                if (!cur.length) { showScribeMessage('Nothing audible to arrange — un-mute a part first.'); return; }
                 arrangeSource = cur.sort((a, b) => a.time - b.time || a.midi - b.midi);
-                arrangeSource._parts = fed;
+                arrangeSource._names = names;
+                arrangeSource._title = String(originalFileName || '').replace(/\.(mid|midi)$/i, '').trim() || 'Arrangement';
                 arrangeBpm = (midi.header && midi.header.tempos && midi.header.tempos[0]
                     && midi.header.tempos[0].bpm) || 120;
                 arrangePpq = (midi.header && midi.header.ppq) || 0;
+                // The song's metre and tempo maps, in beats: a pickup bar, a
+                // switch from 3/4 to 4/4 or a speed-up all survive arranging.
+                const ppq = arrangePpq || 480;
+                const mapOf = (list, read) => {
+                    const out = [];
+                    list.slice().sort((a, b) => a.ticks - b.ticks).forEach(e => {
+                        const v = read(e);
+                        if (!v) return;
+                        const beat = e.ticks / ppq;
+                        if (out.length && Math.abs(out[out.length - 1].beat - beat) < 1e-6) out.pop();   // the last word at a moment wins
+                        out.push(Object.assign({ beat }, v));
+                    });
+                    return out;
+                };
+                const sigs = mapOf((midi.header && midi.header.timeSignatures) || [], e =>
+                    (e.timeSignature && e.timeSignature[0] > 0 && e.timeSignature[1] > 0) ? { num: e.timeSignature[0], den: e.timeSignature[1] } : null);
+                if (!sigs.length || sigs[0].beat > 0) sigs.unshift({ beat: 0, num: 4, den: 4 });
+                const tempos = mapOf((midi.header && midi.header.tempos) || [], e => e.bpm > 0 ? { bpm: e.bpm } : null);
+                if (!tempos.length || tempos[0].beat > 0) tempos.unshift({ beat: 0, bpm: arrangeBpm });
+                arrangeSource._timing = { sigs, tempos };
             }
             const src = arrangeSource;
-            const MAX_NOTES = 3, MAX_SPAN = 24;
-            const WHITE = new Set([0, 2, 4, 5, 7, 9, 11]);
+            const names = src._names || new Map();
+            const title = src._title || 'Arrangement';
+            const MAX_NOTES = 3;
             const bpm = arrangeBpm || 120;
 
-            // ── Key: most note-time on white keys; near-ties (0.5%) go to the
-            // smaller shift, so an already-white song isn't dragged sideways.
+            // ── 1. Key ── candidates run smallest move first; a bigger move
+            // must be clearly better (0.5%) to win.
             const pcWeight = new Array(12).fill(0);
-            for (const n of src) pcWeight[((n.midi % 12) + 12) % 12] += Math.max(0.05, +n.duration || 0.1);
-            let bestTr = 0, bestScore = -1;
-            for (let tr = 0; tr < 12; tr++) {
-                let s = 0;
-                for (let pc = 0; pc < 12; pc++) if (WHITE.has((pc + tr) % 12)) s += pcWeight[pc];
-                if (s > bestScore * 1.005) { bestScore = s; bestTr = tr; }
-                else if (s >= bestScore * 0.995 && Math.min(tr, 12 - tr) < Math.min(bestTr, 12 - bestTr)) { bestTr = tr; }
+            for (const n of src) pcWeight[pcOf(n.midi)] += Math.max(0.05, +n.duration || 0.1);
+            let shift = 0, bestScore = -1;
+            for (const s of [0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5, 6]) {
+                let score = 0;
+                for (let pc = 0; pc < 12; pc++) if (ARR_WHITE.has(pcOf(pc + s))) score += pcWeight[pc];
+                if (score > bestScore * 1.005) { bestScore = score; shift = s; }
             }
+            const whiteWeight = new Array(12).fill(0);
+            for (let pc = 0; pc < 12; pc++) whiteWeight[pcOf(pc + shift)] += pcWeight[pc];
+            let rounded = 0;
+            const toWhite = (p) => {
+                p += shift;
+                if (ARR_WHITE.has(pcOf(p))) return p;
+                rounded++;
+                return whiteWeight[pcOf(p + 1)] > whiteWeight[pcOf(p - 1)] ? p + 1 : p - 1;
+            };
 
             // ── Grid: straight OR triplet, whichever the song actually sits on.
             // Quantizing a 6/8 tune to straight 16ths is how rhythms get mangled;
@@ -10352,123 +10504,470 @@
                 };
             };
             const qnotes = keep.filter(n => isFinite(n.midi) && (isFinite(n.time) || isFinite(n.ticks)))
-                               .map(n => ({ midi: n.midi, velocity: n.velocity, ...q(n) }))
+                               .map(n => ({ midi: toWhite(n.midi), tr: n.tr, velocity: n.velocity, ...q(n) }))
                                .sort((a, b) => a.time - b.time || a.midi - b.midi);
             if (!qnotes.length) { showScribeMessage('Nothing to arrange.'); return; }
 
+            // ── Bars: the song's own bar lines, from its metre map. Times here
+            // are beats at the opening tempo; the tempo map rides along for the
+            // finished arrangement.
+            const spb = 60 / bpm;
+            const given = src._timing || { sigs: [{ beat: 0, num: 4, den: 4 }], tempos: [{ beat: 0, bpm }] };
+            // A metre change that falls mid-bar starts at the next bar line, as
+            // the tab writes it, so both agree where the bars are.
+            const sigs = [];
+            for (const s of given.sigs) {
+                const p = sigs[sigs.length - 1];
+                if (!p) { sigs.push(s); continue; }
+                const len = p.num * 4 / p.den;
+                const at = p.beat + Math.ceil((s.beat - p.beat) / len - 1e-6) * len;
+                if (at - p.beat < 1e-6) sigs.pop();
+                sigs.push(Object.assign({}, s, { beat: at }));
+            }
+            const timing = { sigs, tempos: given.tempos };
+            const songEnd = Math.max(...qnotes.map(n => n.time + n.len));
+            let bars = [];
+            timing.sigs.forEach((s, i) => {
+                const len = s.num * 4 / s.den * spb;
+                const stop = timing.sigs[i + 1] ? timing.sigs[i + 1].beat * spb : songEnd + len;
+                for (let t = s.beat * spb; t < stop - 1e-6; t += len) bars.push({ start: t, len: Math.min(len, stop - t), num: s.num, den: s.den });
+            });
             // ── Anacrusis: a song that starts mid-file must not open the tab
             // with screens of rest bars. Slide everything back by whole bars.
-            const barSec = 4 * (60 / bpm);
-            const lead = Math.floor(qnotes[0].time / barSec) * barSec;
-            if (lead > 0) qnotes.forEach(n => { n.time -= lead; });
+            const leadBar = bars.filter(b => b.start <= qnotes[0].time + 1e-6).pop();
+            const lead = leadBar ? leadBar.start : 0;
+            if (lead > 0) {
+                qnotes.forEach(n => { n.time -= lead; });
+                bars = bars.filter(b => b.start >= lead - 1e-6).map(b => Object.assign({}, b, { start: b.start - lead }));
+            }
+            const fromLead = (list) => {
+                const out = [];
+                for (const e of list) {
+                    const beat = e.beat - lead / spb;
+                    if (beat <= 1e-6) out.length = 0;   // only the one in force at the start stays
+                    out.push(Object.assign({}, e, { beat: Math.max(0, beat) }));
+                }
+                return out;
+            };
+            const outTiming = { sigs: fromLead(timing.sigs), tempos: fromLead(timing.tempos) };
 
-            const clusters = [];
+            // ── 2. Roles ──
+            const onsets = [];
             for (const n of qnotes) {
-                const last = clusters[clusters.length - 1];
+                const last = onsets[onsets.length - 1];
                 if (last && Math.abs(n.time - last.time) < 1e-6) last.notes.push(n);
-                else clusters.push({ time: n.time, notes: [n] });
+                else onsets.push({ time: n.time, notes: [n] });
+            }
+            const choice = (document.getElementById('scribe-arrange-melody') || {}).value || 'auto';
+            // Tune-like parts: mostly one note at a time, and not the lowest part
+            // (that's the bass). In a song where the tune moves between them
+            // (a voice, then a flute, then an oboe) the melody follows it bar by
+            // bar, staying with a part until another clearly takes over.
+            const stats = new Map();
+            for (const o of onsets) {
+                const per = new Map();
+                for (const n of o.notes) per.set(n.tr, (per.get(n.tr) || 0) + 1);
+                for (const [tr, c] of per) {
+                    const s = stats.get(tr) || { onsets: 0, single: 0 };
+                    s.onsets++; if (c === 1) s.single++;
+                    stats.set(tr, s);
+                }
+            }
+            const pitchSum = new Map();
+            for (const n of qnotes) pitchSum.set(n.tr, (pitchSum.get(n.tr) || 0) + n.midi);
+            let lowestPart = null;
+            if (stats.size > 1) {
+                const most = Math.max(...[...stats.values()].map(s => s.onsets));
+                let low = Infinity;
+                for (const [tr, s] of stats) {
+                    if (s.onsets < most * 0.15) continue;
+                    const mean = pitchSum.get(tr) / qnotes.filter(n => n.tr === tr).length;
+                    if (mean < low) { low = mean; lowestPart = tr; }
+                }
+            }
+            const tuneParts = new Set([...stats].filter(([tr, s]) => tr !== lowestPart && s.onsets >= 4 && s.single / s.onsets >= 0.75).map(([tr]) => tr));
+            let melTr = choice === 'top' ? -1
+                : (choice !== 'auto' && names.has(+choice)) ? +choice
+                : (names.size > 1 ? guessMelodyTrack(qnotes) : -1);
+            // Following the tune: it stays with one part while that part keeps
+            // playing. When it stops (no note within the next beat), the tune
+            // goes to whichever tune-like part is playing, the busiest one; and
+            // when two start together, a much busier one takes it.
+            const following = choice === 'auto' && names.size > 1 && tuneParts.size > 0;
+            const startsOf = new Map();
+            for (const n of qnotes) if (tuneParts.has(n.tr)) {
+                if (!startsOf.has(n.tr)) startsOf.set(n.tr, []);
+                startsOf.get(n.tr).push(n.time);
+            }
+            const busy = (tr, t) => startsOf.get(tr).filter(x => x >= t - 2 * spb - 1e-6 && x <= t + 4 * spb + 1e-6).length;
+            const playsSoon = (tr, t) => startsOf.get(tr).some(x => x > t + 1e-6 && x <= t + spb + 1e-6);
+            // Top-line split: an onset's highest note is melody only when it sits
+            // above the hands' halfway point, so a left-hand-only moment stays
+            // accompaniment instead of becoming a stray melody note.
+            let split = -Infinity;
+            if (melTr === -1) {
+                const tops = [], bottoms = [];
+                for (const o of onsets) if (o.notes.length > 1) {
+                    tops.push(Math.max(...o.notes.map(n => n.midi)));
+                    bottoms.push(Math.min(...o.notes.map(n => n.midi)));
+                }
+                const med = (a) => a.sort((x, y) => x - y)[a.length >> 1];
+                if (tops.length) split = (med(tops) + med(bottoms)) / 2;
+            }
+            let current = null;
+            const tuneOf = onsets.map(o => {
+                if (!following) return melTr;
+                const starting = [...new Set(o.notes.filter(n => tuneParts.has(n.tr)).map(n => n.tr))];
+                if (!starting.length) return null;
+                const top = (tr) => Math.max(...o.notes.filter(n => n.tr === tr).map(n => n.midi));
+                const best = starting.reduce((b, c) => (busy(c, o.time) > busy(b, o.time)
+                    || (busy(c, o.time) === busy(b, o.time) && top(c) > top(b))) ? c : b);
+                let pick;
+                if (current != null && starting.includes(current)) pick = busy(best, o.time) > 2 * busy(current, o.time) ? best : current;
+                else if (current != null && playsSoon(current, o.time)) pick = null;   // mid-phrase: these notes sit out
+                else pick = best;
+                if (pick != null) current = pick;
+                return pick;
+            });
+            // A part that shadows the tune, sounding its exact notes with it for
+            // a third of them or more (a harp doubling a voice), gives those
+            // notes up: the tune already has them.
+            const doubled = new Map(), tuneCount = new Map();
+            onsets.forEach((o, i) => {
+                const tr = tuneOf[i];
+                if (tr == null || tr === -1) return;
+                const mel = o.notes.filter(n => n.tr === tr);
+                tuneCount.set(tr, (tuneCount.get(tr) || 0) + mel.length);
+                for (const n of o.notes) {
+                    if (n.tr !== tr && mel.some(m => m.midi === n.midi)) doubled.set(tr + '>' + n.tr, (doubled.get(tr + '>' + n.tr) || 0) + 1);
+                }
+            });
+            const shadows = (tr, n) => (doubled.get(tr + '>' + n.tr) || 0) >= (tuneCount.get(tr) || Infinity) / 3;
+            const roles = onsets.map((o, i) => {
+                const tr = tuneOf[i];
+                if (following || tr !== -1) {
+                    const mel = tr == null ? [] : o.notes.filter(n => n.tr === tr);
+                    // With the tune moving between parts, the other tune-like
+                    // parts sit out: their lines would come through as stray
+                    // notes in the chords.
+                    const acc = o.notes.filter(n => n.tr !== tr && !(following && tuneParts.has(n.tr))
+                        && !(shadows(tr, n) && mel.some(m => m.midi === n.midi)));
+                    return { time: o.time, mel, acc };
+                }
+                const top = Math.max(...o.notes.map(n => n.midi));
+                if (top < split) return { time: o.time, mel: [], acc: o.notes };
+                return { time: o.time, mel: [o.notes.find(n => n.midi === top)], acc: o.notes.filter(n => n.midi < top) };
+            });
+
+            // ── 3. One hand position per chord ── A GW2 octave runs from C up
+            // to the next C (keys 1–8). The anchor note holds; the others move
+            // by octaves into its octave: 'below' it (a melody note stays on
+            // top), 'above' it (a bass note stays at the bottom) or anywhere
+            // (inner harmony). A note that would have to move further than
+            // maxMove is left out rather than dragged across the keyboard, and
+            // with a gap, so is a note that would sit closer than that to
+            // another (no seconds grinding inside one octave).
+            const handPosition = (anchor, others, side, maxMove, gap = 0) => {
+                const base = (side === 'below' && pcOf(anchor) === 0) ? anchor - 12 : anchor - pcOf(anchor);
+                const out = [anchor], used = new Set([pcOf(anchor)]);
+                for (const p of others) {
+                    if (out.length >= MAX_NOTES) break;
+                    const pc = pcOf(p);
+                    if (used.has(pc)) continue;
+                    const v = [base + pc, base + pc + 12]          // a C can be the 1 or the 8
+                        .filter(x => x <= base + 12 && (side === 'below' ? x < anchor : side === 'above' ? x > anchor : true))
+                        .sort((x, y) => Math.abs(x - p) - Math.abs(y - p))[0];
+                    if (v == null || Math.abs(v - p) > maxMove) continue;
+                    if (gap && out.some(x => Math.abs(x - v) < gap)) continue;
+                    out.push(v);
+                    used.add(pc);
+                }
+                return out.sort((a, b) => a - b);
+            };
+            const chordOf = (time, notes, pitches) => ({
+                time, pitches,
+                velocity: notes.reduce((mx, n) => Math.max(mx, n.velocity || 0), 0) || 0.8,
+                soundLen: notes.reduce((mx, n) => Math.max(mx, n.len || STEP), 0) || STEP
+            });
+            const desc = (ns) => ns.map(n => n.midi).sort((a, b) => b - a);
+            const asc = (ns) => ns.map(n => n.midi).sort((a, b) => a - b);
+
+            // ── A bass part, when asked for ── The song's own bassline when it
+            // has one (a low part of its own); otherwise a simple one written
+            // from the harmony: the chord's root every half bar, stepping to its
+            // fifth on beat 3 while the chord holds. One note at a time.
+            const wantBass = !!(document.getElementById('scribe-arrange-bass') || {}).checked;
+            const bassLine = [];
+            let bassFrom = null;
+            if (wantBass) {
+                const parts = new Map();
+                for (const r of roles) for (const n of r.acc) {
+                    const a = parts.get(n.tr) || { sum: 0, count: 0 };
+                    a.sum += n.midi; a.count++;
+                    parts.set(n.tr, a);
+                }
+                if (parts.size > 1) {
+                    const most = Math.max(...[...parts.values()].map(a => a.count));
+                    let lowest = Infinity;
+                    for (const [tr, a] of parts) {
+                        if (a.count < most * 0.15) continue;   // a few stray notes are not a bassline
+                        if (a.sum / a.count < lowest) { lowest = a.sum / a.count; bassFrom = tr; }
+                    }
+                    if (lowest - shift >= 55) bassFrom = null; // its lowest part sits above G3 (as written): no bass
+                }
+                if (bassFrom != null) {
+                    for (const r of roles) {
+                        const ns = r.acc.filter(n => n.tr === bassFrom);
+                        if (ns.length) bassLine.push(chordOf(r.time, ns, [asc(ns)[0]]));
+                    }
+                } else {
+                    // The six chords white keys make: C, Dm, Em, F, G, Am.
+                    const CHORDS = [[0, 4, 7], [2, 5, 9], [4, 7, 11], [5, 9, 0], [7, 11, 2], [9, 0, 4]];
+                    const heard = [];
+                    roles.forEach(r => {
+                        r.mel.forEach(n => heard.push({ n, w: 0.5 }));   // a tune's passing notes count for less
+                        r.acc.forEach(n => heard.push({ n, w: 1 }));
+                    });
+                    // Two bass notes a bar of four beats or more (or 6/8), one in a
+                    // shorter bar like 3/4.
+                    const segments = [];
+                    for (const bar of bars) {
+                        const halves = bar.len >= 4 * spb - 1e-6 || (bar.den === 8 && bar.num % 3 === 0 && bar.num >= 6);
+                        if (halves) segments.push({ s: bar.start, len: bar.len / 2, second: false }, { s: bar.start + bar.len / 2, len: bar.len / 2, second: true });
+                        else segments.push({ s: bar.start, len: bar.len, second: false });
+                    }
+                    let prev = null;
+                    for (const seg of segments) {
+                        const s = seg.s, e = s + seg.len, w = new Array(12).fill(0);
+                        for (const h of heard) {
+                            const overlap = Math.min(e, h.n.time + (h.n.len || STEP)) - Math.max(s, h.n.time);
+                            if (overlap > 0) w[pcOf(h.n.midi)] += overlap * h.w;
+                        }
+                        const total = w.reduce((a, b) => a + b, 0);
+                        if (total <= 0) { prev = null; continue; }
+                        // Chord notes heard count for it (root most), other notes against it.
+                        const fit = (c) => w[c[0]] + 0.8 * w[c[1]] + 0.7 * w[c[2]] - 0.4 * (total - w[c[0]] - w[c[1]] - w[c[2]]);
+                        let chord = CHORDS.reduce((b, c) => fit(c) > fit(b) ? c : b);
+                        // A chord that hasn't clearly changed stays: basslines don't twitch.
+                        if (prev && fit(chord) - fit(prev) < 0.1 * total) chord = prev;
+                        // Beat 3 of a chord that holds walks to its fifth, if the
+                        // music is sounding that fifth; otherwise the root again.
+                        const pc = (seg.second && chord === prev && w[chord[2]] > 0) ? chord[2] : chord[0];
+                        bassLine.push({ time: s, pitches: [48 + pc], velocity: 0.75, soundLen: seg.len });   // the Low octave
+                        prev = chord;
+                    }
+                }
+            }
+            const ownBass = bassFrom != null;   // the song's bass gets its own part
+
+            const melody = [], accomp = [], harmony = [], solo = [];
+            if (mode === 'solo') {
+                // One player, one octave at a time, at most one chord per beat:
+                //  - every melody note plays, exactly;
+                //  - in each beat, the first melody note takes the chord sounding
+                //    under it, tucked below it in its octave (bass note first);
+                //  - a beat with no melody note (a held note, a rest) gets the
+                //    background chord in the melody's own octave, so nothing goes
+                //    quiet and there's no octave to switch to.
+                const beat = 60 / bpm, EPS = 1e-4;
+                const background = [];
+                roles.forEach(r => r.acc.forEach(n => background.push(n)));
+                // What the background is playing at a moment: bass first, then
+                // the rest from the top down.
+                const soundingAt = (t) => background.filter(n => n.time <= t + EPS && n.time + (n.len || STEP) > t + EPS);
+                const chordAt = (ns) => {
+                    const ps = ns.map(n => n.midi).sort((a, b) => a - b);
+                    return ps.length ? [ps[0], ...ps.slice(1).reverse()] : [];
+                };
+                const beatOf = (t) => Math.floor(t / beat + 0.02);
+                const octaveOf = (top) => pcOf(top) === 0 ? top - 12 : top - pcOf(top);
+                const mels = roles.filter(r => r.mel.length).map(r => ({ time: r.time, ps: desc(r.mel), notes: r.mel, acc: r.acc }));
+
+                let lastBeat = -1;
+                mels.forEach(m => {
+                    const first = beatOf(m.time) !== lastBeat;
+                    lastBeat = beatOf(m.time);
+                    const under = (first || m.acc.length) ? chordAt(soundingAt(m.time)) : [];
+                    const ch = chordOf(m.time, m.notes, handPosition(m.ps[0], m.ps.slice(1).concat(under), 'below', Infinity, 3));
+                    ch.tune = true;
+                    solo.push(ch);
+                });
+
+                // A fill sits in the melody's octave: under the melody note when
+                // two notes fit there, otherwise around it.
+                const fillAround = (ref, h) => {
+                    const base = octaveOf(ref), under = [], over = [], used = new Set([pcOf(ref)]);
+                    for (const p of h) {
+                        const v = base + pcOf(p);
+                        if (used.has(pcOf(p)) || under.concat(over).some(x => Math.abs(x - v) < 3)) continue;
+                        used.add(pcOf(p));
+                        (v < ref ? under : over).push(v);
+                    }
+                    return (under.length >= 2 ? under : under.concat(over)).slice(0, MAX_NOTES);
+                };
+                const melBeats = new Set(mels.map(m => beatOf(m.time)));
+                const end = Math.max(...background.map(n => n.time + (n.len || STEP)), 0);
+                let mi = 0;
+                for (let i = 0; i * beat < end - EPS; i++) {
+                    if (melBeats.has(i)) continue;   // the melody has this beat
+                    const b = i * beat;
+                    while (mi < mels.length && mels[mi].time < b - EPS) mi++;
+                    const sounding = soundingAt(b);
+                    const h = chordAt(sounding);
+                    // A lone note here would be heard as a stray melody note.
+                    if (new Set(h.map(pcOf)).size < 2) continue;
+                    const near = mels[mi - 1] || mels[mi];
+                    const ps = near ? fillAround(near.ps[0], h) : handPosition(h[0], h.slice(1), 'any', Infinity, 3);
+                    if (ps.length < 2) continue;
+                    const fill = chordOf(b, sounding, ps.sort((x, y) => x - y));
+                    fill.velocity *= 0.8;   // the tune stays on top
+                    fill.soundLen = Math.min(fill.soundLen, beat);
+                    solo.push(fill);
+                }
+            } else {
+                // With several accompaniment parts, the lowest one is the bass
+                // line and the rest are harmony. Harmony that sounds with a bass
+                // note joins its octave; harmony on its own is a line of its own.
+                const accParts = new Map();
+                for (const r of roles) for (const n of r.acc) {
+                    const a = accParts.get(n.tr) || { sum: 0, count: 0 };
+                    a.sum += n.midi; a.count++;
+                    accParts.set(n.tr, a);
+                }
+                let bassTr = null;
+                if (accParts.size > 1) {
+                    const most = Math.max(...[...accParts.values()].map(a => a.count));
+                    let low = Infinity;
+                    for (const [tr, a] of accParts) {
+                        if (a.count < most * 0.15) continue;
+                        if (a.sum / a.count < low) { low = a.sum / a.count; bassTr = tr; }
+                    }
+                }
+                for (const r of roles) {
+                    if (r.mel.length) {
+                        const ps = desc(r.mel);
+                        melody.push(chordOf(r.time, r.mel, handPosition(ps[0], ps.slice(1), 'below', 12)));
+                    }
+                    if (!r.acc.length) continue;
+                    const bass = bassTr == null ? r.acc : r.acc.filter(n => n.tr === bassTr);
+                    if (bass.length && !ownBass) {
+                        accomp.push(chordOf(r.time, r.acc, handPosition(asc(bass)[0], asc(r.acc), 'above', 12)));
+                    } else {
+                        // With the bass in a part of its own, its notes leave Part 2.
+                        const rest = ownBass ? r.acc.filter(n => n.tr !== bassFrom) : r.acc;
+                        if (!rest.length) continue;
+                        const ps = desc(rest);
+                        harmony.push(chordOf(r.time, rest, handPosition(ps[0], ps.slice(1), 'any', 12)));
+                    }
+                }
             }
 
-            const allMidi = keep.map(n => n.midi).sort((a, b) => a - b);
-            const boundary = allMidi.length ? allMidi[allMidi.length >> 1] : 60;
-            const topOf = (ns) => Math.max(...ns.map(n => n.midi));
-            // Out-of-window pitches fold by octaves — never clamp, which would
-            // change the note instead of just its register.
-            const fold = (p, lo, hi) => {
-                while (p < lo) p += 12;
-                while (p > hi) p -= 12;
-                return p < lo ? p + 12 : p;
+            // ── 4. Octaves: whole lines, whole octaves ──
+            const inReach = (chords, k) => {
+                let c = 0;
+                for (const ch of chords) for (const p of ch.pitches) if (p + k >= ARR_LO && p + k <= ARR_HI) c++;
+                return c;
             };
+            // Middle of a line: the melody by its top notes, the bass by its lowest.
+            const middleOf = (chords, top) => {
+                const a = chords.map(ch => top ? ch.pitches[ch.pitches.length - 1] : ch.pitches[0]).sort((x, y) => x - y);
+                return a.length ? a[a.length >> 1] : null;
+            };
+            // Most notes in reach; on a tie, the line nearest its home.
+            const bestShift = (groups, middle, home) => {
+                let best = 0, bestFit = -1, bestDist = Infinity;
+                for (let k = -48; k <= 48; k += 12) {
+                    const fit = groups.reduce((s, g) => s + inReach(g, k), 0);
+                    const dist = middle == null ? 0 : Math.abs(middle + k - home);
+                    if (fit > bestFit || (fit === bestFit && dist < bestDist)) { best = k; bestFit = fit; bestDist = dist; }
+                }
+                return { k: best, fit: bestFit };
+            };
+            // Only a chord still outside the reach moves on its own, whole.
+            const place = (chords, k) => chords.forEach(ch => {
+                let ps = ch.pitches.map(p => p + k);
+                while (ps[ps.length - 1] > ARR_HI) ps = ps.map(p => p - 12);
+                while (ps[0] < ARR_LO) ps = ps.map(p => p + 12);
+                ch.pitches = ps;
+            });
+            const MEL_HOME = 67, BASS_HOME = 55;   // the middle of Mid, the middle of Low
+            let together = true;
+            const ownLine = ownBass ? [bassLine] : [];   // a written bass is already in Low
+            if (mode === 'solo') {
+                const k = bestShift([solo, ...ownLine], middleOf(solo.filter(ch => ch.tune), true), MEL_HOME).k;
+                place(solo, k);
+                if (ownBass) place(bassLine, k);
+            } else {
+                // Melody and bass move together when that keeps everything in
+                // reach, so the bass stays under the tune; otherwise each moves alone.
+                const melMid = middleOf(melody, true), bassMid = middleOf(accomp.length ? accomp : bassLine, false);
+                const both = bestShift([melody, accomp, ...ownLine], melMid != null ? melMid : (bassMid != null ? bassMid + 12 : null), MEL_HOME);
+                const m = bestShift([melody], melMid, MEL_HOME), a = bestShift([accomp], bassMid, BASS_HOME);
+                const b = ownBass ? bestShift(ownLine, middleOf(bassLine, false), BASS_HOME) : { k: 0, fit: 0 };
+                // Together unless that leaves more than 5% of the notes out of reach
+                // (those few then fold in by octaves on their own).
+                const total = [melody, accomp, ...ownLine].reduce((s, g) => s + g.reduce((t, ch) => t + ch.pitches.length, 0), 0);
+                if (both.fit >= m.fit + a.fit + b.fit - Math.max(2, Math.round(total * 0.05))) {
+                    place(melody, both.k); place(accomp, both.k);
+                    if (ownBass) place(bassLine, both.k);
+                } else {
+                    together = false;
+                    place(melody, m.k); place(accomp, a.k);
+                    if (ownBass) place(bassLine, b.k);
+                }
+                // Harmony sits in the octave just under the melody, so the second
+                // player steps between the bass's octave and the next one up.
+                if (harmony.length) {
+                    const top = middleOf(melody, true), low = middleOf(accomp, false);
+                    const home = top != null ? top - pcOf(top) - 6 : (low != null ? low - pcOf(low) + 18 : 66);
+                    place(harmony, bestShift([harmony], middleOf(harmony, true), home).k);
+                    accomp.push(...harmony);
+                }
+            }
 
-            const buildPart = (selector, lo, hi) => {
-                const raw = [];
-                for (const c of clusters) {
-                    const picked = selector(c.notes, topOf(c.notes));
-                    if (!picked.length) continue;
-                    let ps = Array.from(new Set(picked.map(n => n.midi + bestTr))).sort((a, b) => a - b);
-                    const top = ps[ps.length - 1];
-                    ps = ps.map(p => { let v = p; while (top - v > MAX_SPAN) v += 12; return v; });
-                    ps = Array.from(new Set(ps)).sort((a, b) => a - b);
-                    const vel = picked.reduce((mx, n) => Math.max(mx, n.velocity || 0.8), 0) || 0.8;
-                    const soundLen = picked.reduce((mx, n) => Math.max(mx, n.len || STEP), 0) || STEP;
-                    raw.push({ time: c.time, pitches: ps, velocity: vel, soundLen });
-                }
-                if (!raw.length) return [];
-                for (let i = 0; i < raw.length; i++) {
-                    const nextPs = (raw[i + 1] && raw[i + 1].pitches) || null;
-                    raw[i].pitches = Array.from(new Set(raw[i].pitches.map(p => {
-                        if (WHITE.has(((p % 12) + 12) % 12)) return p;
-                        if (!nextPs) return p - 1;
-                        const near = nextPs.reduce((best, np) =>
-                            Math.abs(np - p) < Math.abs(best - p) ? np : best, nextPs[0]);
-                        return near >= p ? p + 1 : p - 1;
-                    }))).sort((a, b) => a - b);
-                }
-                for (const ch of raw) {
-                    let ps = ch.pitches;
-                    if (ps.length > MAX_NOTES) {
-                        const mid = ps[Math.round((ps.length - 1) / 2)];
-                        ps = Array.from(new Set([ps[0], mid, ps[ps.length - 1]])).sort((a, b) => a - b);
-                    }
-                    ch.pitches = ps;
-                }
-                const allP = [];
-                for (const ch of raw) for (const p of ch.pitches) allP.push(p);
-                allP.sort((a, b) => a - b);
-                const k = Math.round(((lo + hi) / 2 - allP[allP.length >> 1]) / 12) * 12;
-                for (const ch of raw) {
-                    let ps = ch.pitches.map(p => p + k);
-                    let mnp = Math.min(...ps), mxp = Math.max(...ps);
-                    while (mxp > hi) { ps = ps.map(p => p - 12); mxp -= 12; mnp -= 12; }
-                    while (mnp < lo) { ps = ps.map(p => p + 12); mnp += 12; mxp += 12; }
-                    ch.pitches = Array.from(new Set(ps.map(p => fold(p, lo, hi)))).sort((a, b) => a - b);
-                }
-                for (let j = 0; j < raw.length; j++) {
-                    const gap = (j < raw.length - 1) ? raw[j + 1].time - raw[j].time : raw[j].soundLen;
-                    raw[j].dur = Math.max(STEP, Math.min(raw[j].soundLen, gap));
-                }
-                return raw;
-            };
-            const emit = (part) => {
+            const emit = (chords) => {
+                chords.sort((a, b) => a.time - b.time);
                 const out = [];
-                for (const ch of part) for (const p of ch.pitches)
-                    out.push({ midi: p, time: ch.time, duration: ch.dur, velocity: ch.velocity });
+                chords.forEach((ch, j) => {
+                    // A note rings until the next one of its own kind: a solo's
+                    // fill chord doesn't cut the melody note it sits under.
+                    const next = chords.slice(j + 1).find(c => !!c.tune === !!ch.tune);
+                    const gap = next ? next.time - ch.time : ch.soundLen;
+                    const dur = Math.max(STEP, Math.min(ch.soundLen, gap));
+                    for (const p of ch.pitches) out.push({ midi: p, time: ch.time, duration: dur, velocity: ch.velocity });
+                });
                 return out;
             };
 
-            const melodyPart = buildPart((ns, top) => ns.filter(n => n.midi >= boundary || n.midi === top), 60, 83);
-            const bassPart   = buildPart((ns, top) => ns.filter(n => n.midi <  boundary && n.midi !== top), 48, 71);
-            if (!melodyPart.length && !bassPart.length) { showScribeMessage('Nothing to arrange.'); return; }
-
-            const flavour = (triplet ? ', triplet feel kept' : '') + (fast ? ', eased to 8ths' : '')
-                + (src._parts > 1 ? ', from ' + src._parts + ' parts' : '');
-            if (mode === 'merged') {
-                const byTime = new Map();
-                emit(melodyPart).concat(emit(bassPart)).forEach(n => {
-                    const k = n.time.toFixed(6);
-                    if (!byTime.has(k)) byTime.set(k, []);
-                    byTime.get(k).push(n);
-                });
-                const notes = [];
-                for (const group of byTime.values()) {
-                    let ps = Array.from(new Set(group.map(n => n.midi))).sort((a, b) => a - b);
-                    if (ps.length > MAX_NOTES) {
-                        const mid = ps[Math.round((ps.length - 1) / 2)];
-                        ps = Array.from(new Set([ps[0], mid, ps[ps.length - 1]]));
-                    }
-                    const dur = Math.max(...group.map(n => n.duration));
-                    const vel = Math.max(...group.map(n => n.velocity));
-                    ps.forEach(p => notes.push({ midi: p, time: group[0].time, duration: dur, velocity: vel }));
-                }
-                notes.sort((a, b) => a.time - b.time || a.midi - b.midi);
-                loadArrangementIntoScribe('GW2 arrangement', [{ name: 'GW2 Arrangement', notes }], bpm);
-                showScribeMessage('Arranged: one part, white keys, chords \u22643' + flavour + '.');
+            const moved = shift === 0 ? 'already on white keys'
+                : 'moved ' + (shift > 0 ? 'up ' : 'down ') + Math.abs(shift) + ' semitone' + (Math.abs(shift) === 1 ? '' : 's') + ' onto white keys';
+            const quoted = (trs) => trs.map(tr => '“' + names.get(tr) + '”');
+            const tuneFrom = following ? [...new Set(tuneOf.filter(tr => tr != null))] : [];
+            const from = following
+                ? (tuneFrom.length > 1 ? quoted(tuneFrom.slice(0, -1)).join(', ') + ' and ' + quoted(tuneFrom.slice(-1)) : quoted(tuneFrom)[0] || 'nowhere')
+                : melTr === -1 ? 'the top line' : quoted([melTr])[0];
+            const flavour = (rounded ? ', ' + rounded + ' leftover sharp' + (rounded === 1 ? '' : 's') + ' rounded' : '')
+                + (triplet ? ', triplet feel kept' : '') + (fast ? ', eased to 8ths' : '');
+            const bassPart = bassLine.length ? [{ name: 'Bass', notes: emit(bassLine) }] : [];
+            const bassSaid = !wantBass ? ''
+                : !bassLine.length ? ', no bass part (nothing to build it from)'
+                : ownBass ? ', plus the bass from \u201c' + names.get(bassFrom) + '\u201d'
+                : ', plus a bass written from the chords (the song has none)';
+            const named = (kind) => title + ' (' + kind + (bassLine.length ? ' + bass' : '') + ')';
+            if (mode === 'solo') {
+                if (!solo.length) { showScribeMessage('Nothing to arrange.'); return; }
+                loadArrangementIntoScribe(named('solo'), [{ name: 'Solo', notes: emit(solo) }, ...bassPart], bpm, outTiming);
+                showScribeMessage('Solo: melody from ' + from + ', with the background on every beat, ' + moved + flavour + bassSaid + '.');
             } else {
                 const parts = [];
-                if (melodyPart.length) parts.push({ name: 'GW2 Melody', notes: emit(melodyPart) });
-                if (bassPart.length)   parts.push({ name: 'GW2 Bass',   notes: emit(bassPart) });
-                loadArrangementIntoScribe('GW2 arrangement', parts, bpm);
-                showScribeMessage('Arranged: melody + bass, white keys, chords \u22643' + flavour + '.');
+                if (melody.length) parts.push({ name: 'Melody', notes: emit(melody) });
+                if (accomp.length) parts.push({ name: 'Accompaniment', notes: emit(accomp) });
+                if (!parts.length) { showScribeMessage('Nothing to arrange.'); return; }
+                const main = parts.length;
+                parts.push(...bassPart);
+                loadArrangementIntoScribe(named('duet'), parts, bpm, outTiming);
+                showScribeMessage((main > 1 ? 'Duet: melody from ' + from + ' + accompaniment, ' : 'Only a melody was found, ')
+                    + moved + flavour + (together ? '' : ', each part moved on its own to fit the range') + bassSaid + '.');
             }
         }
 
@@ -10621,7 +11120,7 @@
                 scribeMidi = preMergeMidi;
                 preMergeMidi = null;
                 globalMidiFile = null;
-                scribeTrackShifts = [];
+                scribeTrackShifts = []; resetPartMix();
                 btn.textContent = 'Merge parts';
                 try { await processMidiFile(); showScribeMessage('Parts split back.'); } catch (e) {}
                 return;
@@ -10644,7 +11143,7 @@
             preMergeMidi = (typeof lastMidiObj.clone === 'function') ? lastMidiObj.clone() : lastMidiObj;
             scribeMidi = merged;
             globalMidiFile = null;
-            scribeTrackShifts = [];
+            scribeTrackShifts = []; resetPartMix();
             btn.textContent = 'Split back';
             try { await processMidiFile(); showScribeMessage('All parts folded into one.'); }
             catch (e) { showScribeMessage('Could not merge.'); }
@@ -10736,6 +11235,10 @@
 
         // Rebuilt whenever the Scribe re-renders: per-track notes with the same
         // shifts the notation uses, so what you hear is what you read.
+        // New content (a file, an arrangement, a merge) starts with every part
+        // audible: mixer settings are kept by part number and would otherwise
+        // land on whatever part now has that number.
+        function resetPartMix() { orch.mix.length = 0; }
         function orchRefresh() {
             orchStop();
             orch.notes = [];
